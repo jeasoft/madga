@@ -217,6 +217,13 @@
   .madga-hb-visible { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--fg-1); padding: 6px 0; }
   .madga-hb-block-foot { padding-top: 6px; border-top: 1px dashed var(--border); margin-top: 4px; }
 
+  /* Settings tabs ------------------------------------------------------- */
+  .madga-settings-tabs { display: flex; gap: 4px; margin-bottom: 16px; padding: 4px; background: var(--bg-1); border: 1px solid var(--border); border-radius: 10px; flex-wrap: wrap; }
+  .madga-settings-tab { padding: 8px 14px; font-size: 13px; font-weight: 500; color: var(--fg-2); border-radius: 7px; cursor: pointer; transition: background .12s, color .12s; text-decoration: none; }
+  .madga-settings-tab:hover { background: var(--bg-hover); color: var(--fg-0); }
+  .madga-settings-tab.is-active { background: var(--accent-soft); color: var(--accent); }
+  .madga-settings-pane { display: flex; flex-direction: column; gap: 12px; }
+
   /* Toasts -------------------------------------------------------------- */
   .madga-toasts { position: fixed; right: 16px; bottom: 16px; z-index: 200; display: flex; flex-direction: column-reverse; gap: 8px; max-width: calc(100vw - 32px); pointer-events: none; }
   .madga-toast { pointer-events: auto; min-width: 280px; max-width: 420px; padding: 10px 14px; border-radius: 10px; background: var(--bg-1); border: 1px solid var(--border); box-shadow: var(--shadow-md); display: flex; gap: 10px; align-items: center; font-size: 13px; color: var(--fg-0); animation: madga-toast-in .2s ease; }
@@ -306,12 +313,16 @@
   .madga-icon-btn:hover { background: var(--bg-hover); color: var(--fg-0); }
 
   /* Page wrapper --------------------------------------------------------- */
-  .madga-page { padding: 24px; max-width: 1280px; }
-  .madga-page-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 22px; }
+  .madga-page { padding: 36px 40px; max-width: 1240px; margin: 0 auto; }
+  .madga-page-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 30px; }
   .madga-page-title-block { flex: 1; min-width: 0; }
-  .madga-page-title { font-size: 24px; font-weight: 600; letter-spacing: -0.01em; color: var(--fg-0); margin: 0; }
-  .madga-page-subtitle { font-size: 13.5px; color: var(--fg-2); margin: 4px 0 0; max-width: 560px; }
+  .madga-page-title { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; color: var(--fg-0); margin: 0; line-height: 1.15; }
+  .madga-page-subtitle { font-size: 14px; color: var(--fg-2); margin: 8px 0 0; max-width: 600px; line-height: 1.5; }
   .madga-page-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  @media (max-width: 700px) {
+    .madga-page { padding: 20px 16px; }
+    .madga-page-header { flex-direction: column; align-items: stretch; gap: 10px; margin-bottom: 22px; }
+  }
 
   /* Buttons -------------------------------------------------------------- */
   .madga-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; background: var(--bg-2); color: var(--fg-1); border: 1px solid var(--border); border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; transition: background .1s, border-color .1s, color .1s; text-decoration: none; }
@@ -341,14 +352,17 @@
   .madga-card-spacer { flex: 1; }
 
   /* Stat cards ----------------------------------------------------------- */
-  .madga-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 28px; }
-  .madga-stat-card { background: var(--bg-1); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; position: relative; overflow: hidden; }
+  .madga-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .madga-stat-card { background: var(--bg-1); border: 1px solid var(--border); border-radius: 14px; padding: 20px; position: relative; overflow: hidden; min-height: 120px; }
   .madga-stat-label { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--fg-2); }
-  .madga-stat-value { font-size: 26px; font-weight: 600; color: var(--fg-0); line-height: 1.1; margin-top: 8px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-  .madga-stat-meta { font-size: 11.5px; color: var(--fg-3); margin-top: 4px; }
-  .madga-stat-delta { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 500; margin-top: 6px; }
+  .madga-stat-value { font-size: 30px; font-weight: 600; color: var(--fg-0); line-height: 1.1; margin-top: 10px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .madga-stat-meta { font-size: 11.5px; color: var(--fg-3); margin-top: 6px; }
+  .madga-stat-delta { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 500; margin-top: 8px; }
   .madga-stat-delta.up { color: var(--status-published-fg); }
   .madga-stat-delta.down { color: #ff7a7a; }
+  .madga-stat-spark { position: absolute; right: 10px; bottom: 10px; pointer-events: none; opacity: .8; }
+  .madga-stat-spark path.line { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .madga-stat-spark path.area { fill: var(--accent); opacity: .14; }
 
   /* Tabs ---------------------------------------------------------------- */
   .madga-tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }

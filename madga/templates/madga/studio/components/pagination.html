@@ -1,6 +1,5 @@
 {% load madga_studio_tags %}
-{# Reusable paginator: pass page_obj (Django Page instance). Preserves all
-   existing query params (tab, q, etc.) by hidden-merging via window.location. #}
+{# Reusable paginator: pass page_obj (Django Page instance). Preserves query params. #}
 <nav class="madga-pagination" aria-label="Paginación">
   {% if page_obj.has_previous %}
     <a href="?page={{ page_obj.previous_page_number }}{% for k, v in request.GET.items %}{% if k != 'page' %}&{{ k }}={{ v }}{% endif %}{% endfor %}" class="madga-pagination-btn">{% studio_icon "chevron-left" size=12 stroke=2 %} Anterior</a>

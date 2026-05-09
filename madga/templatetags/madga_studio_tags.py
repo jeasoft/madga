@@ -154,6 +154,31 @@ def get_item(d, key):
     return d.get(key, "")
 
 
+# 9 hand-tuned gradient stops, deterministic per object so a Post always
+# renders with the same thumb until its id/slug changes.
+_THUMB_GRADIENTS = [
+    "linear-gradient(135deg, #7C5CFF, #FF7A59)",
+    "linear-gradient(135deg, #06B6D4, #6366F1)",
+    "linear-gradient(135deg, #F59E0B, #EF4444)",
+    "linear-gradient(135deg, #10B981, #06B6D4)",
+    "linear-gradient(135deg, #EC4899, #8B5CF6)",
+    "linear-gradient(135deg, #6366F1, #06B6D4)",
+    "linear-gradient(135deg, #F472B6, #FB923C)",
+    "linear-gradient(135deg, #2DD4BF, #6366F1)",
+    "linear-gradient(135deg, #A855F7, #EC4899)",
+]
+
+
+@register.filter
+def thumb_gradient(seed) -> str:
+    """Return a CSS background gradient deterministic from any value."""
+    s = str(seed or "")
+    if not s:
+        return _THUMB_GRADIENTS[0]
+    h = sum(ord(c) for c in s)
+    return _THUMB_GRADIENTS[h % len(_THUMB_GRADIENTS)]
+
+
 @register.simple_tag
 def studio_active(request, *url_names) -> str:
     """Return ``is-active`` if the current resolved url_name matches any given."""

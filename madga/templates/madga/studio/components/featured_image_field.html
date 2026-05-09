@@ -1,9 +1,5 @@
 {% load madga_studio_tags %}
-{# Featured image picker field. Renders a hidden input with the MediaFile id
-   plus a thumbnail preview / chooser. Args:
-     name      — hidden input name (the form field bound to Post.featured_image)
-     media     — current MediaFile instance, or None
-#}
+{# Featured image picker. Args: name (hidden input form field), media (current MediaFile or None). #}
 <div class="madga-fi" data-madga-featured>
   <input type="hidden" name="{{ name }}" value="{{ media.id|default_if_none:'' }}" data-fi-input>
 

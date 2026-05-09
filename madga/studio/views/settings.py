@@ -9,36 +9,79 @@ from ..forms import SiteSettingsForm
 from ..mixins import MadgaStudioMixin
 
 
+# Tabs for the Settings page. Each tab declares which form fields it owns;
+# the rendering loops over field names so order is template-controlled.
+SETTINGS_TABS = [
+    {
+        "key": "general",
+        "label": "General",
+        "fields": ["name", "domain", "description", "logo", "favicon", "timezone"],
+    },
+    {
+        "key": "branding",
+        "label": "Marca",
+        "fields": [
+            "accent_color", "heading_font", "body_font",
+            "border_radius", "content_density", "color_scheme", "theme",
+        ],
+    },
+    {
+        "key": "seo",
+        "label": "SEO",
+        "fields": ["meta_title", "meta_description"],
+    },
+    {
+        "key": "integrations",
+        "label": "Integraciones",
+        "fields": ["google_analytics_id", "facebook_pixel_id"],
+    },
+]
+
+
 class SettingsView(MadgaStudioMixin, View):
     template_name = "madga/studio/settings.html"
 
+    def _resolve_tab(self, request) -> str:
+        wanted = request.GET.get("tab") or "general"
+        for t in SETTINGS_TABS:
+            if t["key"] == wanted:
+                return wanted
+        return "general"
+
+    def _ctx(self, form, site, current_tab):
+        # Build a dict of {field_name: BoundField} so the template can render
+        # each tab's fields in the curated order without a {% if name == … %}
+        # cascade.
+        bound = {f.name: f for f in form}
+        return {
+            "form": form,
+            "site": site,
+            "membership": self.get_membership(),
+            "tabs": SETTINGS_TABS,
+            "current_tab": current_tab,
+            "bound": bound,
+        }
+
     def get(self, request):
         site = self.get_site()
-        return render(
-            request,
-            self.template_name,
-            {
-                "form": SiteSettingsForm(instance=site),
-                "site": site,
-                "membership": self.get_membership(),
-            },
-        )
+        tab = self._resolve_tab(request)
+        return render(request, self.template_name, self._ctx(SiteSettingsForm(instance=site), site, tab))
 
     def post(self, request):
         if not self.has_perm("manage_settings"):
             messages.error(request, "Permiso denegado.")
             return redirect("madga_studio:settings")
         site = self.get_site()
+        tab = request.POST.get("active_tab") or self._resolve_tab(request)
         form = SiteSettingsForm(request.POST, request.FILES, instance=site)
         if form.is_valid():
             form.save()
             messages.success(request, "Settings actualizados.")
-            return redirect("madga_studio:settings")
-        return render(
-            request,
-            self.template_name,
-            {"form": form, "site": site, "membership": self.get_membership()},
-        )
+            url = "/studio/settings/"
+            if tab and tab != "general":
+                url += f"?tab={tab}"
+            return redirect(url)
+        return render(request, self.template_name, self._ctx(form, site, tab))
 
 
 class ThemeView(MadgaStudioMixin, View):
