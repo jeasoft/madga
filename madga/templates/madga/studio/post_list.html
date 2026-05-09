@@ -33,7 +33,7 @@
       <input type="hidden" name="tab" value="{{ current_tab }}">
     </form>
     <div style="flex:1"></div>
-    <span style="font-size:12px; color:var(--fg-2);">{{ posts|length }} resultado{{ posts|length|pluralize }}</span>
+    <span style="font-size:12px; color:var(--fg-2);">{{ paginator.count }} resultado{{ paginator.count|pluralize }}</span>
   </div>
 
   <form id="post-bulk-form" method="post" action="{% url 'madga_studio:post_bulk' %}">
@@ -57,6 +57,10 @@
         {% include "madga/studio/components/post_list_rows.html" %}
       </div>
     </div>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+      {% include "madga/studio/components/pagination.html" with page_obj=page_obj %}
+    {% endif %}
   </form>
 </div>
 {% endblock %}

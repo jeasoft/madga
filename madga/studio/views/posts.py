@@ -3,6 +3,7 @@
 import json
 
 from django.contrib import messages
+from django.core.paginator import EmptyPage, Paginator
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -64,8 +65,16 @@ class PostListView(MadgaStudioMixin, TemplateView):
             "scheduled": all_qs.filter(status=Post.STATUS_SCHEDULED).count() if site else 0,
             "trash": Post.objects.deleted().filter(site=site).count() if site else 0,
         }
+        # Paginate (20 per page).
+        paginator = Paginator(self._queryset(), 20)
+        try:
+            page = paginator.page(int(self.request.GET.get("page") or 1))
+        except (ValueError, EmptyPage):
+            page = paginator.page(1)
         ctx.update(
-            posts=self._queryset(),
+            posts=page.object_list,
+            page_obj=page,
+            paginator=paginator,
             current_tab=self.request.GET.get("tab", "all"),
             search_q=self.request.GET.get("q", ""),
             counts=counts,
