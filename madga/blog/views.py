@@ -1,9 +1,10 @@
 """Public-facing blog views."""
 
 from django.db.models import F, Q
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
+from django.utils.feedgenerator import Rss201rev2Feed
 from django.views.generic import TemplateView, View
 
 from madga.models import Category, HomepageBlock, Page, Post, Site, Tag
@@ -102,6 +103,73 @@ class PageDetailView(View):
                 "madga/blog/page.html",
             ],
             {"site": site, "page": page},
+        )
+
+
+def _absolute(request, path: str) -> str:
+    return request.build_absolute_uri(path)
+
+
+class RobotsTxtView(View):
+    """Plain-text robots.txt pointing to the site's sitemap."""
+
+    def get(self, request):
+        body = (
+            "User-agent: *\n"
+            "Allow: /\n"
+            "Disallow: /studio/\n"
+            "Disallow: /api/\n"
+            f"Sitemap: {_absolute(request, '/sitemap.xml')}\n"
+        )
+        return HttpResponse(body, content_type="text/plain; charset=utf-8")
+
+
+class SitemapView(View):
+    """Hand-rolled sitemap.xml — no django.contrib.sitemaps dependency."""
+
+    def get(self, request):
+        site = _resolve_site(request)
+        urls = [_absolute(request, "/"), _absolute(request, "/blog/")]
+        if site:
+            for slug in _public_posts(site).values_list("slug", flat=True):
+                urls.append(_absolute(request, f"/blog/{slug}/"))
+            for slug in (
+                Page.objects.filter(site=site, status=Post.STATUS_PUBLISHED)
+                .values_list("slug", flat=True)
+            ):
+                urls.append(_absolute(request, f"/p/{slug}/"))
+        body = ['<?xml version="1.0" encoding="UTF-8"?>',
+                '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+        for u in urls:
+            body.append(f"  <url><loc>{u}</loc></url>")
+        body.append("</urlset>")
+        return HttpResponse("\n".join(body), content_type="application/xml; charset=utf-8")
+
+
+class RssFeedView(View):
+    """RSS 2.0 feed of the latest 30 published posts."""
+
+    def get(self, request):
+        site = _resolve_site(request)
+        if site is None:
+            raise Http404("No active site")
+        feed = Rss201rev2Feed(
+            title=site.name,
+            link=_absolute(request, "/"),
+            description=site.description or site.meta_description or site.name,
+            language="es",
+        )
+        for p in _public_posts(site)[:30]:
+            feed.add_item(
+                title=p.title,
+                link=_absolute(request, f"/blog/{p.slug}/"),
+                description=(p.excerpt or "")[:500],
+                pubdate=p.published_at,
+                unique_id=str(p.id),
+                author_name=(p.author.get_full_name() or p.author.username) if p.author_id else "",
+            )
+        return HttpResponse(
+            feed.writeString("utf-8"), content_type="application/rss+xml; charset=utf-8"
         )
 
 
