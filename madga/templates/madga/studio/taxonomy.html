@@ -27,7 +27,7 @@
         <li style="display:flex; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid var(--border); font-size:13px;">
           <span style="width:10px; height:10px; border-radius:3px; background:{{ c.color }};"></span>
           <span style="flex:1;">{{ c.name }} <span class="madga-post-slug" style="margin-left:6px;">/{{ c.slug }}</span></span>
-          <form method="post" action="{% url 'madga_studio:category_delete' pk=c.pk %}" onsubmit="return confirm('¿Borrar?')" style="margin:0;">{% csrf_token %}<button class="madga-btn madga-btn--ghost madga-btn--sm madga-btn--danger" title="Eliminar">{% studio_icon "x" size=12 stroke=2 %}</button></form>
+          <form method="post" action="{% url 'madga_studio:category_delete' pk=c.pk %}" style="margin:0;">{% csrf_token %}<button class="madga-btn madga-btn--ghost madga-btn--sm madga-btn--danger" title="Eliminar" data-madga-confirm="¿Borrar esta categoría?">{% studio_icon "x" size=12 stroke=2 %}</button></form>
         </li>
         {% empty %}<li style="color:var(--fg-2); padding:8px 0;">Sin categorías.</li>{% endfor %}
       </ul>

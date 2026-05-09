@@ -40,7 +40,7 @@
         <div style="font-size:11px; color:var(--fg-2); margin-top:2px;">{{ m.size|filesizeformat }} · {{ m.created_at|date:"M j" }}</div>
         <div style="display:flex; gap:4px; margin-top:8px;">
           <button type="button" class="madga-btn madga-btn--sm" onclick="navigator.clipboard.writeText('{{ m.file.url }}'); this.textContent='Copiado'">Copiar URL</button>
-          <form method="post" action="{% url 'madga_studio:media_delete' pk=m.pk %}" onsubmit="return confirm('¿Eliminar?')" style="margin:0;">{% csrf_token %}<button class="madga-btn madga-btn--sm madga-btn--danger" title="Eliminar">{% studio_icon "trash" size=12 stroke=2 %}</button></form>
+          <form method="post" action="{% url 'madga_studio:media_delete' pk=m.pk %}" style="margin:0;">{% csrf_token %}<button class="madga-btn madga-btn--sm madga-btn--danger" title="Eliminar" data-madga-confirm="¿Eliminar este archivo?">{% studio_icon "trash" size=12 stroke=2 %}</button></form>
         </div>
       </div>
     </div>

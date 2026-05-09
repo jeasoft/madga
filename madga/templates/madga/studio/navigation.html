@@ -46,7 +46,7 @@
             </td>
           </form>
           <td colspan="0" style="padding:0;">
-            <form method="post" action="{% url 'madga_studio:navigation' %}" onsubmit="return confirm('¿Eliminar?');" style="margin:0; display:none;">
+            <form method="post" action="{% url 'madga_studio:navigation' %}" style="margin:0; display:none;">
               {% csrf_token %}
               <input type="hidden" name="action" value="delete">
               <input type="hidden" name="id" value="{{ item.pk }}">
