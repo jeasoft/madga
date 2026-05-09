@@ -1,0 +1,121 @@
+{% load i18n %}
+{% comment %}
+Reusable product tour with Driver.js — lazy-loaded.
+
+Usage in any template:
+
+    {% include "nitro/components/product_tour.html" with tour_name='str_dashboard' steps=tour_steps %}
+
+Where `tour_steps` is a list of dicts in the view context:
+    [
+      {'element': '#sidebar-str', 'title': 'STR aquí', 'description': '...'},
+      {'element': '.kpi-card', 'title': 'KPIs', 'description': '...'},
+    ]
+
+Or trigger manually with the helper button:
+
+    {% include "nitro/components/product_tour.html" with tour_name='str_dashboard' steps=tour_steps show_button=True button_label='Ver tour' %}
+
+Persistence: tours auto-launch once per user (localStorage). Re-trigger via
+the help button anytime. Clean global API at `window.NitroTour.start(name)`.
+{% endcomment %}
+
+{% if steps %}
+<script>
+(function() {
+    if (!window.NitroTour) {
+        window._nitroTourQueue = [];
+        window._nitroTourLoaded = false;
+        window._nitroTours = {};
+
+        // Lazy-loader for Driver.js (CSS + JS from CDN, ~10kb gzip).
+        window._loadDriverJs = function(cb) {
+            if (window._nitroTourLoaded) { cb(); return; }
+            window._nitroTourQueue.push(cb);
+            if (window._nitroTourQueue.length > 1) return;
+            if (!document.getElementById('driverjs-css')) {
+                var link = document.createElement('link');
+                link.id = 'driverjs-css';
+                link.rel = 'stylesheet';
+                link.href = 'https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css';
+                document.head.appendChild(link);
+            }
+            var s = document.createElement('script');
+            s.src = 'https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js';
+            s.onload = function() {
+                window._nitroTourLoaded = true;
+                window._nitroTourQueue.forEach(function(c) { c(); });
+                window._nitroTourQueue = [];
+            };
+            document.head.appendChild(s);
+        };
+
+        window.NitroTour = {
+            register: function(name, steps) {
+                window._nitroTours[name] = steps;
+            },
+            start: function(name) {
+                var steps = window._nitroTours[name];
+                if (!steps) return;
+                window._loadDriverJs(function() {
+                    var d = window.driver.js.driver({
+                        showProgress: true,
+                        progressText: '{% trans "Paso {{current}} de {{total}}" %}',
+                        nextBtnText: '{% trans "Siguiente →" %}',
+                        prevBtnText: '{% trans "← Atrás" %}',
+                        doneBtnText: '{% trans "Terminar" %}',
+                        showButtons: ['next', 'previous', 'close'],
+                        steps: steps.map(function(s) {
+                            return {
+                                element: s.element,
+                                popover: {
+                                    title: s.title,
+                                    description: s.description,
+                                    side: s.side || 'bottom',
+                                    align: s.align || 'start'
+                                }
+                            };
+                        })
+                    });
+                    d.drive();
+                    // Mark as seen in localStorage so the auto-trigger
+                    // doesn't fire next visit.
+                    try { localStorage.setItem('nitro_tour_' + name, '1'); } catch(e) {}
+                });
+            },
+            startIfNew: function(name) {
+                try {
+                    if (localStorage.getItem('nitro_tour_' + name)) return;
+                } catch(e) { return; }
+                // Defer slightly so the page settles before the spotlight overlays.
+                setTimeout(function() { window.NitroTour.start(name); }, 600);
+            },
+            reset: function(name) {
+                try { localStorage.removeItem('nitro_tour_' + name); } catch(e) {}
+            }
+        };
+    }
+
+    // Register this tour's steps.
+    var steps = {{ steps|safe }};
+    window.NitroTour.register('{{ tour_name }}', steps);
+
+    {% if auto_start %}
+    // Fire automatically on first visit, never again unless reset.
+    window.NitroTour.startIfNew('{{ tour_name }}');
+    {% endif %}
+})();
+</script>
+
+{% if show_button %}
+<button type="button"
+        onclick="window.NitroTour.start('{{ tour_name }}')"
+        title="{{ button_label|default:'Ver tour de esta página' }}"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs text-primary-700 bg-primary-50 border border-primary-200 rounded-full hover:bg-primary-100">
+    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    {{ button_label|default:'Ver tour' }}
+</button>
+{% endif %}
+{% endif %}

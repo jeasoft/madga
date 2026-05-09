@@ -1,0 +1,64 @@
+{% load static %}<!DOCTYPE html>
+<html lang="es" data-theme="{{ site.color_scheme|default:'auto' }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="{{ site.accent_color|default:'#6C63FF' }}">
+  <title>{% block title %}{{ site.name|default:"MADGA" }}{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}{{ site.meta_description|default:site.description }}{% endblock %}">
+  {% block og %}
+  <meta property="og:title" content="{% block og_title %}{{ site.name }}{% endblock %}">
+  <meta property="og:description" content="{{ site.meta_description|default:site.description }}">
+  <meta property="og:type" content="website">
+  {% endblock %}
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%236C63FF'/%3E%3Cpath d='M5 17V7l4 5 4-5v10' stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'madga/blog/tailwind.css' %}">
+  {# Per-Site overrides — applied AFTER tailwind so they win. #}
+  {% if site %}
+  <style>
+    :root {
+      --color-accent: {{ site.accent_color|default:'#6C63FF' }};
+      --radius: {{ site.border_radius|default:8 }}px;
+      --font-heading: '{{ site.heading_font|default:"Geist" }}', ui-sans-serif, system-ui, sans-serif;
+      --font-sans: '{{ site.body_font|default:"Geist" }}', ui-sans-serif, system-ui, sans-serif;
+    }
+  </style>
+  {% endif %}
+  {% block head_extra %}{% endblock %}
+</head>
+<body class="font-sans antialiased text-slate-900 bg-white dark:bg-slate-950 dark:text-slate-100">
+
+<header class="border-b border-slate-200 dark:border-slate-800 sticky top-0 bg-white/80 dark:bg-slate-950/80 backdrop-blur z-30">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-4">
+    <a href="/" class="flex items-center gap-2 font-heading font-semibold text-lg">
+      {% if site.logo %}
+        <img src="{{ site.logo.url }}" alt="{{ site.name }}" class="h-7 w-auto">
+      {% else %}
+        <span class="inline-grid place-items-center w-7 h-7 rounded-md text-white" style="background:{{ site.accent_color|default:'#6C63FF' }}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M5 17V7l4 5 4-5v10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      {% endif %}
+      <span>{{ site.name|default:"MADGA" }}</span>
+    </a>
+    <nav class="ml-auto flex items-center gap-4 text-sm">
+      <a href="/" class="hover:text-accent">Home</a>
+      <a href="/blog/" class="hover:text-accent">Blog</a>
+      <a href="/p/about/" class="hover:text-accent hidden sm:inline">About</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="border-t border-slate-200 dark:border-slate-800 mt-20">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-8 text-sm text-slate-500 dark:text-slate-400 flex flex-col sm:flex-row gap-4 sm:items-center">
+    <div>© {% now "Y" %} {{ site.name }}</div>
+    <div class="sm:ml-auto">Powered by <a href="https://github.com/jeasoft/madga" class="hover:text-accent font-medium">MADGA</a></div>
+  </div>
+</footer>
+
+</body>
+</html>

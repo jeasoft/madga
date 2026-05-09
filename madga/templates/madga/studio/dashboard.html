@@ -1,0 +1,69 @@
+{% extends "madga/studio/base.html" %}
+{% load madga_studio_tags %}
+
+{% block title %}Dashboard · {{ site.name|default:"MADGA" }}{% endblock %}
+{% block breadcrumbs %}<span class="crumb is-current">Dashboard</span>{% endblock %}
+
+{% block content %}
+<div class="madga-page">
+  <div style="margin-bottom: 18px;">
+    <h1 class="madga-page-title">Hola, {{ request.user.first_name|default:request.user.username }}</h1>
+    <p class="madga-page-subtitle" style="margin-top:6px;">
+      <span style="color:var(--fg-3);">{% now "l, j F Y" %}</span>
+      · Tienes <strong style="color:var(--fg-0); font-weight:500;">{{ stats.draft|default:0 }} borrador{{ stats.draft|pluralize:"es" }}</strong>
+      {% if stats.scheduled %}y <strong style="color:var(--fg-0); font-weight:500;">{{ stats.scheduled }} programado{{ stats.scheduled|pluralize:"s" }}</strong>{% endif %}.
+    </p>
+  </div>
+
+  <div class="madga-stat-grid">
+    {% studio_stat_card label="Total posts" value=stats.total|default:0 icon="post" %}
+    {% studio_stat_card label="Publicados" value=stats.published|default:0 icon="check" %}
+    {% studio_stat_card label="Borradores" value=stats.draft|default:0 icon="edit" %}
+    {% studio_stat_card label="Vistas totales" value=stats.views_total|default:0 icon="eye" %}
+  </div>
+
+  <div style="display:grid; grid-template-columns: 1.6fr 1fr; gap:16px;">
+    <div class="madga-card" style="padding:0;">
+      <div style="padding:16px 18px; display:flex; align-items:flex-start; gap:12px; border-bottom:1px solid var(--border);">
+        <div>
+          <h2 class="madga-card-title">Posts recientes</h2>
+          <p class="madga-card-subtitle">Lo último en el sitio</p>
+        </div>
+        <div class="madga-card-spacer"></div>
+        {% studio_btn label="Ver todos" href="/studio/posts/" variant="ghost" size="sm" icon="chevron-right" %}
+      </div>
+      <div>
+        {% for post in recent_posts %}
+        <a href="{% url 'madga_studio:post_edit' pk=post.pk %}" style="display:flex; align-items:center; gap:14px; padding:12px 18px; border-bottom:1px solid var(--border); text-decoration:none; color:inherit;">
+          <div style="width:38px; height:38px; border-radius:7px; background: linear-gradient(135deg, var(--accent), #ff7a59); flex-shrink:0;"></div>
+          <div style="flex:1; min-width:0;">
+            <div style="font-size:13.5px; font-weight:500; color:var(--fg-0); margin-bottom:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ post.title|default:"Sin título" }}</div>
+            <div style="display:flex; align-items:center; gap:8px; font-size:11.5px; color:var(--fg-2);">
+              {% studio_badge post.status post.get_status_display %}
+              <span>{{ post.author.username|default:"—" }}</span>
+              <span style="width:2px; height:2px; background:var(--fg-3); border-radius:50%;"></span>
+              <span>{{ post.updated_at|date:"M j" }}</span>
+            </div>
+          </div>
+          {% if post.status == 'published' %}
+            <div style="display:flex; align-items:center; gap:5px; color:var(--fg-2); font-size:12px; font-variant-numeric:tabular-nums;">
+              {% studio_icon "eye" size=13 stroke=2 %}{{ post.views }}
+            </div>
+          {% endif %}
+        </a>
+        {% empty %}
+          {% studio_empty title="Aún no hay posts" message="Crea el primero y aparecerá aquí." action_label="Nuevo post" action_href="/studio/posts/new/" %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="madga-card">
+      <h2 class="madga-card-title">Actividad</h2>
+      <p class="madga-card-subtitle">Últimos 7 días</p>
+      <div style="margin-top:14px; font-size:12.5px; color:var(--fg-2);">
+        Aquí verás el feed de actividad cuando empieces a publicar y a colaborar.
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

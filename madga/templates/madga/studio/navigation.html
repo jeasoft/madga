@@ -1,0 +1,63 @@
+{% extends "madga/studio/base.html" %}
+{% load madga_studio_tags %}
+
+{% block breadcrumbs %}<span class="crumb">Site</span><span class="sep">/</span><span class="crumb is-current">Navigation</span>{% endblock %}
+
+{% block content %}
+<div class="madga-page" style="max-width:780px;">
+  <div class="madga-page-header">
+    <div class="madga-page-title-block">
+      <h1 class="madga-page-title">Navigation</h1>
+      <p class="madga-page-subtitle">Items del menú público del site.</p>
+    </div>
+  </div>
+
+  <div class="madga-card" style="margin-bottom:18px;">
+    <h2 class="madga-card-title">Nuevo item</h2>
+    <form method="post" action="{% url 'madga_studio:navigation' %}" style="display:grid; grid-template-columns: 1fr 1fr 90px 90px 60px; gap:8px; margin-top:10px; align-items:end;">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="create">
+      <div class="madga-field" style="margin:0;"><label class="madga-field-label">Label</label><input class="madga-input" type="text" name="label" required></div>
+      <div class="madga-field" style="margin:0;"><label class="madga-field-label">URL</label><input class="madga-input" type="text" name="url" placeholder="/blog/" required></div>
+      <div class="madga-field" style="margin:0;"><label class="madga-field-label">Sort</label><input class="madga-input" type="number" name="sort_order" value="0"></div>
+      <div class="madga-field" style="margin:0;"><label class="madga-field-label" style="font-size:11px;">Nueva tab</label><label style="display:flex; align-items:center; gap:6px; padding-top:5px;"><input type="checkbox" name="open_in_new_tab"></label></div>
+      <button type="submit" class="madga-btn madga-btn--primary">{% studio_icon "plus" size=14 stroke=2.5 %}</button>
+    </form>
+  </div>
+
+  <div class="madga-table-wrap">
+    <table class="madga-table">
+      <thead><tr><th>Label</th><th>URL</th><th>Sort</th><th>Nueva tab</th><th class="col-actions"></th></tr></thead>
+      <tbody>
+        {% for item in nav_items %}
+        <tr>
+          <form method="post" action="{% url 'madga_studio:navigation' %}" style="display:contents;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="update">
+            <input type="hidden" name="id" value="{{ item.pk }}">
+            <td><input class="madga-input" name="label" value="{{ item.label }}"></td>
+            <td><input class="madga-input" name="url" value="{{ item.url }}"></td>
+            <td><input class="madga-input" type="number" name="sort_order" value="{{ item.sort_order }}" style="width:70px;"></td>
+            <td><input type="checkbox" name="open_in_new_tab" {% if item.open_in_new_tab %}checked{% endif %}></td>
+            <td class="col-actions">
+              <div style="display:flex; gap:4px; justify-content:flex-end;">
+                <button type="submit" class="madga-btn madga-btn--ghost madga-btn--sm" title="Guardar">{% studio_icon "check" size=12 stroke=2.5 %}</button>
+              </div>
+            </td>
+          </form>
+          <td colspan="0" style="padding:0;">
+            <form method="post" action="{% url 'madga_studio:navigation' %}" onsubmit="return confirm('¿Eliminar?');" style="margin:0; display:none;">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="delete">
+              <input type="hidden" name="id" value="{{ item.pk }}">
+            </form>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5">{% studio_empty title="Sin items todavía" message="Crea el primero arriba." %}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

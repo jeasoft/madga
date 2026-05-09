@@ -1,0 +1,2033 @@
+<!DOCTYPE html>
+<html lang="en" x-data="cmsApp()" :data-theme="theme" :data-accent="accent" x-cloak>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1440">
+<title>MaDGA — Make Django Great Again</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%236C63FF'/%3E%3Cpath d='M5 17V7l4 5 4-5v10' stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='18' cy='17' r='2' fill='%2344b78b'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { corePlugins: { preflight: false } };
+</script>
+<link href="styles.css" rel="stylesheet">
+<script defer src="https://unpkg.com/alpinejs@3.13.10/dist/cdn.min.js"></script>
+<script src="app.js"></script>
+</head>
+<body>
+
+<!-- ============================================================ APP SHELL -->
+<div class="app">
+
+  <!-- ============================================================ SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M5 17V7l4 5 4-5v10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="brand-name">Ma<span class="accent">DG</span>A</div>
+    </div>
+
+    <div class="workspace">
+      <div class="workspace-avatar">A</div>
+      <div class="workspace-name">Aitor's blog</div>
+      <svg class="workspace-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+
+    <button class="new-post-btn" @click="newPost()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      New post
+    </button>
+
+    <nav class="nav">
+      <div class="nav-item" :class="{active: route === 'dashboard'}" @click="go('dashboard')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-item" :class="{active: route === 'posts' || route === 'editor'}" @click="go('posts')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+        Posts
+        <span class="count" x-text="countAll"></span>
+      </div>
+      <div class="nav-item" :class="{active: route === 'pages'}" @click="go('pages')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Pages
+        <span class="count">6</span>
+      </div>
+      <div class="nav-item" :class="{active: route === 'media'}" @click="go('media')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Media library
+      </div>
+      <div class="nav-item" :class="{active: route === 'categories'}" @click="go('categories')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+        Categories &amp; tags
+      </div>
+
+      <div class="nav-item" :class="{active: route === 'channels'}" @click="go('channels')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a8 8 0 0 1 8-8"/><path d="M4 16a13 13 0 0 1 13-13"/><circle cx="5" cy="19" r="2"/></svg>
+        Channels
+        <span style="margin-left:auto; font-size:10px; font-weight:600; color: var(--accent); padding:1px 6px; background: var(--accent-soft); border-radius:4px;">4</span>
+      </div>
+
+      <div class="nav-section-label">Site</div>
+      <div class="nav-item" :class="{active: route === 'theme'}" @click="go('theme')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+        Theme
+      </div>
+      <div class="nav-item" :class="{active: route === 'layouts'}" @click="go('layouts')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        Layouts
+      </div>
+      <div class="nav-item" :class="{active: route === 'sitenav'}" @click="go('sitenav')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="14" y2="18"/></svg>
+        Navigation
+      </div>
+      <div class="nav-item" :class="{active: route === 'homepage'}" @click="go('homepage')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>
+        Homepage
+      </div>
+      <div class="nav-item" :class="{active: route === 'themes'}" @click="go('themes')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.732l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.732l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        Theme gallery
+      </div>
+
+      <div class="nav-section-label">Workspace</div>
+      <div class="nav-item" :class="{active: route === 'users'}" @click="go('users')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Users
+      </div>
+      <div class="nav-item" :class="{active: route === 'settings'}" @click="go('settings')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </div>
+    </nav>
+
+    <div class="sidebar-spacer"></div>
+
+    <div class="sidebar-bottom">
+      <a @click="openPreview('landing')" style="display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:8px; color:var(--fg-1); font-size:13px; font-weight:500; cursor:pointer; margin-bottom:10px; transition:background .12s, color .12s; border: 1px solid var(--border); background: var(--bg-1);" onmouseover="this.style.background='var(--bg-2)'; this.style.color='var(--fg-0)';" onmouseout="this.style.background='var(--bg-1)'; this.style.color='var(--fg-1)';">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a13.5 13.5 0 0 1 0 18"/><path d="M12 3a13.5 13.5 0 0 0 0 18"/></svg>
+        <span>View site</span>
+        <svg style="margin-left:auto; opacity:.55" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg>
+      </a>
+      <div class="user-card">
+        <div class="user-avatar">AR</div>
+        <div style="flex:1; min-width:0;">
+          <div class="user-name">Aitor Ruiz</div>
+          <div class="user-role">Owner · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="76171f021904361b1712111758121300">[email&#160;protected]</a></div>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--fg-2)"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+      </div>
+    </div>
+  </aside>
+
+  <!-- =============================================================== MAIN -->
+  <main class="main">
+
+    <!-- ============================================================ TOPBAR -->
+    <header class="topbar">
+      <div class="breadcrumbs">
+        <span class="crumb" x-show="route === 'dashboard'">Dashboard</span>
+        <template x-if="route === 'posts'"><span class="crumb current">Posts</span></template>
+        <template x-if="route === 'editor'">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span class="crumb" @click="go('posts')">Posts</span>
+            <span class="sep">/</span>
+            <span class="crumb current" x-text="(currentPost && currentPost.title) || 'Untitled post'"></span>
+          </div>
+        </template>
+        <template x-if="route === 'pages'"><span class="crumb current">Pages</span></template>
+        <template x-if="route === 'media'"><span class="crumb current">Media library</span></template>
+        <template x-if="route === 'categories'"><span class="crumb current">Categories &amp; tags</span></template>
+        <template x-if="route === 'users'"><span class="crumb current">Users</span></template>
+        <template x-if="route === 'settings'"><span class="crumb current">Settings</span></template>
+        <template x-if="route === 'channels'"><span class="crumb current">Channels</span></template>
+        <template x-if="route === 'theme'"><span class="crumb">Site</span><span class="crumb-sep">/</span><span class="crumb current">Theme</span></template>
+        <template x-if="route === 'layouts'"><span class="crumb">Site</span><span class="crumb-sep">/</span><span class="crumb current">Layouts</span></template>
+        <template x-if="route === 'sitenav'"><span class="crumb">Site</span><span class="crumb-sep">/</span><span class="crumb current">Navigation</span></template>
+        <template x-if="route === 'homepage'"><span class="crumb">Site</span><span class="crumb-sep">/</span><span class="crumb current">Homepage</span></template>
+        <template x-if="route === 'themes'"><span class="crumb">Site</span><span class="crumb-sep">/</span><span class="crumb current">Theme gallery</span></template>
+        <template x-if="route === 'preview'">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span class="crumb" @click="closePreview()">Studio</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--fg-3)"><polyline points="9 18 15 12 9 6"/></svg>
+            <span class="crumb current">Site preview</span>
+          </div>
+        </template>
+      </div>
+
+      <div class="topbar-spacer"></div>
+
+      <div class="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input placeholder="Search posts, pages, media…">
+        <span class="kbd">⌘K</span>
+      </div>
+
+      <button class="icon-btn" title="Toggle theme" @click="setTheme(theme === 'dark' ? 'light' : 'dark')">
+        <svg x-show="theme === 'dark'" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg x-show="theme === 'light'" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+
+      <button class="icon-btn has-badge" title="Notifications">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </button>
+
+      <button class="icon-btn" title="Help">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </button>
+    </header>
+
+    <!-- =========================================================== CONTENT -->
+    <div class="main-scroll" x-show="route !== 'editor' && route !== 'preview'">
+
+      <!-- ====================================================== DASHBOARD -->
+      <div class="page" x-show="route === 'dashboard'" x-transition.opacity.duration.150ms>
+        <div class="greeting">
+          <h1 x-text="greetingText()">Good morning, Aitor</h1>
+          <span class="date" x-text="today()"></span>
+        </div>
+
+        <p style="font-size:13.5px; color: var(--fg-2); max-width:560px; margin-top:8px;">
+          You have <strong style="color:var(--fg-0); font-weight:500;" x-text="countDraft + ' drafts'"></strong> in progress and 1 post scheduled to publish on Saturday.
+        </p>
+
+        <!-- Stat cards -->
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-label">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Total posts
+            </div>
+            <div class="stat-value">148</div>
+            <div class="stat-delta up">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 15 12 9 18 15"/></svg>
+              +6 this month
+            </div>
+            <svg class="stat-spark" viewBox="0 0 200 36" preserveAspectRatio="none">
+              <path d="M0,28 L20,24 L40,26 L60,18 L80,20 L100,14 L120,16 L140,8 L160,12 L180,6 L200,4" stroke="var(--accent)" stroke-width="1.5" fill="none"/>
+              <path d="M0,28 L20,24 L40,26 L60,18 L80,20 L100,14 L120,16 L140,8 L160,12 L180,6 L200,4 L200,36 L0,36 Z" fill="var(--accent)" opacity="0.08"/>
+            </svg>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Published
+            </div>
+            <div class="stat-value">132</div>
+            <div class="stat-delta up">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 15 12 9 18 15"/></svg>
+              +4 this month
+            </div>
+            <svg class="stat-spark" viewBox="0 0 200 36" preserveAspectRatio="none">
+              <path d="M0,30 L20,28 L40,24 L60,26 L80,22 L100,18 L120,20 L140,12 L160,14 L180,8 L200,10" stroke="var(--status-published-fg)" stroke-width="1.5" fill="none"/>
+            </svg>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              Drafts
+            </div>
+            <div class="stat-value">12</div>
+            <div class="stat-delta neutral">
+              2 stale (&gt;30 days)
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              Page views · May
+            </div>
+            <div class="stat-value">24,891</div>
+            <div class="stat-delta up">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 15 12 9 18 15"/></svg>
+              +18.2% vs April
+            </div>
+            <svg class="stat-spark" viewBox="0 0 200 36" preserveAspectRatio="none">
+              <path d="M0,32 L20,28 L40,30 L60,22 L80,24 L100,16 L120,20 L140,10 L160,12 L180,4 L200,6" stroke="var(--accent)" stroke-width="1.5" fill="none"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Recent + activity -->
+        <div class="dash-grid">
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Recent posts</div>
+                <div class="card-subtitle">What you and the team have been working on</div>
+              </div>
+              <div class="card-spacer"></div>
+              <button class="btn btn-ghost btn-sm" @click="go('posts')">
+                View all
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+            <div class="recent-list">
+              <template x-for="post in posts.slice(0, 6)" :key="post.id">
+                <div class="recent-item" @click="editPost(post.id)">
+                  <div class="recent-thumb" :style="`background: ${thumbGradient(post.thumb)}`"></div>
+                  <div class="recent-body">
+                    <div class="recent-title" x-text="post.title || 'Untitled post'"></div>
+                    <div class="recent-meta">
+                      <span :class="`badge ${post.status}`">
+                        <span class="badge-dot"></span>
+                        <span x-text="post.status.charAt(0).toUpperCase() + post.status.slice(1)"></span>
+                      </span>
+                      <span x-text="post.author"></span>
+                      <span class="dot"></span>
+                      <span x-text="post.date"></span>
+                    </div>
+                  </div>
+                  <div class="recent-views" x-show="post.status === 'published'">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <span x-text="formatNumber(post.views)"></span>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <div class="card activity-card">
+            <div style="display:flex; align-items:center; margin-bottom:12px;">
+              <div>
+                <div class="card-title">Activity</div>
+                <div class="card-subtitle" style="margin-top:2px;">Last 7 days</div>
+              </div>
+            </div>
+            <div class="activity-row">
+              <div class="activity-avatar" style="background: var(--accent-soft); color: var(--accent);">AR</div>
+              <div class="activity-text"><strong>Aitor</strong> published <em style="color:var(--fg-0); font-style:normal;">Why we rebuilt our publishing stack on Django</em>. <div class="ts">2 hours ago</div></div>
+            </div>
+            <div class="activity-row">
+              <div class="activity-avatar">MC</div>
+              <div class="activity-text"><strong>Mireia</strong> left 3 comments on the draft <em style="color:var(--fg-0); font-style:normal;">Designing a CMS…</em>. <div class="ts">Yesterday</div></div>
+            </div>
+            <div class="activity-row">
+              <div class="activity-avatar">PV</div>
+              <div class="activity-text"><strong>Pau</strong> scheduled <em style="color:var(--fg-0); font-style:normal;">Ship Friday</em> for May 10. <div class="ts">2 days ago</div></div>
+            </div>
+            <div class="activity-row">
+              <div class="activity-avatar" style="background: var(--accent-soft); color: var(--accent);">AR</div>
+              <div class="activity-text"><strong>Aitor</strong> uploaded 12 images to the media library. <div class="ts">3 days ago</div></div>
+            </div>
+            <div class="activity-row">
+              <div class="activity-avatar">MC</div>
+              <div class="activity-text"><strong>Mireia</strong> moved <em style="color:var(--fg-0); font-style:normal;">Hiring our first technical writer</em> to trash. <div class="ts">4 days ago</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================== POSTS -->
+      <div class="page" x-show="route === 'posts'" x-transition.opacity.duration.150ms>
+        <div class="page-header">
+          <div class="page-title-block">
+            <h1 class="page-title">Posts</h1>
+            <p class="page-subtitle">Everything you have published, scheduled, or are still working on.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export
+            </button>
+            <button class="btn btn-primary" @click="newPost()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              New post
+            </button>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <div class="tab" :class="{active: sectionTab === 'all'}" @click="sectionTab = 'all'; selectedPostIds = []">All <span class="count" x-text="countAll"></span></div>
+          <div class="tab" :class="{active: sectionTab === 'published'}" @click="sectionTab = 'published'; selectedPostIds = []">Published <span class="count" x-text="countPublished"></span></div>
+          <div class="tab" :class="{active: sectionTab === 'draft'}" @click="sectionTab = 'draft'; selectedPostIds = []">Drafts <span class="count" x-text="countDraft"></span></div>
+          <div class="tab" :class="{active: sectionTab === 'scheduled'}" @click="sectionTab = 'scheduled'; selectedPostIds = []">Scheduled <span class="count" x-text="countScheduled"></span></div>
+          <div class="tab" :class="{active: sectionTab === 'trash'}" @click="sectionTab = 'trash'; selectedPostIds = []">Trash <span class="count" x-text="countTrash"></span></div>
+        </div>
+
+        <div class="toolbar">
+          <div class="search" style="width: 280px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input placeholder="Filter posts by title or slug…">
+          </div>
+          <button class="btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            Filter
+          </button>
+          <button class="btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M6 12h12M10 18h4"/></svg>
+            Sort: Most recent
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div style="flex:1"></div>
+          <span style="font-size:12.5px; color:var(--fg-2);"><span x-text="filteredPosts.length"></span> of <span x-text="countAll"></span></span>
+        </div>
+
+        <!-- Bulk action bar -->
+        <div class="bulk-bar" x-show="selectedPostIds.length > 0" x-transition>
+          <span class="count"><span x-text="selectedPostIds.length"></span> selected</span>
+          <button class="btn btn-sm">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+            Publish
+          </button>
+          <button class="btn btn-sm">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+            Move to draft
+          </button>
+          <button class="btn btn-sm">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Tag
+          </button>
+          <div style="flex:1"></div>
+          <button class="btn btn-sm btn-danger">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Move to trash
+          </button>
+          <button class="btn btn-sm btn-ghost" @click="selectedPostIds = []">Clear</button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="col-check">
+                  <input type="checkbox" class="checkbox" :checked="isAllSelected()" :indeterminate.prop="isSomeSelected()" @click="toggleSelectAll()">
+                </th>
+                <th class="col-title">Title</th>
+                <th>Status</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th style="text-align:right;">Views</th>
+                <th class="col-actions"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <template x-for="post in filteredPosts" :key="post.id">
+                <tr>
+                  <td class="col-check">
+                    <input type="checkbox" class="checkbox" :checked="selectedPostIds.includes(post.id)" @click="toggleSelect(post.id)">
+                  </td>
+                  <td>
+                    <div class="post-cell">
+                      <div class="post-thumb" :style="`background: ${thumbGradient(post.thumb)}`"></div>
+                      <div class="post-title-stack">
+                        <div class="post-title" x-text="post.title || 'Untitled post'" @click="editPost(post.id)" style="cursor:pointer"></div>
+                        <div class="post-slug" x-text="'/blog/' + post.slug"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span :class="`badge ${post.status}`">
+                      <span class="badge-dot"></span>
+                      <span x-text="post.status.charAt(0).toUpperCase() + post.status.slice(1)"></span>
+                    </span>
+                  </td>
+                  <td x-text="post.author"></td>
+                  <td x-text="post.category"></td>
+                  <td x-text="post.date"></td>
+                  <td class="views-cell" style="text-align:right;" x-text="formatNumber(post.views)"></td>
+                  <td class="col-actions">
+                    <button class="icon-btn" style="margin-left:auto" @click="editPost(post.id)">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                    </button>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+          <div class="pagination">
+            <span>Page 1 of 12</span>
+            <div class="page-buttons">
+              <button class="btn btn-sm" disabled style="opacity:.5">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <button class="btn btn-sm">1</button>
+              <button class="btn btn-sm" style="background: var(--accent-soft); color: var(--accent); border-color: transparent;">2</button>
+              <button class="btn btn-sm">3</button>
+              <button class="btn btn-sm">…</button>
+              <button class="btn btn-sm">12</button>
+              <button class="btn btn-sm">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================================== PAGES -->
+      <div class="page" x-show="route === 'pages'" x-transition.opacity.duration.150ms>
+        <div class="page-header">
+          <div class="page-title-block">
+            <h1 class="page-title">Pages</h1>
+            <p class="page-subtitle">Static pages outside your blog feed — about, pricing, docs, legal.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-primary">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              New page
+            </button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="col-check"><input type="checkbox" class="checkbox"></th>
+                <th class="col-title">Title</th>
+                <th>URL</th>
+                <th>Status</th>
+                <th>Children</th>
+                <th>Last edited</th>
+                <th class="col-actions"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <template x-for="pg in pages" :key="pg.id">
+                <tr>
+                  <td class="col-check"><input type="checkbox" class="checkbox"></td>
+                  <td>
+                    <div class="post-cell">
+                      <div style="width:36px; height:36px; border-radius:6px; background: var(--bg-3); display:grid; place-items:center; color: var(--fg-2);">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                      </div>
+                      <div class="post-title-stack">
+                        <div class="post-title" x-text="pg.title"></div>
+                        <div class="post-slug" x-text="pg.slug"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span style="font-family: 'Geist Mono', monospace; font-size:12.5px; color:var(--fg-2)" x-text="'madga.dev' + pg.slug"></span></td>
+                  <td>
+                    <span :class="`badge ${pg.status}`">
+                      <span class="badge-dot"></span>
+                      <span x-text="pg.status.charAt(0).toUpperCase() + pg.status.slice(1)"></span>
+                    </span>
+                  </td>
+                  <td x-text="pg.children > 0 ? pg.children + ' pages' : '—'" style="color: var(--fg-2)"></td>
+                  <td x-text="pg.updated"></td>
+                  <td class="col-actions">
+                    <div style="display:flex; gap:2px; justify-content:flex-end;">
+                      <button class="icon-btn" @click="openPreview(pg.slug === '/about' ? 'about' : 'page', { pageId: pg.id })" title="Preview on site">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                      </button>
+                      <button class="icon-btn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ========================================================== MEDIA -->
+      <div class="page" x-show="route === 'media'" x-transition.opacity.duration.150ms>
+        <div class="page-header">
+          <div class="page-title-block">
+            <h1 class="page-title">Media library</h1>
+            <p class="page-subtitle">412 files · 1.4 GB used of 10 GB</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M6 12h12M10 18h4"/></svg>
+              Filter
+            </button>
+            <button class="btn btn-primary">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Upload
+            </button>
+          </div>
+        </div>
+        <div class="media-grid">
+          <template x-for="i in 18" :key="i">
+            <div class="media-card" :style="`background: ${thumbGradient('g'+(i%9+1))}`">
+              <div class="overlay">
+                <div>
+                  <div class="name" x-text="'image-' + String(i).padStart(3,'0') + '.jpg'"></div>
+                  <div class="meta">1920 × 1080 · 248 KB</div>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <!-- ===================================================== CATEGORIES -->
+      <div class="page" x-show="route === 'categories'" x-transition.opacity.duration.150ms>
+        <div class="page-header">
+          <div class="page-title-block">
+            <h1 class="page-title">Categories &amp; tags</h1>
+            <p class="page-subtitle">How posts are grouped on the site. Used in the URL and the public archive.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-primary">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              New category
+            </button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="col-title">Category</th>
+                <th>Slug</th>
+                <th>Posts</th>
+                <th>Description</th>
+                <th class="col-actions"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <template x-for="c in categories" :key="c.id">
+                <tr>
+                  <td>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                      <div style="width:10px; height:10px; border-radius:3px;" :style="`background:${c.color}`"></div>
+                      <span style="font-weight:500; color:var(--fg-0)" x-text="c.name"></span>
+                    </div>
+                  </td>
+                  <td><span style="font-family: 'Geist Mono', monospace; font-size:12.5px; color:var(--fg-2)" x-text="c.slug"></span></td>
+                  <td x-text="c.count + ' posts'"></td>
+                  <td style="color:var(--fg-2); max-width:380px;">
+                    <span x-show="c.name === 'Engineering'">Posts about how we build MaDGA and our internal tooling.</span>
+                    <span x-show="c.name === 'Design'">Visual and product design — UI explorations, type systems, craft.</span>
+                    <span x-show="c.name === 'Editorial'">Long-form essays and opinion pieces from the team.</span>
+                    <span x-show="c.name === 'Team'">News from the team — hires, off-sites, milestones.</span>
+                    <span x-show="c.name === 'Product'">Product updates, changelog highlights, and roadmap notes.</span>
+                  </td>
+                  <td class="col-actions">
+                    <button class="icon-btn" style="margin-left:auto">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                    </button>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 style="font-size:18px; font-weight:600; margin-top:40px; margin-bottom:14px;">Tags</h2>
+        <div class="tag-list" style="gap:8px;">
+          <span class="tag" style="font-size:13px; padding: 5px 12px;"><span style="color: var(--fg-0); font-weight:500;">django</span><span style="color:var(--fg-3); margin-left:4px;">42</span></span>
+          <span class="tag" style="font-size:13px; padding: 5px 12px;"><span style="color: var(--fg-0); font-weight:500;">cms</span><span style="color:var(--fg-3); margin-left:4px;">38</span></span>
+          <span class="tag" style="font-size:13px; padding: 5px 12px;"><span style="color: var(--fg-0); font-weight:500;">htmx</span><span style="color:var(--fg-3); margin-left:4px;">21</span></span>
+          <span class="tag" style="font-size:13px; padding: 5px 12px;"><span style="color: var(--fg-0); font-weight:500;">alpinejs</span><span style="color:var(--fg-3); margin-left:4px;">19</span></span>
+          <span class="tag" style="font-size:13px; padding: 5px 12px;"><span style="color: var(--fg-0); font-weight:500;">postgresql</span><span style="color:var(--fg-3); margin-left:4px;">14</span></span>
+          <span class="tag" style="font-size:13px; padding: 5px 12px;"><span style="color: var(--fg-0); font-weight:500;">writing</span><span style="color:var(--fg-3); margin-left:4px;">12</span></span>
+          <span class="tag" style="font-size:13px; padding: 5px 12px;"><span style="color: var(--fg-0); font-weight:500;">team</span><span style="color:var(--fg-3); margin-left:4px;">9</span></span>
+          <span class="tag" style="font-size:13px; padding: 5px 12px;"><span style="color: var(--fg-0); font-weight:500;">migrations</span><span style="color:var(--fg-3); margin-left:4px;">7</span></span>
+          <span class="tag add" style="font-size:13px; padding: 5px 12px;">+ New tag</span>
+        </div>
+      </div>
+
+      <!-- ========================================================== USERS -->
+      <div class="page" x-show="route === 'users'" x-transition.opacity.duration.150ms>
+        <div class="page-header">
+          <div class="page-title-block">
+            <h1 class="page-title">Users</h1>
+            <p class="page-subtitle">Who can sign in to your studio. 5 of 10 seats used.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn">Manage roles</button>
+            <button class="btn btn-primary">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+              Invite user
+            </button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="col-title">Member</th>
+                <th>Role</th>
+                <th>Last active</th>
+                <th>2FA</th>
+                <th class="col-actions"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <template x-for="u in users" :key="u.id">
+                <tr>
+                  <td>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                      <div class="user-avatar" style="width: 32px; height: 32px; font-size: 12px;" x-text="u.avatar"></div>
+                      <div>
+                        <div style="font-weight:500; color:var(--fg-0)" x-text="u.name"></div>
+                        <div style="font-family: 'Geist Mono', monospace; font-size:11.5px; color:var(--fg-2); margin-top:2px;" x-text="u.email"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge" :class="u.role === 'Owner' ? 'published' : (u.role === 'Editor' ? 'scheduled' : 'draft')">
+                      <span class="badge-dot"></span>
+                      <span x-text="u.role"></span>
+                    </span>
+                  </td>
+                  <td x-text="u.last"></td>
+                  <td>
+                    <span x-show="u.role === 'Owner' || u.role === 'Editor'" style="color: var(--status-published-fg); display:inline-flex; align-items:center; gap:5px; font-size:12.5px;">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                      Enabled
+                    </span>
+                    <span x-show="!(u.role === 'Owner' || u.role === 'Editor')" style="color: var(--fg-2); font-size:12.5px;">Not set up</span>
+                  </td>
+                  <td class="col-actions">
+                    <button class="icon-btn" style="margin-left:auto">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                    </button>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ====================================================== SETTINGS -->
+      <div class="page" x-show="route === 'settings'" x-transition.opacity.duration.150ms>
+        <div class="page-header">
+          <div class="page-title-block">
+            <h1 class="page-title">Settings</h1>
+            <p class="page-subtitle">Configure your studio. Changes apply to the live site immediately.</p>
+          </div>
+        </div>
+
+        <div class="settings-grid">
+          <nav class="settings-nav">
+            <div class="settings-nav-item" :class="{active: settingsTab === 'general'}" @click="settingsTab = 'general'">General</div>
+            <div class="settings-nav-item" :class="{active: settingsTab === 'publishing'}" @click="settingsTab = 'publishing'">Publishing</div>
+            <div class="settings-nav-item" :class="{active: settingsTab === 'seo'}" @click="settingsTab = 'seo'">SEO &amp; metadata</div>
+            <div class="settings-nav-item" :class="{active: settingsTab === 'integrations'}" @click="settingsTab = 'integrations'">Integrations</div>
+            <div class="settings-nav-item" :class="{active: settingsTab === 'theme'}" @click="settingsTab = 'theme'">Theme</div>
+            <div class="settings-nav-item" :class="{active: settingsTab === 'billing'}" @click="settingsTab = 'billing'">Billing</div>
+            <div class="settings-nav-item" :class="{active: settingsTab === 'danger'}" @click="settingsTab = 'danger'" style="margin-top: 12px; color: #ff7a7a">Advanced</div>
+          </nav>
+
+          <div>
+            <!-- General -->
+            <div x-show="settingsTab === 'general'" class="settings-card">
+              <h3>General</h3>
+              <p class="desc">Basic information about your studio.</p>
+              <div class="settings-row">
+                <div>
+                  <div class="label">Site name</div>
+                  <div class="sub">Shown in the browser tab and the site header.</div>
+                </div>
+                <input class="field-input" value="Aitor's blog">
+              </div>
+              <div class="settings-row">
+                <div>
+                  <div class="label">Tagline</div>
+                  <div class="sub">A short line that appears under the site name.</div>
+                </div>
+                <input class="field-input" value="Notes on building things, mostly with Django.">
+              </div>
+              <div class="settings-row">
+                <div>
+                  <div class="label">URL</div>
+                  <div class="sub">Where your site is published.</div>
+                </div>
+                <input class="field-input" value="https://aitor.blog" style="font-family: 'Geist Mono', monospace;">
+              </div>
+              <div class="settings-row">
+                <div>
+                  <div class="label">Language</div>
+                  <div class="sub">Default language for new posts.</div>
+                </div>
+                <select class="field-input"><option>English</option><option>Español</option><option>Català</option></select>
+              </div>
+              <div class="settings-row">
+                <div>
+                  <div class="label">Time zone</div>
+                  <div class="sub">Used for scheduled posts.</div>
+                </div>
+                <select class="field-input"><option>Europe/Madrid (UTC+2)</option><option>UTC</option></select>
+              </div>
+            </div>
+
+            <div x-show="settingsTab !== 'general'" class="settings-card">
+              <h3 x-text="settingsTab.charAt(0).toUpperCase() + settingsTab.slice(1)"></h3>
+              <p class="desc">This section is part of the prototype. The general tab shows the full layout pattern.</p>
+              <div style="height: 200px; border: 1.5px dashed var(--border); border-radius: 10px; display:grid; place-items:center; color: var(--fg-2); font-size:13px;">
+                Form fields for <span style="color:var(--fg-0); margin: 0 4px; text-transform:lowercase;" x-text="settingsTab"></span> would go here.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================== CHANNELS -->
+      <div class="page" x-show="route === 'channels'" x-transition.opacity.duration.150ms>
+        <div class="page-header">
+          <div class="page-title-block">
+            <h1 class="page-title">Channels</h1>
+            <p class="page-subtitle">Syndicate your writing to the platforms where readers already are. Edit per-platform copy before each broadcast.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Connect new
+            </button>
+            <button class="btn btn-primary" @click="openBroadcast('tw')">+ New broadcast</button>
+          </div>
+        </div>
+
+        <div class="stats-grid" style="margin-bottom: 28px;">
+          <div class="stat-card"><div class="stat-label">Connected accounts</div><div class="stat-value">4</div><div class="stat-meta">of 6 supported</div></div>
+          <div class="stat-card"><div class="stat-label">Broadcasts this week</div><div class="stat-value">12</div><div class="stat-meta" style="color: var(--status-published-fg);">+3 vs last week</div></div>
+          <div class="stat-card"><div class="stat-label">Total reach (30d)</div><div class="stat-value">26.8k</div><div class="stat-meta">across all channels</div></div>
+          <div class="stat-card"><div class="stat-label">In queue</div><div class="stat-value">2</div><div class="stat-meta">scheduled for May 8</div></div>
+        </div>
+
+        <div class="tk-label" style="margin-bottom: 12px;">Connected accounts</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; margin-bottom: 32px;">
+          <template x-for="ch in channels.filter(c => c.connected)" :key="ch.id">
+            <div style="background: var(--bg-1); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px;">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+                <div class="channel-icon" :class="`ch-${ch.platform}`" style="width: 36px; height: 36px; border-radius: 8px; font-size: 14px;">
+                  <span x-text="ch.platform === 'twitter' ? '𝕏' : ch.platform[0].toUpperCase()"></span>
+                </div>
+                <div style="flex: 1; min-width: 0;">
+                  <div style="font-size: 13.5px; font-weight: 600; color: var(--fg-0);" x-text="ch.name"></div>
+                  <div style="font-size: 12px; color: var(--fg-2); font-family: 'Geist Mono', monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" x-text="ch.handle"></div>
+                </div>
+                <span class="badge" :class="ch.paused ? 'draft' : 'published'">
+                  <span class="badge-dot"></span>
+                  <span x-text="ch.paused ? 'Paused' : 'Active'"></span>
+                </span>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 12px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-bottom: 14px;">
+                <div>
+                  <div style="font-size: 11px; color: var(--fg-3); text-transform: uppercase; letter-spacing: .06em; font-weight: 600;">Last posted</div>
+                  <div style="font-size: 13px; color: var(--fg-1); margin-top: 4px;" x-text="ch.lastPosted"></div>
+                </div>
+                <div>
+                  <div style="font-size: 11px; color: var(--fg-3); text-transform: uppercase; letter-spacing: .06em; font-weight: 600;">Audience</div>
+                  <div style="font-size: 13px; color: var(--fg-1); margin-top: 4px;" x-text="ch.reach"></div>
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn-sm" style="flex: 1;" @click="openBroadcast(ch.id)">Compose</button>
+                <button class="btn btn-sm btn-ghost" @click="ch.paused = !ch.paused" x-text="ch.paused ? 'Resume' : 'Pause'"></button>
+              </div>
+            </div>
+          </template>
+        </div>
+
+        <div class="tk-label" style="margin-bottom: 12px;">Available</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-bottom: 32px;">
+          <template x-for="ch in channels.filter(c => !c.connected)" :key="ch.id">
+            <div style="background: var(--bg-1); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; gap: 12px;">
+              <div class="channel-icon" :class="`ch-${ch.platform}`" style="width: 32px; height: 32px; border-radius: 7px;">
+                <span x-text="ch.platform[0].toUpperCase()"></span>
+              </div>
+              <div style="flex: 1;">
+                <div style="font-size: 13px; font-weight: 600; color: var(--fg-0);" x-text="ch.name"></div>
+                <div style="font-size: 11.5px; color: var(--fg-2); margin-top: 2px;">Not connected</div>
+              </div>
+              <button class="btn btn-sm" @click="ch.connected = true; ch.handle = '@aitor'">Connect</button>
+            </div>
+          </template>
+        </div>
+
+        <div class="tk-label" style="margin-bottom: 12px;">Recent broadcasts</div>
+        <div class="post-table">
+          <div class="post-table-head" style="grid-template-columns: 1fr 140px 200px 100px 110px;">
+            <div>Post</div>
+            <div>When</div>
+            <div>Channels</div>
+            <div>Reach</div>
+            <div>Status</div>
+          </div>
+          <template x-for="b in recentBroadcasts" :key="b.id">
+            <div class="post-row" style="grid-template-columns: 1fr 140px 200px 100px 110px;">
+              <div>
+                <div class="post-title-cell">
+                  <div class="post-title" x-text="b.post"></div>
+                </div>
+              </div>
+              <div class="post-meta-cell" x-text="b.date"></div>
+              <div style="display: flex; gap: 4px;">
+                <template x-for="cId in b.channels" :key="cId">
+                  <div class="channel-icon" :class="`ch-${channels.find(c => c.id === cId).platform}`" style="width: 22px; height: 22px; border-radius: 5px; font-size: 10px;" :title="channels.find(c => c.id === cId).name">
+                    <span x-text="channels.find(c => c.id === cId).platform[0].toUpperCase()"></span>
+                  </div>
+                </template>
+              </div>
+              <div class="post-meta-cell" style="font-variant-numeric: tabular-nums;" x-text="b.reach"></div>
+              <div>
+                <span class="badge" :class="b.status === 'scheduled' ? 'scheduled' : 'published'">
+                  <span class="badge-dot"></span>
+                  <span x-text="b.status === 'scheduled' ? 'Scheduled' : 'Published'"></span>
+                </span>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <!-- ========================================================= THEME -->
+      <div class="page" x-show="route === 'theme'" x-transition.opacity.duration.150ms>
+        <div class="page-header">
+          <div class="page-title-block">
+            <h1 class="page-title">Theme</h1>
+            <p class="page-subtitle">Visual tokens applied across your public site. Changes preview live on the right.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn">Reset to defaults</button>
+            <button class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+
+        <div class="theme-grid">
+          <div>
+            <div class="tk-card">
+              <div class="tk-label">Brand</div>
+              <div class="tk-row">
+                <div class="tk-row-label">Accent color <span class="tk-row-value" x-text="siteTokens.accentName + ' · ' + siteTokens.accentHex"></span></div>
+                <div class="tk-swatches">
+                  <template x-for="c in accentSwatches" :key="c.hex">
+                    <button class="tk-swatch" :class="{active: siteTokens.accentHex === c.hex}" @click="siteTokens.accentName = c.name; siteTokens.accentHex = c.hex">
+                      <span class="tk-swatch-dot" :style="`background: ${c.hex}`"></span>
+                      <span x-text="c.name"></span>
+                    </button>
+                  </template>
+                </div>
+              </div>
+              <div class="tk-row">
+                <div class="tk-row-label">Mode default</div>
+                <div class="tk-seg">
+                  <button class="tk-seg-btn" :class="{active: siteTokens.mode === 'auto'}"  @click="siteTokens.mode = 'auto'">Auto</button>
+                  <button class="tk-seg-btn" :class="{active: siteTokens.mode === 'light'}" @click="siteTokens.mode = 'light'">Light</button>
+                  <button class="tk-seg-btn" :class="{active: siteTokens.mode === 'dark'}"  @click="siteTokens.mode = 'dark'">Dark</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="tk-card">
+              <div class="tk-label">Typography</div>
+              <div class="tk-row">
+                <div class="tk-row-label">Heading font</div>
+                <select class="tk-select" x-model="siteTokens.headingFont">
+                  <option>Geist</option>
+                  <option>Instrument Serif</option>
+                  <option>Source Serif 4</option>
+                  <option>JetBrains Mono</option>
+                  <option>System UI</option>
+                </select>
+              </div>
+              <div class="tk-row">
+                <div class="tk-row-label">Body font</div>
+                <select class="tk-select" x-model="siteTokens.bodyFont">
+                  <option>Geist</option>
+                  <option>Inter Tight</option>
+                  <option>Source Serif 4</option>
+                  <option>Charter</option>
+                  <option>System UI</option>
+                </select>
+              </div>
+              <div class="tk-row">
+                <div class="tk-row-label">Type scale <span class="tk-row-value" x-text="siteTokens.scale.toFixed(2) + '×'"></span></div>
+                <input type="range" class="tk-range" min="0.85" max="1.20" step="0.05" x-model.number="siteTokens.scale">
+              </div>
+            </div>
+
+            <div class="tk-card">
+              <div class="tk-label">Surface</div>
+              <div class="tk-row">
+                <div class="tk-row-label">Corner radius <span class="tk-row-value" x-text="siteTokens.radius + 'px'"></span></div>
+                <input type="range" class="tk-range" min="0" max="20" step="1" x-model.number="siteTokens.radius">
+              </div>
+              <div class="tk-row">
+                <div class="tk-row-label">Density</div>
+                <div class="tk-seg">
+                  <button class="tk-seg-btn" :class="{active: siteTokens.density === 'compact'}"     @click="siteTokens.density = 'compact'">Compact</button>
+                  <button class="tk-seg-btn" :class="{active: siteTokens.density === 'comfortable'}" @click="siteTokens.density = 'comfortable'">Comfortable</button>
+                  <button class="tk-seg-btn" :class="{active: siteTokens.density === 'spacious'}"    @click="siteTokens.density = 'spacious'">Spacious</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+              <div class="tk-label" style="margin: 0;">Live preview · article hero</div>
+              <button class="btn btn-sm btn-ghost" @click="openPreview('post-detail')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M7 17L17 7M9 7h8v8"/></svg>
+                Open full preview
+              </button>
+            </div>
+            <div class="tk-preview-frame" :style="`--tk-accent: ${siteTokens.accentHex}; font-family: '${siteTokens.bodyFont}', sans-serif;`">
+              <div class="tk-preview-eyebrow" :style="`color: ${siteTokens.accentHex};`">Engineering · May 6, 2026</div>
+              <h2 class="tk-preview-title" :style="`font-family: '${siteTokens.headingFont}', sans-serif; font-size: ${52 * siteTokens.scale}px;`">Why we rebuilt our publishing stack on Django</h2>
+              <p class="tk-preview-lede" :style="`font-size: ${17 * siteTokens.scale}px;`">Notes from a year of replacing a tangle of WordPress plugins with one Django app we actually understand.</p>
+              <div class="tk-preview-author">
+                <div class="tk-preview-avatar">AR</div>
+                <div>
+                  <div class="tk-preview-name">Aitor Ruiz</div>
+                  <div class="tk-preview-meta">Founder · 4 min read</div>
+                </div>
+              </div>
+              <button class="tk-preview-cta" :style="`border-radius: ${siteTokens.radius}px;`">Read the essay</button>
+              <div class="tk-preview-band" :style="`border-radius: ${siteTokens.radius}px;`">
+                <div class="tk-preview-band-title">Subscribe to the dispatch</div>
+                <div class="tk-preview-band-sub">One email every Sunday. No tracking, no ads.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================= LAYOUTS -->
+      <div class="page" x-show="route === 'layouts'" x-transition.opacity.duration.150ms>
+        <div class="page-header">
+          <div class="page-title-block">
+            <h1 class="page-title">Layouts</h1>
+            <p class="page-subtitle">Pick how each content type is rendered on the public site. The selected layout is what visitors see.</p>
+          </div>
+        </div>
+
+        <div class="tabs" style="margin-bottom: 24px;">
+          <template x-for="t in [{id:'homepage',label:'Homepage'},{id:'blogIndex',label:'Blog index'},{id:'postDetail',label:'Post detail'},{id:'staticPage',label:'Static page'}]" :key="t.id">
+            <div class="tab" :class="{active: layoutTab === t.id}" @click="layoutTab = t.id">
+              <span x-text="t.label"></span>
+            </div>
+          </template>
+        </div>
+
+        <div class="layout-grid">
+          <template x-for="opt in layouts[layoutTab].options" :key="opt.id">
+            <div class="layout-card" :class="{selected: layouts[layoutTab].selected === opt.id}" @click="layouts[layoutTab].selected = opt.id">
+              <!-- diagrams -->
+              <div class="layout-diagram" x-show="opt.diagram === 'hero-grid'">
+                <div class="ld-bar tall"></div>
+                <div class="ld-grid3"><div></div><div></div><div></div></div>
+              </div>
+              <div class="layout-diagram ld-hero-cols" x-show="opt.diagram === 'hero-cols'">
+                <div class="ld-bar" style="height:6px; width:50%;"></div>
+                <div style="display:flex; gap:6px; flex:1;">
+                  <div class="left"></div>
+                  <div class="right"><div></div><div></div><div></div></div>
+                </div>
+              </div>
+              <div class="layout-diagram ld-list-rows" x-show="opt.diagram === 'list'">
+                <div></div><div></div><div></div><div></div><div></div>
+              </div>
+              <div class="layout-diagram ld-list-rows" x-show="opt.diagram === 'list-tight'" style="gap:4px;">
+                <div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+              </div>
+              <div class="layout-diagram" x-show="opt.diagram === 'article'">
+                <div class="ld-article-shape">
+                  <div style="height:14px; width:80%; margin: 0 auto 6px;"></div>
+                  <div style="height:48px; margin-bottom:6px;"></div>
+                  <div style="height:5px;"></div>
+                  <div style="height:5px;"></div>
+                  <div style="height:5px; width:80%;"></div>
+                </div>
+              </div>
+              <div class="layout-diagram" x-show="opt.diagram === 'article-tight'">
+                <div class="ld-article-shape" style="width: 60%;">
+                  <div style="height:14px; width:80%; margin: 0 auto 6px;"></div>
+                  <div style="height:5px;"></div>
+                  <div style="height:5px;"></div>
+                  <div style="height:5px;"></div>
+                  <div style="height:5px; width:90%;"></div>
+                  <div style="height:5px;"></div>
+                  <div style="height:5px; width:70%;"></div>
+                </div>
+              </div>
+              <div class="layout-diagram ld-sidebar" x-show="opt.diagram === 'sidebar'">
+                <div class="body"><div></div><div></div><div></div><div></div></div>
+                <div class="aside"></div>
+              </div>
+              <div class="layout-diagram" x-show="opt.diagram === 'docs'">
+                <div class="ld-docs">
+                  <div></div>
+                  <div class="center"><div></div><div></div><div></div><div></div></div>
+                  <div></div>
+                </div>
+              </div>
+
+              <div class="layout-card-meta">
+                <div>
+                  <div class="layout-card-name" x-text="opt.name"></div>
+                  <div class="layout-card-desc" x-text="opt.desc"></div>
+                </div>
+                <div x-show="layouts[layoutTab].selected === opt.id" class="badge published" style="flex-shrink:0;">
+                  <span class="badge-dot"></span><span>In use</span>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+
+        <div style="margin-top: 28px; padding: 18px 22px; background: var(--bg-1); border: 1px solid var(--border); border-radius: 12px; display: flex; align-items: center; justify-content: space-between; gap: 18px;">
+          <div>
+            <div style="font-size: 13.5px; font-weight: 600; color: var(--fg-0);">Want to see the chosen layout in action?</div>
+            <div style="font-size: 12.5px; color: var(--fg-2); margin-top: 4px;">Open the public-site preview with these layouts applied.</div>
+          </div>
+          <button class="btn btn-primary" @click="openPreview(layoutTab === 'homepage' ? 'landing' : layoutTab === 'blogIndex' ? 'blog' : layoutTab === 'postDetail' ? 'post-detail' : 'page')">
+            Preview site
+          </button>
+        </div>
+      </div>
+
+      <!-- ==================================================== NAVIGATION -->
+      <div class="page" x-show="route === 'sitenav'" x-transition.opacity.duration.150ms>
+        <div class="page-header">
+          <div class="page-title-block">
+            <h1 class="page-title">Navigation</h1>
+            <p class="page-subtitle">Configure the header menu and footer columns of your public site.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 28px;">
+          <div class="tk-label">Header menu</div>
+          <div class="snav-list">
+            <template x-for="(n, idx) in siteNav" :key="n.id">
+              <div class="snav-row">
+                <div class="snav-handle">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>
+                </div>
+                <input class="snav-input" x-model="n.label" :readonly="n.locked">
+                <input class="snav-input muted" x-model="n.href" :readonly="n.locked">
+                <div class="snav-arrows">
+                  <button class="snav-arrow" :disabled="idx === 0" @click="moveSiteNav(n.id, -1)">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+                  </button>
+                  <button class="snav-arrow" :disabled="idx === siteNav.length - 1" @click="moveSiteNav(n.id, 1)">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                  </button>
+                </div>
+                <button class="snav-arrow" :disabled="n.locked" :title="n.locked ? 'This link is required' : 'Remove link'" @click="!n.locked && (siteNav = siteNav.filter(x => x.id !== n.id))">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+                </button>
+              </div>
+            </template>
+          </div>
+          <button class="btn" style="margin-top: 12px;" @click="siteNav.push({id: 'n' + Date.now(), label: 'New link', href: '/new', locked: false})">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add menu item
+          </button>
+        </div>
+
+        <div>
+          <div class="tk-label">Footer columns</div>
+          <div class="fcol-grid">
+            <template x-for="col in footerColumns" :key="col.id">
+              <div class="fcol-card">
+                <input class="fcol-title-input" x-model="col.title">
+                <template x-for="(link, idx) in col.links" :key="idx">
+                  <div class="fcol-link">
+                    <span class="fcol-link-handle">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/></svg>
+                    </span>
+                    <span x-text="link" style="flex: 1;"></span>
+                  </div>
+                </template>
+                <button class="btn btn-sm btn-ghost" style="margin-top: 8px; width: 100%; justify-content: center;">+ Add link</button>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================================================== HOMEPAGE -->
+      <div class="page" x-show="route === 'homepage'" x-transition.opacity.duration.150ms>
+        <div class="page-header">
+          <div class="page-title-block">
+            <h1 class="page-title">Homepage</h1>
+            <p class="page-subtitle">What appears on <span style="color: var(--fg-1); font-family: 'Geist Mono', monospace; font-size: 13px;">aitor.blog</span>, in order. Toggle a section off to hide it without losing its content.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn" @click="openPreview('landing')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              Preview homepage
+            </button>
+            <button class="btn btn-primary">Save layout</button>
+          </div>
+        </div>
+
+        <div class="hb-list">
+          <template x-for="(b, idx) in homepageBlocks" :key="b.id">
+            <div class="hb-row" :class="{disabled: !b.enabled}">
+              <div class="hb-arrows-cell">
+                <button :disabled="idx === 0 || b.locked" @click="!b.locked && moveHomeBlock(b.id, -1)">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="18 15 12 9 6 15"/></svg>
+                </button>
+                <button :disabled="idx === homepageBlocks.length - 1 || b.locked" @click="!b.locked && moveHomeBlock(b.id, 1)">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+              </div>
+              <div class="hb-icon">
+                <template x-if="b.type === 'hero'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M3 13l4-4 4 4 4-4 6 6"/></svg></template>
+                <template x-if="b.type === 'featured'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="6" height="16" rx="1"/><rect x="11" y="4" width="6" height="16" rx="1"/><rect x="19" y="4" width="2" height="16" rx="1"/></svg></template>
+                <template x-if="b.type === 'newsletter'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/></svg></template>
+                <template x-if="b.type === 'about'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg></template>
+                <template x-if="b.type === 'projects'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7h18M3 12h18M3 17h12"/></svg></template>
+                <template x-if="b.type === 'footer'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="14" width="18" height="6" rx="1"/><line x1="3" y1="9" x2="21" y2="9" stroke-dasharray="2 2"/></svg></template>
+              </div>
+              <div>
+                <div class="hb-title">
+                  <span x-text="b.title"></span>
+                  <span x-show="b.locked" style="margin-left:6px; font-size:10px; font-weight:500; color:var(--fg-2); padding:1px 6px; background:var(--bg-3); border-radius:4px; text-transform:uppercase; letter-spacing:.06em;">Locked</span>
+                </div>
+                <div class="hb-desc" x-text="b.desc"></div>
+              </div>
+              <div><span class="hb-meta" x-text="b.meta"></span></div>
+              <button class="snav-arrow" style="border:none;" :disabled="b.locked" title="Edit section">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4z"/></svg>
+              </button>
+              <div style="display:flex; align-items:center; justify-content:flex-end;">
+                <div class="toggle-sw" :class="{on: b.enabled}" @click="!b.locked && (b.enabled = !b.enabled)" :style="b.locked ? 'opacity:0.4; cursor:not-allowed;' : ''"></div>
+              </div>
+            </div>
+          </template>
+        </div>
+
+        <div style="margin-top: 16px; display: flex; gap: 10px;">
+          <button class="btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add section
+          </button>
+          <span style="font-size: 12px; color: var(--fg-2); align-self: center;">Hero, featured posts, gallery, code embed, custom HTML…</span>
+        </div>
+      </div>
+
+      <!-- ================================================= THEME GALLERY -->
+      <div class="page" x-show="route === 'themes'" x-transition.opacity.duration.150ms>
+        <div class="page-header">
+          <div class="page-title-block">
+            <h1 class="page-title">Theme gallery</h1>
+            <p class="page-subtitle">Installable themes that wrap your content. Bring your own in <span style="color: var(--fg-1); font-family: 'Geist Mono', monospace; font-size: 13px;">pip install</span>, or pick one of ours.</p>
+          </div>
+          <div class="page-actions">
+            <button class="btn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Upload theme
+            </button>
+          </div>
+        </div>
+
+        <div class="tabs" style="margin-bottom: 22px;">
+          <div class="tab" :class="{active: themeFilter === 'all'}"        @click="themeFilter = 'all'"><span>All</span><span class="tab-count" x-text="themes.length"></span></div>
+          <div class="tab" :class="{active: themeFilter === 'installed'}"  @click="themeFilter = 'installed'"><span>Installed</span><span class="tab-count" x-text="themes.filter(t => t.installed).length"></span></div>
+          <div class="tab" :class="{active: themeFilter === 'official'}"   @click="themeFilter = 'official'"><span>Official</span></div>
+          <div class="tab" :class="{active: themeFilter === 'community'}"  @click="themeFilter = 'community'"><span>Community</span></div>
+        </div>
+
+        <div class="tg-grid">
+          <template x-for="t in filteredThemes" :key="t.id">
+            <div class="tg-card" :class="{active: t.active}">
+              <div class="tg-thumb" :class="`tg-thumb-${t.id}`">
+                <div>
+                  <div class="tg-thumb-eyebrow">Engineering</div>
+                  <div class="tg-thumb-title">A clear, considered place to write.</div>
+                  <div class="tg-thumb-lines"><div></div><div></div><div></div></div>
+                </div>
+                <div class="tg-thumb-cta" :style="`background: ${t.accent};`">Read essay →</div>
+              </div>
+              <div class="tg-body">
+                <div class="tg-name-row">
+                  <div class="tg-name" x-text="t.name"></div>
+                  <span class="tg-tag" :class="{official: t.tag === 'Official'}" x-text="t.tag"></span>
+                </div>
+                <div class="tg-author">by <span x-text="t.author"></span></div>
+                <div class="tg-desc" x-text="t.desc"></div>
+                <div class="tg-actions" x-show="!t.active">
+                  <button class="btn btn-sm" style="flex:1;">Preview</button>
+                  <template x-if="t.installed">
+                    <button class="btn btn-sm btn-primary" style="flex:1;" @click="themes.forEach(x => x.active = false); t.active = true">Activate</button>
+                  </template>
+                  <template x-if="!t.installed">
+                    <button class="btn btn-sm btn-primary" style="flex:1;" @click="t.installed = true">Install</button>
+                  </template>
+                </div>
+                <div x-show="t.active" class="tg-active-pill">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="20 6 9 17 4 12"/></svg>
+                  Active theme
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+    </div><!-- /main-scroll -->
+
+    <!-- ========================================================= PREVIEW -->
+    <div x-show="route === 'preview'" x-transition.opacity.duration.150ms>
+      <div class="preview-shell">
+        <div class="preview-toolbar">
+          <button class="btn btn-ghost btn-sm" @click="closePreview()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Back to studio
+          </button>
+          <div class="preview-tabs">
+            <div class="preview-tab" :class="{active: previewView === 'landing'}" @click="previewView = 'landing'">Landing</div>
+            <div class="preview-tab" :class="{active: previewView === 'blog'}" @click="previewView = 'blog'">Blog index</div>
+            <div class="preview-tab" :class="{active: previewView === 'post'}" @click="previewView = 'post'">Post detail</div>
+            <div class="preview-tab" :class="{active: previewView === 'page' || previewView === 'about'}" @click="previewView = 'about'">Static page</div>
+          </div>
+          <div class="preview-url">
+            <svg class="lock" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span x-text="previewUrl()"></span>
+          </div>
+          <div class="device-buttons">
+            <button :class="{active: previewDevice === 'desktop'}" @click="previewDevice = 'desktop'" title="Desktop">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </button>
+            <button :class="{active: previewDevice === 'tablet'}" @click="previewDevice = 'tablet'" title="Tablet">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            </button>
+            <button :class="{active: previewDevice === 'mobile'}" @click="previewDevice = 'mobile'" title="Mobile">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="preview-frame" :class="`device-${previewDevice}`">
+          <div class="public-site">
+            <!-- Site header -->
+            <div class="site-header">
+              <div class="site-brand">
+                <div class="site-brand-mark">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 18V6l4 5 4-5v12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                aitor.blog
+              </div>
+              <nav class="site-nav">
+                <a :class="{active: previewView === 'landing'}" @click.prevent="previewView = 'landing'">Home</a>
+                <a :class="{active: previewView === 'blog' || previewView === 'post'}" @click.prevent="previewView = 'blog'">Writing</a>
+                <a :class="{active: previewView === 'about'}" @click.prevent="previewView = 'about'">About</a>
+                <a>Talks</a>
+                <a>Newsletter</a>
+              </nav>
+              <a class="site-cta">Subscribe</a>
+            </div>
+
+            <!-- LANDING -->
+            <template x-if="previewView === 'landing'">
+              <div>
+                <div class="site-hero">
+                  <div>
+                    <h1>Notes from a year of <em>shipping software</em> in the open.</h1>
+                    <p>Engineering writing, product notes, and the occasional rant — from someone who has spent fifteen years inside Django.</p>
+                    <div class="hero-meta">
+                      <span x-text="publishedPosts.length + ' essays'"></span>
+                      <span class="dot"></span>
+                      <span>Updated weekly</span>
+                      <span class="dot"></span>
+                      <span>RSS · Email</span>
+                    </div>
+                  </div>
+                  <div class="site-hero-image" :style="`background-image: ${thumbGradient('g1')}`"></div>
+                </div>
+
+                <div class="site-section">
+                  <h2>Recent writing</h2>
+                  <div class="section-sub">A mix of engineering deep-dives, product notes, and short editorials.</div>
+                  <div class="featured-grid">
+                    <template x-for="p in publishedPosts.slice(0, 3)" :key="p.id">
+                      <div class="featured-card" @click="openPreview('post', { postId: p.id })">
+                        <div class="img" :style="`background-image: ${thumbGradient(p.thumb)}`"></div>
+                        <div class="meta">
+                          <span class="cat" x-text="p.category"></span>
+                          <span class="dot"></span>
+                          <span x-text="p.date"></span>
+                        </div>
+                        <h3 x-text="p.title"></h3>
+                        <p x-text="p.excerpt || ('A short essay on ' + (p.category || '').toLowerCase() + ' practice.')"></p>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+
+                <div class="site-newsletter">
+                  <h2>The MaDGA dispatch</h2>
+                  <p>One short email every Sunday with what I'm reading, building, and breaking. No tracking pixels, ever.</p>
+                  <form @submit.prevent>
+                    <input type="email" placeholder="you@whatever.com">
+                    <button type="submit">Subscribe</button>
+                  </form>
+                </div>
+
+                <div class="site-footer">
+                  <div class="col">
+                    <div class="site-brand" style="margin-bottom: 12px;">
+                      <div class="site-brand-mark"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 18V6l4 5 4-5v12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                      aitor.blog
+                    </div>
+                    <p style="color: var(--site-fg-muted); font-size: 13px; max-width: 280px;">A personal site, written and built by hand. Powered by MaDGA.</p>
+                  </div>
+                  <div class="col">
+                    <h4>Writing</h4>
+                    <a>All essays</a>
+                    <a>Engineering</a>
+                    <a>Editorial</a>
+                    <a>Product</a>
+                  </div>
+                  <div class="col">
+                    <h4>Elsewhere</h4>
+                    <a>GitHub</a>
+                    <a>Mastodon</a>
+                    <a>RSS</a>
+                    <a>Email</a>
+                  </div>
+                  <div class="col">
+                    <h4>Site</h4>
+                    <a>About</a>
+                    <a>Now</a>
+                    <a>Colophon</a>
+                    <a>Uses</a>
+                  </div>
+                  <div class="copyright">
+                    <span>© 2026 Aitor Ruiz</span>
+                    <span>Made with MaDGA · v0.4</span>
+                  </div>
+                </div>
+              </div>
+            </template>
+
+            <!-- BLOG INDEX -->
+            <template x-if="previewView === 'blog'">
+              <div>
+                <div class="site-section">
+                  <h2>Writing</h2>
+                  <div class="section-sub" x-text="publishedPosts.length + ' essays, sorted newest first.'"></div>
+                  <div class="blog-list">
+                    <template x-for="p in publishedPosts" :key="p.id">
+                      <div class="blog-row" @click="openPreview('post', { postId: p.id })">
+                        <div class="date" x-text="p.date"></div>
+                        <div class="body">
+                          <h3 x-text="p.title"></h3>
+                          <div class="ex" x-text="p.excerpt || ('A short essay on ' + (p.category || '').toLowerCase() + ' practice.')"></div>
+                          <div class="cat" x-text="p.category"></div>
+                        </div>
+                        <div class="read">
+                          <span x-text="(2 + (p.title.length % 7)) + ' min read'"></span>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </div>
+            </template>
+
+            <!-- POST DETAIL -->
+            <template x-if="previewView === 'post'">
+              <article class="post-article">
+                <div class="post-cat" x-text="(currentPost && currentPost.category) || 'Uncategorized'"></div>
+                <h1 x-text="(currentPost && currentPost.title) || 'Untitled post'"></h1>
+                <p class="lede" x-text="excerpt || (currentPost && currentPost.excerpt) || 'A short essay on the work behind the work.'"></p>
+                <div class="post-meta-row">
+                  <div class="author">
+                    <div class="author-avatar">AR</div>
+                    <div>
+                      <div class="author-name">Aitor Ruiz</div>
+                      <div class="meta-sub">Founder, MaDGA</div>
+                    </div>
+                  </div>
+                  <span class="meta-sep">·</span>
+                  <span class="meta-sub" x-text="currentPost && currentPost.date"></span>
+                  <span class="meta-sep">·</span>
+                  <span class="meta-sub" x-text="(2 + (((currentPost && currentPost.title) || '').length % 7)) + ' min read'"></span>
+                </div>
+                <div class="featured-img" :style="`background-image: ${thumbGradient((currentPost && currentPost.thumb) || 'g1')}`"></div>
+                <div class="post-body">
+                  <template x-for="b in blocks" :key="b.id">
+                    <div>
+                      <template x-if="b.type === 'paragraph'"><p x-text="b.content"></p></template>
+                      <template x-if="b.type === 'h1'"><h2 x-text="b.content"></h2></template>
+                      <template x-if="b.type === 'h2'"><h2 x-text="b.content"></h2></template>
+                      <template x-if="b.type === 'h3'"><h3 x-text="b.content"></h3></template>
+                      <template x-if="b.type === 'bullet'"><ul><li x-text="b.content"></li></ul></template>
+                      <template x-if="b.type === 'numbered'"><ol><li x-text="b.content"></li></ol></template>
+                      <template x-if="b.type === 'quote'"><blockquote x-text="b.content"></blockquote></template>
+                      <template x-if="b.type === 'callout'"><blockquote x-text="b.content"></blockquote></template>
+                      <template x-if="b.type === 'code'"><pre x-text="b.content"></pre></template>
+                      <template x-if="b.type === 'divider'"><hr></template>
+                    </div>
+                  </template>
+                </div>
+              </article>
+            </template>
+
+            <!-- ABOUT / STATIC PAGE -->
+            <template x-if="previewView === 'page' || previewView === 'about'">
+              <div class="page-article">
+                <h1 x-text="previewView === 'about' ? 'About' : (previewPage && previewPage.title)"></h1>
+                <p class="lede">I'm Aitor — an engineer and writer based in Barcelona. I build software for the long term, in the open, and write about it here.</p>
+                <p>This site is the public face of a small studio of one. Most of what's here is writing — about Django, about CMS design, about why software keeps getting harder to maintain even as the tools get better. Some of it is product: little things I've made because I needed them, and a few that other people have ended up using too.</p>
+                <h2>What I work on</h2>
+                <p>Right now most of my time goes into <strong>MaDGA</strong>, an open-source CMS for Django that tries to feel like a writing tool, not a database explorer. It's the thing this site runs on, and the thing I keep wishing existed every time I open someone else's admin panel.</p>
+                <p>Before that I spent twelve years at small product teams shipping web software, mostly in Python and Django. I've also spent more time than I'd like in the WordPress plugin trenches, which is partly why MaDGA exists.</p>
+                <h2>Get in touch</h2>
+                <p>The fastest way to reach me is email — <a style="color: var(--site-accent);"><span class="__cf_email__" data-cfemail="117078657e63517c707576703f757467">[email&#160;protected]</span></a>. I read everything, I reply to most things, eventually.</p>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================== EDITOR -->
+    <div x-show="route === 'editor'" x-transition.opacity.duration.150ms>
+      <div class="editor-shell">
+
+        <div class="editor-main main-scroll" :class="`editor-style-${editorStyle}`">
+          <div class="editor-toolbar">
+            <button class="btn btn-ghost btn-sm" @click="go('posts')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+              Posts
+            </button>
+            <span style="height:18px; width:1px; background: var(--border);"></span>
+            <div class="saving">
+              <span class="saved-dot"></span>
+              Saved 12 seconds ago
+            </div>
+            <div style="flex:1"></div>
+            <button class="btn btn-sm" @click="openPreview('post')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              Preview
+            </button>
+            <button class="btn btn-sm" @click="openBroadcast()" title="Broadcast to channels">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Broadcast
+            </button>
+            <button class="btn btn-primary btn-sm" x-show="postStatus !== 'published'">
+              Publish
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <button class="btn btn-sm" x-show="postStatus === 'published'">
+              <span class="badge-dot" style="background: var(--status-published-dot);"></span>
+              Live
+            </button>
+          </div>
+
+          <div class="editor-canvas">
+            <textarea class="editor-title-input" placeholder="Untitled post" rows="1"
+              @input="$event.target.style.height = 'auto'; $event.target.style.height = $event.target.scrollHeight + 'px'"
+              x-init="$el.value = (currentPost && currentPost.title) || ''; $el.style.height = $el.scrollHeight + 'px'"></textarea>
+
+            <div class="editor-meta-row">
+              <span :class="`badge ${postStatus}`">
+                <span class="badge-dot"></span>
+                <span x-text="postStatus.charAt(0).toUpperCase() + postStatus.slice(1)"></span>
+              </span>
+              <span x-show="currentPost">by <span style="color:var(--fg-0)" x-text="currentPost?.author"></span></span>
+              <span style="color: var(--fg-3)">·</span>
+              <span x-text="(currentPost && currentPost.date) || 'Just now'"></span>
+              <span style="color: var(--fg-3)">·</span>
+              <span><span x-text="formatNumber(currentPost?.views || 0)"></span> views</span>
+            </div>
+
+            <div class="blocks">
+              <template x-for="(block, idx) in blocks" :key="block.id">
+                <div class="block" :class="block.type" :data-block-id="block.id">
+                  <div class="block-handles">
+                    <button class="block-handle add" @click.stop="openSlash(block.id, $event)" title="Add block">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </button>
+                    <button class="block-handle" title="Drag" x-data="{open:false}" @click="open = !open">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
+                    </button>
+                  </div>
+
+                  <!-- Gutenberg-style toolbar -->
+                  <div class="block-toolbar" x-show="editorStyle === 'gutenberg'" x-cloak>
+                    <button title="Bold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/></svg></button>
+                    <button title="Italic"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg></button>
+                    <button title="Link"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+                    <span style="width:1px; background: var(--border); margin: 4px 2px;"></span>
+                    <button title="Block type"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
+                    <button title="More"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                  </div>
+
+                  <template x-if="block.type === 'divider'">
+                    <div style="display:flex; align-items:center; flex:1;"><div class="divider-line"></div></div>
+                  </template>
+
+                  <template x-if="block.type === 'image'">
+                    <div class="block-image">
+                      <div :style="`background: ${thumbGradient('g3')}; aspect-ratio: 16/9;`"></div>
+                    </div>
+                  </template>
+
+                  <template x-if="block.type !== 'divider' && block.type !== 'image'">
+                    <div class="block-content"
+                         contenteditable="true"
+                         spellcheck="false"
+                         x-text="block.content"
+                         @input="block.content = $event.target.innerText"
+                         @keydown="handleEditorKeydown(block.id, $event)"
+                         :data-placeholder="block.type === 'paragraph' ? 'Write something, or press / for blocks' : (block.type === 'h1' ? 'Heading 1' : (block.type === 'h2' ? 'Heading 2' : (block.type === 'h3' ? 'Heading 3' : (block.type === 'quote' ? 'Empty quote' : (block.type === 'code' ? 'Code' : 'Item')))))"></div>
+                  </template>
+                </div>
+              </template>
+
+              <!-- Floating add button at end -->
+              <div style="display:flex; align-items:center; gap:10px; padding: 24px 4px; color: var(--fg-3); font-size:13px;">
+                <button class="block-handle add" style="width:24px; height:24px; opacity:1; background: var(--bg-2); border: 1px solid var(--border);" @click.stop="addBlock(blocks[blocks.length - 1].id)">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+                Add block, or type <span class="kbd-inline">/</span> for the slash menu
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right rail -->
+        <aside class="right-rail">
+
+          <div class="rail-section" :class="{collapsed: !railSections.status}">
+            <div class="rail-section-header" @click="toggleRailSection('status')">
+              <h3>Status &amp; visibility</h3>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="rail-section-body">
+              <div class="toggle-row">
+                <div>
+                  <div class="label">Published</div>
+                  <div class="sublabel">Visible on the public site</div>
+                </div>
+                <div class="toggle" :class="{on: postStatus === 'published'}" @click="postStatus = postStatus === 'published' ? 'draft' : 'published'"></div>
+              </div>
+              <div>
+                <div class="field-label">Publish date</div>
+                <input type="datetime-local" class="field-input" x-model="publishDate">
+              </div>
+              <div>
+                <div class="field-label">URL slug</div>
+                <input class="field-input" :value="(currentPost && currentPost.slug) || 'untitled'" style="font-family: 'Geist Mono', monospace; font-size:12.5px;">
+                <div style="font-size: 11.5px; color: var(--fg-2); margin-top: 6px; font-family: 'Geist Mono', monospace;">
+                  /blog/<span style="color: var(--fg-0)" x-text="(currentPost && currentPost.slug) || 'untitled'"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="rail-section" :class="{collapsed: !railSections.featured}">
+            <div class="rail-section-header" @click="toggleRailSection('featured')">
+              <h3>Featured image</h3>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="rail-section-body">
+              <div class="featured-image has-image" :style="`background: ${thumbGradient((currentPost && currentPost.thumb) || 'g1')}`">
+                <div class="fi-overlay"><span class="label">Replace image</span></div>
+              </div>
+              <div style="display:flex; gap:6px;">
+                <button class="btn btn-sm" style="flex:1">Choose from library</button>
+                <button class="btn btn-sm btn-ghost">Remove</button>
+              </div>
+              <div>
+                <div class="field-label">Alt text</div>
+                <input class="field-input" placeholder="Describe what's in the image…">
+              </div>
+            </div>
+          </div>
+
+          <div class="rail-section" :class="{collapsed: !railSections.organization}">
+            <div class="rail-section-header" @click="toggleRailSection('organization')">
+              <h3>Organization</h3>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="rail-section-body">
+              <div>
+                <div class="field-label">Category</div>
+                <select class="field-input" x-model="selectedCategory">
+                  <template x-for="c in categories" :key="c.id">
+                    <option x-text="c.name" :value="c.name"></option>
+                  </template>
+                </select>
+              </div>
+              <div>
+                <div class="field-label">Tags</div>
+                <div class="tag-list">
+                  <template x-for="t in tags" :key="t">
+                    <span class="tag">
+                      <span x-text="t"></span>
+                      <span class="x" @click="tags = tags.filter(x => x !== t)">×</span>
+                    </span>
+                  </template>
+                  <span class="tag add">+ Add</span>
+                </div>
+              </div>
+              <div>
+                <div class="field-label">
+                  <span>Excerpt</span>
+                  <span class="field-counter"><span x-text="excerpt.length"></span> / 160</span>
+                </div>
+                <textarea class="field-input" placeholder="Optional summary shown in feeds and link previews." x-model="excerpt" maxlength="160"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="rail-section" :class="{collapsed: !railSections.seo}">
+            <div class="rail-section-header" @click="toggleRailSection('seo')">
+              <h3>SEO</h3>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div class="rail-section-body">
+              <div>
+                <div class="field-label">
+                  <span>Meta title</span>
+                  <span class="field-counter"><span x-text="metaTitle.length"></span> / 60</span>
+                </div>
+                <input class="field-input" placeholder="Falls back to post title" x-model="metaTitle" maxlength="60">
+              </div>
+              <div>
+                <div class="field-label">
+                  <span>Meta description</span>
+                  <span class="field-counter"><span x-text="metaDescription.length"></span> / 160</span>
+                </div>
+                <textarea class="field-input" placeholder="Short description shown in search engines." x-model="metaDescription" maxlength="160"></textarea>
+              </div>
+              <div>
+                <div class="field-label">Focus keyword</div>
+                <input class="field-input" placeholder="e.g. django cms" x-model="focusKeyword">
+              </div>
+
+              <!-- SERP preview -->
+              <div style="margin-top: 4px; padding: 12px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px;">
+                <div style="font-size: 11px; color: var(--fg-2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em; font-weight:500;">Search preview</div>
+                <div style="font-size: 11px; color: #6c8eef; font-family: 'Geist Mono', monospace; margin-bottom: 4px;">aitor.blog › blog › <span x-text="(currentPost && currentPost.slug) || 'untitled'"></span></div>
+                <div style="font-size: 14px; color: #8b9ee8; font-weight: 500; line-height: 1.3; margin-bottom: 4px;" x-text="metaTitle || (currentPost && currentPost.title) || 'Untitled post'"></div>
+                <div style="font-size: 12px; color: var(--fg-1); line-height: 1.45;" x-text="metaDescription || excerpt || 'A short description of your post will appear here.'"></div>
+              </div>
+            </div>
+          </div>
+
+        </aside>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ========================================================== TWEAKS PANEL -->
+
+<button class="tweaks-fab" @click="tweaksOpen = !tweaksOpen" title="Tweaks">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+</button>
+
+<div class="tweaks" x-show="tweaksOpen" x-transition.scale.origin.bottom.right x-cloak>
+  <div class="tweaks-header">
+    <h3>Tweaks</h3>
+    <button class="icon-btn close" style="width:24px; height:24px;" @click="tweaksOpen = false">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <div class="tweaks-section">
+    <div class="label">Theme</div>
+    <div class="theme-switch">
+      <button :class="{active: theme === 'light'}" @click="setTheme('light')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        Light
+      </button>
+      <button :class="{active: theme === 'dark'}" @click="setTheme('dark')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        Dark
+      </button>
+    </div>
+  </div>
+
+  <div class="tweaks-section">
+    <div class="label">Accent</div>
+    <div class="swatch-row">
+      <div class="swatch" style="background: #6C63FF" :class="{active: accent === 'purple'}" @click="setAccent('purple')"></div>
+      <div class="swatch" style="background: #44b78b" :class="{active: accent === 'green'}" @click="setAccent('green')"></div>
+      <div class="swatch" style="background: #4F86FF" :class="{active: accent === 'blue'}" @click="setAccent('blue')"></div>
+      <div class="swatch" style="background: #E89A3C" :class="{active: accent === 'amber'}" @click="setAccent('amber')"></div>
+    </div>
+  </div>
+
+  <div class="tweaks-section">
+    <div class="label">Editor style</div>
+    <div class="editor-style-row">
+      <button :class="{active: editorStyle === 'notion'}" @click="setEditorStyle('notion')">Notion</button>
+      <button :class="{active: editorStyle === 'gutenberg'}" @click="setEditorStyle('gutenberg')">Gutenberg</button>
+      <button :class="{active: editorStyle === 'ghost'}" @click="setEditorStyle('ghost')">Ghost</button>
+    </div>
+    <div style="font-size: 11.5px; color: var(--fg-2); margin-top: 8px; line-height: 1.4;">
+      Switch in the editor to feel the three approaches side by side.
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ SLASH MENU -->
+
+<div class="slash-menu" x-show="slashOpen" x-cloak :style="`top:${slashY}px; left:${slashX}px;`" @click.stop>
+  <div style="padding: 6px 10px;">
+    <input class="field-input" placeholder="Search blocks…" x-model="slashFilter" x-init="$nextTick(() => $el.focus())" style="font-size:12.5px; padding: 6px 8px;">
+  </div>
+  <template x-for="section in blockTypeSections" :key="section.name">
+    <div>
+      <div class="slash-section" x-text="section.name"></div>
+      <template x-for="bt in section.items" :key="bt.id">
+        <div class="slash-item" @click="changeBlockType(slashFor, bt.id)">
+          <div class="slash-icon">
+            <span x-show="bt.icon === 'paragraph'" style="font-size:14px; font-weight:500;">¶</span>
+            <span x-show="bt.icon === 'h1'" style="font-size:13px; font-weight:700; letter-spacing:-0.04em;">H1</span>
+            <span x-show="bt.icon === 'h2'" style="font-size:12px; font-weight:700; letter-spacing:-0.04em;">H2</span>
+            <span x-show="bt.icon === 'h3'" style="font-size:11px; font-weight:700; letter-spacing:-0.04em;">H3</span>
+            <svg x-show="bt.icon === 'bullet'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>
+            <svg x-show="bt.icon === 'numbered'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="10" y1="6" x2="20" y2="6"/><line x1="10" y1="12" x2="20" y2="12"/><line x1="10" y1="18" x2="20" y2="18"/><path d="M4 6h1v4M4 10h2"/></svg>
+            <svg x-show="bt.icon === 'quote'" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 7H5v6c0 2 1 3 3 3v2c-3 0-5-2-5-5V7c0-1.1.9-2 2-2h4zm10 0h-4v6c0 2 1 3 3 3v2c-3 0-5-2-5-5V7c0-1.1.9-2 2-2h4z"/></svg>
+            <svg x-show="bt.icon === 'callout'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <svg x-show="bt.icon === 'code'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            <svg x-show="bt.icon === 'divider'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/></svg>
+            <svg x-show="bt.icon === 'image'" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </div>
+          <div class="slash-text">
+            <div class="slash-name" x-text="bt.name"></div>
+            <div class="slash-desc" x-text="bt.desc"></div>
+          </div>
+        </div>
+      </template>
+    </div>
+  </template>
+</div>
+
+<!-- ================================================== HELPERS / GRADIENTS -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// Thumbnail gradient generator — deterministic, looks like soft photography placeholders
+window.cmsApp_orig = window.cmsApp;
+window.cmsApp = function () {
+  const app = window.cmsApp_orig();
+  const palettes = {
+    g1: 'linear-gradient(135deg, #2a1f5e 0%, #6C63FF 60%, #ff7a89 100%)',
+    g2: 'linear-gradient(135deg, #0d3b2e 0%, #44b78b 60%, #f0d36b 100%)',
+    g3: 'linear-gradient(135deg, #3a1f1f 0%, #c9572d 60%, #f0c36e 100%)',
+    g4: 'linear-gradient(135deg, #1f2a3a 0%, #4F86FF 60%, #a4d8ff 100%)',
+    g5: 'linear-gradient(135deg, #4a1a3d 0%, #c95ea8 60%, #f0a8c9 100%)',
+    g6: 'linear-gradient(135deg, #1a2e1a 0%, #5e9c5e 60%, #c9e0a8 100%)',
+    g7: 'linear-gradient(135deg, #3a2a1a 0%, #b08756 60%, #e8d0a8 100%)',
+    g8: 'linear-gradient(135deg, #2a1a3a 0%, #8a5ec9 60%, #c9a8e0 100%)',
+    g9: 'linear-gradient(135deg, #1a3a3a 0%, #5e9c9c 60%, #a8e0e0 100%)',
+  };
+  app.thumbGradient = function (key) {
+    return palettes[key] || palettes.g1;
+  };
+  return app;
+};
+</script>
+  <!-- ====================================================== BROADCAST DRAWER -->
+  <div class="distribute-overlay" x-show="broadcastOpen" @click.self="closeBroadcast()" x-transition.opacity.duration.150ms style="display: none;" :style="broadcastOpen ? 'display: flex' : 'display: none'">
+    <div class="distribute-panel" @click.stop>
+      <div class="dh">
+        <div>
+          <h3>Broadcast — Why we rebuilt our publishing stack on Django</h3>
+          <p>Per-platform copy is auto-generated from the post. Edit each one to match the audience, then schedule or post immediately.</p>
+        </div>
+        <button class="btn btn-ghost btn-sm" @click="closeBroadcast()" aria-label="Close">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="db">
+        <aside class="channel-sidebar">
+          <div class="label">Broadcast to</div>
+          <template x-for="ch in channels.filter(c => c.connected)" :key="ch.id">
+            <div class="channel-tab" :class="{active: broadcastChannel === ch.id, disabled: !broadcastEnabled[ch.id]}">
+              <div class="channel-icon" :class="`ch-${ch.platform}`">
+                <span x-text="ch.platform === 'twitter' ? '𝕏' : ch.platform[0].toUpperCase()"></span>
+              </div>
+              <div style="flex: 1; min-width: 0;" @click="broadcastChannel = ch.id">
+                <div style="font-size: 12.5px; font-weight: 500;" x-text="ch.name"></div>
+                <div style="font-size: 11px; color: var(--fg-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" x-text="ch.handle"></div>
+              </div>
+              <input type="checkbox" :checked="broadcastEnabled[ch.id]" @change="broadcastEnabled[ch.id] = !broadcastEnabled[ch.id]; if (broadcastEnabled[ch.id]) broadcastChannel = ch.id;" style="accent-color: var(--accent); cursor: pointer;">
+            </div>
+          </template>
+          <div class="label" style="margin-top: 16px;">Schedule</div>
+          <div style="padding: 4px 8px; display: flex; flex-direction: column; gap: 6px;">
+            <label style="display: flex; align-items: center; gap: 8px; padding: 6px 4px; font-size: 12.5px; color: var(--fg-1); cursor: pointer;">
+              <input type="radio" name="bsched" value="now" x-model="broadcastSchedule" style="accent-color: var(--accent);">
+              Post immediately
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; padding: 6px 4px; font-size: 12.5px; color: var(--fg-1); cursor: pointer;">
+              <input type="radio" name="bsched" value="with-post" x-model="broadcastSchedule" style="accent-color: var(--accent);">
+              When post publishes
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px; padding: 6px 4px; font-size: 12.5px; color: var(--fg-1); cursor: pointer;">
+              <input type="radio" name="bsched" value="custom" x-model="broadcastSchedule" style="accent-color: var(--accent);">
+              At a specific time…
+            </label>
+          </div>
+        </aside>
+
+        <div class="channel-editor-wrap">
+          <div class="col-compose">
+            <div class="compose-head">
+              <div class="channel-icon" :class="`ch-${currentBroadcastChannel.platform}`">
+                <span x-text="currentBroadcastChannel.platform === 'twitter' ? '𝕏' : currentBroadcastChannel.platform[0].toUpperCase()"></span>
+              </div>
+              <div class="meta">
+                <div class="n" x-text="currentBroadcastChannel.name"></div>
+                <div class="h" x-text="currentBroadcastChannel.handle"></div>
+              </div>
+            </div>
+
+            <div class="compose-field">
+              <label>
+                Post copy
+                <span class="char-counter" :class="(broadcastDrafts[broadcastChannel] || '').length > currentBroadcastChannel.limit ? 'over' : ((broadcastDrafts[broadcastChannel] || '').length > currentBroadcastChannel.limit * 0.9 ? 'warn' : '')">
+                  <span x-text="(broadcastDrafts[broadcastChannel] || '').length"></span> / <span x-text="currentBroadcastChannel.limit"></span>
+                </span>
+              </label>
+              <textarea x-model="broadcastDrafts[broadcastChannel]"></textarea>
+            </div>
+
+            <div class="compose-options">
+              <div class="opt-row">
+                <span class="lbl">Featured image</span>
+                <span class="val">attached · 1200×630</span>
+              </div>
+              <div class="opt-row">
+                <span class="lbl">Link card</span>
+                <span class="val">aitor.blog/blog/rebuilt…</span>
+              </div>
+              <div class="opt-row">
+                <span class="lbl">Sensitive content</span>
+                <span class="val">no</span>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; padding-top: 4px;">
+              <button class="btn" style="flex: 1;" @click="closeBroadcast()">Save as draft</button>
+              <button class="btn btn-primary" style="flex: 1.4;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                <span x-text="broadcastSchedule === 'now' ? `Broadcast to ${broadcastEnabledCount} channel${broadcastEnabledCount === 1 ? '' : 's'}` : 'Schedule'"></span>
+              </button>
+            </div>
+          </div>
+
+          <div class="col-preview">
+            <div class="label">Preview · how it appears in the feed</div>
+            <div class="platform-preview-frame">
+
+              <!-- Twitter / X -->
+              <div class="tw-card" x-show="currentBroadcastChannel.platform === 'twitter'">
+                <div class="tw-head">
+                  <div class="tw-avatar">A</div>
+                  <div>
+                    <div class="tw-name">Aitor Ruiz</div>
+                    <div class="tw-handle">@aitorruiz<span class="dot">·</span>now</div>
+                  </div>
+                </div>
+                <div class="tw-text" x-text="(broadcastDrafts.tw || '').replace(/aitor\.blog\/[^\s]+/, '').trim()"></div>
+                <div class="tw-card-link">
+                  <div class="tw-card-img" style="background: linear-gradient(135deg, #1f1a3e, #6C63FF, #44b78b);"></div>
+                  <div class="tw-card-meta">
+                    <div class="tw-card-domain">aitor.blog</div>
+                    <div class="tw-card-title">Why we rebuilt our publishing stack on Django</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Mastodon -->
+              <div class="ma-card" x-show="currentBroadcastChannel.platform === 'mastodon'">
+                <div class="ma-head">
+                  <div class="ma-avatar">A</div>
+                  <div>
+                    <div class="ma-name">Aitor Ruiz</div>
+                    <div class="ma-handle">@<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8feee6fbe0fdcfe7eeece7f6ebeafde2a1e6e0">[email&#160;protected]</a></div>
+                  </div>
+                </div>
+                <div class="ma-text" x-text="(broadcastDrafts.ms || '').replace(/https?:\/\/[^\s]+/, '').trim()"></div>
+                <div class="ma-link-card">
+                  <div class="ma-link-img" style="background: linear-gradient(135deg, #1f1a3e, #6C63FF, #44b78b);"></div>
+                  <div class="ma-link-meta">
+                    <div class="ma-link-domain">aitor.blog</div>
+                    <div class="ma-link-title">Why we rebuilt our publishing stack on Django</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bluesky -->
+              <div class="bs-card" x-show="currentBroadcastChannel.platform === 'bluesky'">
+                <div class="bs-head">
+                  <div class="bs-avatar">A</div>
+                  <div>
+                    <div class="bs-name">Aitor Ruiz</div>
+                    <div class="bs-handle">@aitor.bsky.social · now</div>
+                  </div>
+                </div>
+                <div class="bs-text" x-text="(broadcastDrafts.bs || '').replace(/aitor\.blog\/[^\s]+/, '').trim()"></div>
+                <div class="bs-link-card">
+                  <div class="bs-link-img" style="background: linear-gradient(135deg, #1f1a3e, #6C63FF, #44b78b);"></div>
+                  <div class="bs-link-meta">
+                    <div class="bs-link-domain">aitor.blog</div>
+                    <div class="bs-link-title">Why we rebuilt our publishing stack on Django</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- LinkedIn -->
+              <div class="li-card" x-show="currentBroadcastChannel.platform === 'linkedin'">
+                <div class="li-head">
+                  <div class="li-avatar">A</div>
+                  <div>
+                    <div class="li-name">Aitor Ruiz</div>
+                    <div class="li-role">Founder · MaDGA — making Django great for content teams</div>
+                    <div class="li-time">Now · 🌐</div>
+                  </div>
+                </div>
+                <div class="li-text" x-text="broadcastDrafts.li"></div>
+                <div class="li-card-img" style="background: linear-gradient(135deg, #1f1a3e, #6C63FF, #44b78b);"></div>
+                <div class="li-card-meta">
+                  <div class="title">Why we rebuilt our publishing stack on Django</div>
+                  <div class="domain">aitor.blog · 4 min read</div>
+                </div>
+                <div class="li-actions">
+                  <div class="a">👍 Like</div>
+                  <div class="a">💬 Comment</div>
+                  <div class="a">↻ Repost</div>
+                  <div class="a">▸ Send</div>
+                </div>
+              </div>
+
+              <!-- Instagram -->
+              <div class="ig-card" x-show="currentBroadcastChannel.platform === 'instagram'">
+                <div class="ig-head">
+                  <div class="ig-avatar"><div class="ig-avatar-inner">A</div></div>
+                  <div class="ig-name">aitor.writes</div>
+                </div>
+                <div class="ig-img" style="background: linear-gradient(135deg, #1f1a3e, #6C63FF, #44b78b);"></div>
+                <div class="ig-actions">♡ ☷ ↪</div>
+                <div class="ig-caption">
+                  <span class="ig-name-inline">aitor.writes</span>
+                  <span x-text="(broadcastDrafts.ig || '').slice(0, 120)"></span>
+                  <span class="ig-truncated">… more</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body>
+</html>

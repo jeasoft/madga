@@ -1,0 +1,93 @@
+{% load madga_studio_tags %}
+<header class="madga-topbar">
+  <button type="button" class="madga-icon-btn madga-sidebar-toggle" aria-label="Abrir menú" data-madga-sidebar-toggle>
+    {% studio_icon "menu" size=18 stroke=2 %}
+  </button>
+  <nav class="madga-breadcrumbs">
+    {% block breadcrumbs %}<span class="crumb is-current">Studio</span>{% endblock %}
+  </nav>
+  <div style="flex:1"></div>
+  <form class="madga-search" action="{% url 'madga_studio:post_list' %}" method="get" role="search">
+    {% studio_icon "search" size=14 stroke=2 %}
+    <input type="text" name="q" placeholder="Buscar posts, páginas…" aria-label="Buscar" data-madga-search>
+    <span class="madga-kbd">⌘K</span>
+  </form>
+  <button type="button" class="madga-icon-btn" title="Cambiar tema" aria-label="Cambiar tema" data-madga-theme-toggle>
+    {% studio_icon "moon" size=16 stroke=2 css_class="madga-icon-moon" %}
+    {% studio_icon "sun" size=16 stroke=2 css_class="madga-icon-sun" %}
+  </button>
+  <button type="button" class="madga-icon-btn" title="Actividad reciente" aria-label="Notificaciones" data-madga-popover-toggle="notifications">
+    {% studio_icon "bell" size=16 stroke=2 %}
+  </button>
+  <button type="button" class="madga-icon-btn" title="Ayuda y atajos" aria-label="Ayuda" data-madga-popover-toggle="help">
+    {% studio_icon "help" size=16 stroke=2 %}
+  </button>
+</header>
+
+<div class="madga-popover" data-madga-popover="notifications" hidden>
+  <div class="madga-popover-head">
+    <strong>Actividad reciente</strong>
+    <span class="madga-popover-sub">Últimos 7 días</span>
+  </div>
+  <div class="madga-popover-body">
+    {% if recent_activity %}
+      {% for ev in recent_activity %}
+        <a href="{{ ev.url }}" class="madga-popover-row">
+          <span class="madga-popover-dot madga-popover-dot--{{ ev.kind }}"></span>
+          <span class="madga-popover-text">
+            <strong>{{ ev.title }}</strong>
+            <span class="madga-popover-meta">{{ ev.label }} · {{ ev.when|timesince }}</span>
+          </span>
+        </a>
+      {% endfor %}
+    {% else %}
+      <div class="madga-popover-empty">Sin actividad reciente. Cuando publiques o subas algo, aparecerá aquí.</div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="madga-popover" data-madga-popover="help" hidden>
+  <div class="madga-popover-head"><strong>Ayuda y atajos</strong></div>
+  <div class="madga-popover-body">
+    <div class="madga-popover-section">
+      <div class="madga-popover-section-title">Editor</div>
+      <div class="madga-popover-row"><kbd>/</kbd><span>Abrir menú de bloques (encabezado, lista, imagen, código…)</span></div>
+      <div class="madga-popover-row"><kbd>⌘ B</kbd><span>Negrita en el texto seleccionado</span></div>
+      <div class="madga-popover-row"><kbd>⌘ I</kbd><span>Cursiva</span></div>
+      <div class="madga-popover-row"><kbd>⌘ K</kbd><span>Insertar enlace</span></div>
+      <div class="madga-popover-row"><kbd>⌘ ⇧ M</kbd><span>Resaltado</span></div>
+    </div>
+    <div class="madga-popover-section">
+      <div class="madga-popover-section-title">Publicación</div>
+      <div class="madga-popover-row"><span>Guarda un borrador o pulsa <strong>Publicar</strong> para que sea visible públicamente.</span></div>
+      <div class="madga-popover-row"><span>Si pones una fecha futura en "Publicar el", el post quedará programado.</span></div>
+    </div>
+  </div>
+</div>
+
+<style>
+  [data-theme="dark"] .madga-icon-moon { display:none; }
+  [data-theme="light"] .madga-icon-sun { display:none; }
+  .madga-popover {
+    position: fixed; top: 60px; right: 14px; width: min(360px, calc(100vw - 28px));
+    background: var(--bg-1); border: 1px solid var(--border); border-radius: 12px;
+    box-shadow: var(--shadow-lg); z-index: 60; overflow: hidden;
+  }
+  .madga-popover[hidden] { display: none; }
+  .madga-popover-head { padding: 12px 14px; border-bottom: 1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+  .madga-popover-sub { color: var(--fg-3); font-size: 11.5px; }
+  .madga-popover-body { max-height: 60vh; overflow-y: auto; }
+  .madga-popover-section { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  .madga-popover-section:last-child { border-bottom: 0; }
+  .madga-popover-section-title { font-size: 10.5px; text-transform: uppercase; letter-spacing: .07em; color: var(--fg-3); margin-bottom: 6px; }
+  .madga-popover-row { display:flex; gap: 10px; align-items:flex-start; padding: 8px 14px; color: var(--fg-1); text-decoration: none; font-size: 13px; }
+  a.madga-popover-row:hover { background: var(--bg-hover); color: var(--fg-0); }
+  .madga-popover-row kbd { font-family: var(--font-mono); font-size: 11px; padding: 2px 6px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-2); color: var(--fg-1); flex-shrink: 0; }
+  .madga-popover-text { display:flex; flex-direction:column; min-width: 0; }
+  .madga-popover-meta { color: var(--fg-3); font-size: 11.5px; margin-top: 2px; }
+  .madga-popover-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 7px; flex-shrink: 0; background: var(--accent); }
+  .madga-popover-dot--published { background: var(--status-published-fg); }
+  .madga-popover-dot--draft { background: var(--fg-3); }
+  .madga-popover-dot--media { background: #f59e0b; }
+  .madga-popover-empty { padding: 18px 14px; color: var(--fg-2); font-size: 12.5px; text-align:center; }
+</style>

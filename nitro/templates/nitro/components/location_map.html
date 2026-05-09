@@ -1,0 +1,262 @@
+{% load i18n l10n %}
+{% comment %}
+Reusable location picker — MapLibre map with click-to-place draggable marker.
+
+Required context vars:
+  map_id          — unique DOM id for the map container (e.g. "str-prop-map")
+  lat_field       — name of the hidden latitude input (e.g. "latitude")
+  lng_field       — name of the hidden longitude input (e.g. "longitude")
+
+Optional context vars:
+  initial_lat        — pre-filled latitude (default: Santo Domingo center)
+  initial_lng        — pre-filled longitude
+  initial_location_id — UUID of the AdministrativeArea currently selected on
+                       the property (provincia/municipio/sección/sector). If
+                       no point is set, we'll center on this area.
+  zoom               — initial zoom level (default: 12)
+  height             — Tailwind height class (default: "h-72")
+  cascade_inputs     — comma-separated list of input names to watch for
+                       cascade changes (default: "province,municipality,section,sector").
+                       When any of these change, the map flies to the picked
+                       area's centroid.
+
+Works inside HTMX-injected slidelovers because the component data is defined
+inline in x-data (no Alpine.data() registration race).
+{% endcomment %}
+{% localize off %}
+<div x-data='nitroLocationMap({
+        mapId: "{{ map_id }}",
+        initialLat: {% if initial_lat %}{{ initial_lat }}{% else %}null{% endif %},
+        initialLng: {% if initial_lng %}{{ initial_lng }}{% else %}null{% endif %},
+        initialLocationId: "{{ initial_location_id|default:'' }}",
+        centerLat: {{ initial_lat|default:"18.4861" }},
+        centerLng: {{ initial_lng|default:"-69.9312" }},
+        zoom: {{ zoom|default:"12" }},
+        cascadeInputs: "{{ cascade_inputs|default:'province,municipality,section,sector' }}",
+        complexInput: "{{ complex_input|default:'residencial' }}"
+     })'
+     x-init="init()"
+     class="space-y-2">
+    <input type="hidden" name="{{ lat_field }}" x-bind:value="markerLat" value="{{ initial_lat|default:'' }}">
+    <input type="hidden" name="{{ lng_field }}" x-bind:value="markerLng" value="{{ initial_lng|default:'' }}">
+
+    <div class="bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 text-xs text-blue-800 flex items-center gap-2">
+        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        <span>{% trans "Haz clic en el mapa para marcar la ubicación. Puedes arrastrar el pin para ajustar." %}</span>
+    </div>
+
+    <div class="flex items-center justify-between text-xs">
+        <div>
+            <span class="text-gray-500">{% trans "Coordenadas:" %}</span>
+            <span x-text="hasMarker ? (markerLat.toFixed(6) + ', ' + markerLng.toFixed(6)) : '{% trans "Sin marcar" %}'"
+                  :class="hasMarker ? 'text-gray-900 font-mono' : 'text-gray-400'"></span>
+        </div>
+        <button x-show="hasMarker" type="button" @click="clearMarker()"
+                class="text-red-600 hover:text-red-800">
+            {% trans "Quitar pin" %}
+        </button>
+    </div>
+
+    <div :id="mapId" class="{{ height|default:'h-72' }} w-full relative rounded-lg border border-gray-200 overflow-hidden">
+        <div x-show="!mapLoaded" class="absolute inset-0 bg-gray-100 flex items-center justify-center z-10">
+            <div class="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-primary-500"></div>
+        </div>
+    </div>
+</div>
+
+{% comment %}
+Defines the global Alpine factory once. Idempotent — safe across HTMX swaps.
+By living on `window`, x-data="nitroLocationMap(...)" finds it immediately
+even when the script tag arrives in an HTMX response after Alpine already
+ran its initial scan.
+{% endcomment %}
+<script>
+if (!window.nitroLocationMap) {
+    window._nitroMapLibreCallbacks = [];
+    window._nitroMapLibreLoading = false;
+
+    window.nitroEnsureMapLibre = function(cb) {
+        if (window.maplibregl) { cb(); return; }
+        window._nitroMapLibreCallbacks.push(cb);
+        if (window._nitroMapLibreLoading) return;
+        window._nitroMapLibreLoading = true;
+        if (!document.getElementById('maplibre-css')) {
+            var link = document.createElement('link');
+            link.id = 'maplibre-css';
+            link.rel = 'stylesheet';
+            link.href = 'https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css';
+            document.head.appendChild(link);
+        }
+        var s = document.createElement('script');
+        s.src = 'https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js';
+        s.onload = function() {
+            window._nitroMapLibreCallbacks.forEach(function(c) { c(); });
+            window._nitroMapLibreCallbacks = [];
+        };
+        document.head.appendChild(s);
+    };
+
+    // Cache /geo/area/<id>/center/ responses — areas don't move.
+    window._nitroAreaCenterCache = {};
+    window.nitroFetchAreaCenter = function(areaId) {
+        if (!areaId) return Promise.resolve(null);
+        if (window._nitroAreaCenterCache[areaId]) {
+            return Promise.resolve(window._nitroAreaCenterCache[areaId]);
+        }
+        return fetch('/geo/area/' + areaId + '/center/', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        }).then(function(r) { return r.ok ? r.json() : null; })
+          .then(function(data) {
+              if (data && data.lat) window._nitroAreaCenterCache[areaId] = data;
+              return data;
+          })
+          .catch(function() { return null; });
+    };
+
+    // Same idea for Residencial (Complejo) lookup.
+    window._nitroComplexCenterCache = {};
+    window.nitroFetchComplexCenter = function(id) {
+        if (!id) return Promise.resolve(null);
+        if (window._nitroComplexCenterCache[id]) {
+            return Promise.resolve(window._nitroComplexCenterCache[id]);
+        }
+        return fetch('/geo/residencial/' + id + '/center/', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        }).then(function(r) { return r.ok ? r.json() : null; })
+          .then(function(data) {
+              if (data && data.lat) window._nitroComplexCenterCache[id] = data;
+              return data;
+          })
+          .catch(function() { return null; });
+    };
+
+    window.nitroLocationMap = function(opts) {
+        return {
+            mapId: opts.mapId,
+            map: null,
+            marker: null,
+            hasMarker: opts.initialLat !== null && opts.initialLng !== null,
+            markerLat: opts.initialLat !== null ? opts.initialLat : opts.centerLat,
+            markerLng: opts.initialLng !== null ? opts.initialLng : opts.centerLng,
+            centerLat: opts.centerLat,
+            centerLng: opts.centerLng,
+            zoom: opts.zoom,
+            mapLoaded: false,
+            initialLocationId: opts.initialLocationId || '',
+            cascadeNames: (opts.cascadeInputs || '').split(',').map(function(s) { return s.trim(); }).filter(Boolean),
+            complexName: (opts.complexInput || '').trim(),
+
+            init() {
+                var self = this;
+                window.nitroEnsureMapLibre(function() {
+                    self.$nextTick(function() {
+                        self._initMap();
+                        self._wireCascade();
+                    });
+                });
+            },
+
+            _initMap() {
+                var self = this;
+                var el = document.getElementById(self.mapId);
+                if (!el) {
+                    setTimeout(function() { self._initMap(); }, 80);
+                    return;
+                }
+                self.map = new maplibregl.Map({
+                    container: el,
+                    style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
+                    center: [self.centerLng, self.centerLat],
+                    zoom: self.zoom
+                });
+                self.map.addControl(new maplibregl.NavigationControl(), 'top-right');
+                self.map.on('load', function() {
+                    self.mapLoaded = true;
+                    self.map.resize();
+                    if (self.hasMarker) {
+                        self._addMarker(self.markerLng, self.markerLat);
+                    } else if (self.initialLocationId) {
+                        // No pin yet but we know the area — center there.
+                        self._flyToArea(self.initialLocationId);
+                    }
+                });
+                self.map.on('click', function(e) {
+                    self._addMarker(e.lngLat.lng, e.lngLat.lat);
+                });
+            },
+
+            _wireCascade() {
+                var self = this;
+                var form = document.getElementById(self.mapId);
+                while (form && form.tagName !== 'FORM') form = form.parentElement;
+                if (!form) form = document;
+                // Geo cascade (provincia/municipio/sección/sector)
+                self.cascadeNames.forEach(function(name) {
+                    var inputs = form.querySelectorAll('[name="' + name + '"]');
+                    inputs.forEach(function(input) {
+                        input.addEventListener('change', function(e) {
+                            if (e.target.value) self._flyToArea(e.target.value);
+                        });
+                    });
+                });
+                // Complejo (Residencial) — uses its own endpoint
+                if (self.complexName) {
+                    var inputs = form.querySelectorAll('[name="' + self.complexName + '"]');
+                    inputs.forEach(function(input) {
+                        input.addEventListener('change', function(e) {
+                            if (e.target.value) self._flyToComplex(e.target.value);
+                        });
+                    });
+                }
+            },
+
+            _flyToArea(areaId) {
+                var self = this;
+                window.nitroFetchAreaCenter(areaId).then(function(data) {
+                    if (!data || !self.map) return;
+                    self.map.flyTo({
+                        center: [data.lng, data.lat],
+                        zoom: data.zoom || 12,
+                        speed: 1.4
+                    });
+                });
+            },
+
+            _flyToComplex(complexId) {
+                var self = this;
+                window.nitroFetchComplexCenter(complexId).then(function(data) {
+                    if (!data || !self.map) return;
+                    self.map.flyTo({
+                        center: [data.lng, data.lat],
+                        zoom: data.zoom || 16,
+                        speed: 1.4,
+                    });
+                });
+            },
+
+            _addMarker(lng, lat) {
+                var self = this;
+                if (self.marker) self.marker.remove();
+                self.marker = new maplibregl.Marker({ color: '#09c6af', draggable: true })
+                    .setLngLat([lng, lat]).addTo(self.map);
+                self.markerLng = lng;
+                self.markerLat = lat;
+                self.hasMarker = true;
+                self.marker.on('dragend', function() {
+                    var p = self.marker.getLngLat();
+                    self.markerLng = p.lng;
+                    self.markerLat = p.lat;
+                });
+            },
+
+            clearMarker() {
+                if (this.marker) { this.marker.remove(); this.marker = null; }
+                this.hasMarker = false;
+            }
+        };
+    };
+}
+</script>
+{% endlocalize %}

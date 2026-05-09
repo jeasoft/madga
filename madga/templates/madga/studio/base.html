@@ -1,0 +1,56 @@
+{% load static madga_studio_tags %}<!DOCTYPE html>
+<html lang="es" data-theme="{% if site.color_scheme == 'light' %}light{% else %}dark{% endif %}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ site.name|default:"MADGA" }} · Studio{% endblock %}</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%236C63FF'/%3E%3Cpath d='M5 17V7l4 5 4-5v10' stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='18' cy='17' r='2' fill='%2344b78b'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'madga/studio/studio.tailwind.css' %}">
+
+  {# Per-Site theme overrides (accent color from Settings). #}
+  {% if site %}
+  <style>
+    :root, [data-theme="dark"], [data-theme="light"] {
+      --accent: {{ site.accent_color|default:'#6C63FF' }};
+      --accent-soft: {{ site.accent_color|default:'#6C63FF' }}24;
+      --accent-softer: {{ site.accent_color|default:'#6C63FF' }}14;
+    }
+  </style>
+  {% endif %}
+
+  <script src="https://unpkg.com/htmx.org@2.0.4" defer></script>
+  <script src="{% static 'madga/studio/studio.js' %}" defer></script>
+  {% block head_extra %}{% endblock %}
+</head>
+<body hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}'>
+
+<div class="madga-app" data-sidebar-state="closed">
+  {% include "madga/studio/components/sidebar.html" %}
+  <button type="button" class="madga-sidebar-scrim" aria-label="Cerrar menú" data-madga-sidebar-close></button>
+
+  <main class="madga-main">
+    {% include "madga/studio/components/topbar.html" %}
+
+    <div class="madga-main-scroll">
+      {% if messages %}
+        <div style="padding:12px 24px 0; display:flex; flex-direction:column; gap:6px;">
+          {% for message in messages %}
+            <div class="madga-badge madga-badge--{% if message.tags == 'error' %}archived{% elif message.tags == 'success' %}published{% else %}draft{% endif %}" style="padding:8px 12px; align-self:flex-start;">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+</div>
+
+{% block body_extra %}{% endblock %}
+</body>
+</html>

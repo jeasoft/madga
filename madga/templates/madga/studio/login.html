@@ -1,0 +1,51 @@
+{% load static %}<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MADGA · Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'madga/studio/studio.tailwind.css' %}">
+  <style>
+    body { display: grid; place-items: center; min-height: 100vh; background: var(--bg-0); margin: 0; }
+    .login-card {
+      background: var(--bg-1); border: 1px solid var(--border);
+      border-radius: 14px; padding: 32px; width: 100%; max-width: 360px;
+      box-shadow: var(--shadow-md);
+    }
+    .login-card h1 { font-size: 22px; font-weight: 600; margin: 0 0 4px; color: var(--fg-0); }
+    .login-card .hint { color: var(--fg-2); font-size: 13px; margin: 0 0 22px; }
+    .brand-line { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+    .brand-mark { width: 28px; height: 28px; background: var(--accent); color: var(--accent-fg); border-radius: 7px; display: grid; place-items: center; }
+    .login-card .err { color: #ff7a7a; font-size: 12.5px; margin-top: 6px; }
+  </style>
+</head>
+<body>
+  <form class="login-card" method="post">
+    {% csrf_token %}
+    <div class="brand-line">
+      <div class="brand-mark">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M5 17V7l4 5 4-5v10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div style="font-size:18px; font-weight:700; color:var(--fg-0);">MADGA Studio</div>
+    </div>
+    <h1>Bienvenido</h1>
+    <p class="hint">Inicia sesión para entrar al backoffice.</p>
+
+    {% if form.non_field_errors %}<div class="err">{{ form.non_field_errors }}</div>{% endif %}
+
+    <div class="madga-field">
+      <label class="madga-field-label" for="id_username">Usuario</label>
+      <input class="madga-input" type="text" name="username" id="id_username" autofocus required value="{{ form.username.value|default:'' }}">
+    </div>
+    <div class="madga-field">
+      <label class="madga-field-label" for="id_password">Contraseña</label>
+      <input class="madga-input" type="password" name="password" id="id_password" required>
+    </div>
+    <input type="hidden" name="next" value="{{ next }}">
+    <button type="submit" class="madga-btn madga-btn--primary" style="width:100%; justify-content:center; margin-top:8px;">Entrar</button>
+  </form>
+</body>
+</html>

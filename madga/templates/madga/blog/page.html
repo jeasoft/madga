@@ -1,0 +1,13 @@
+{% extends "madga/blog/base.html" %}
+
+{% block title %}{{ page.meta_title|default:page.title }} · {{ site.name }}{% endblock %}
+{% block meta_description %}{{ page.meta_description }}{% endblock %}
+
+{% block content %}
+<article class="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
+  <header class="mb-10">
+    <h1 class="font-heading text-3xl sm:text-4xl font-semibold tracking-tight">{{ page.title }}</h1>
+  </header>
+  <div class="prose">{{ page.body_html|safe }}</div>
+</article>
+{% endblock %}

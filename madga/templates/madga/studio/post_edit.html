@@ -1,0 +1,257 @@
+{% extends "madga/studio/base.html" %}
+{% load static madga_studio_tags %}
+
+{% block title %}{% if post %}{{ post.title|default:"Editar post" }}{% else %}Nuevo post{% endif %} · Studio{% endblock %}
+{% block breadcrumbs %}
+  <a href="{% url 'madga_studio:post_list' %}" class="crumb">Posts</a>
+  <span class="sep">/</span>
+  <span class="crumb is-current">{% if post %}{{ post.title|default:"Sin título" }}{% else %}Nuevo post{% endif %}</span>
+{% endblock %}
+
+{% block head_extra %}
+<style>
+  .madga-editor-grid { display: grid; grid-template-columns: 1fr 320px; gap: 20px; padding: 20px; align-items: start; }
+  .madga-editor-main { background: var(--bg-1); border: 1px solid var(--border); border-radius: 12px; padding: 28px; min-height: 560px; }
+  .madga-editor-title {
+    width: 100%; border: none; outline: none; background: transparent;
+    color: var(--fg-0); font-family: var(--font-sans); font-size: 30px;
+    font-weight: 600; line-height: 1.2; padding: 0 0 14px;
+    margin: 0 0 14px; border-bottom: 1px solid var(--border);
+  }
+  .madga-editor-title::placeholder { color: var(--fg-3); }
+  .madga-editor-rail { display: flex; flex-direction: column; gap: 14px; }
+  .madga-rail-card { background: var(--bg-1); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+  .madga-rail-card h3 {
+    font-size: 11px; text-transform: uppercase; letter-spacing: .06em;
+    color: var(--fg-2); margin: 0 0 12px; font-weight: 600;
+  }
+  .madga-editor-actions {
+    position: sticky; top: 60px; background: var(--bg-1); border: 1px solid var(--border);
+    border-radius: 10px; padding: 8px 12px; display: flex; gap: 8px;
+    align-items: center; margin-bottom: 14px; z-index: 5;
+  }
+  .madga-editor-status { font-size: 11.5px; color: var(--fg-2); font-variant-numeric: tabular-nums; }
+</style>
+{# Editor.js scripts in <head> so they parse before our init runs. #}
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@2.30.7"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/header@2.8.7"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/list@1.10.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@2.6.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/code@2.9.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/delimiter@1.4.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/image@2.9.3"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/embed@2.7.6"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/marker@1.4.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/inline-code@1.5.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/underline@1.2.1"></script>
+{# Note: 'link' inline tool is built into Editor.js core — referenced by string in inlineToolbar. #}
+{% endblock %}
+
+{% block content %}
+<form method="post" id="post-form" enctype="multipart/form-data" class="madga-editor-grid">
+  {% csrf_token %}
+
+  <div>
+    <div class="madga-editor-actions">
+      <span class="madga-editor-status" id="autosave-status">Sin cambios</span>
+      <div style="flex:1"></div>
+      {% if post and post.slug %}
+        <a href="{% url 'madga_studio:post_preview' pk=post.pk %}" target="_blank" class="madga-btn madga-btn--sm">{% studio_icon "eye" size=14 stroke=2 %} Preview</a>
+        {% if post.status == 'published' %}
+          <a href="/blog/{{ post.slug }}/" target="_blank" class="madga-btn madga-btn--ghost madga-btn--sm">{% studio_icon "external" size=12 stroke=2 %} Live</a>
+        {% endif %}
+      {% else %}
+        <span class="madga-btn madga-btn--sm" aria-disabled="true" style="opacity:.5; cursor:not-allowed;" title="Guarda primero">Preview</span>
+      {% endif %}
+      <button type="submit" data-set-status="draft" class="madga-btn madga-btn--sm">Guardar borrador</button>
+      <button type="submit" data-set-status="published" class="madga-btn madga-btn--sm madga-btn--primary">Publicar</button>
+    </div>
+
+    <div class="madga-editor-main">
+      <input class="madga-editor-title" type="text" name="title" id="id_title"
+             value="{{ form.title.value|default:'' }}" placeholder="Título del post…" required>
+      <div class="madga-editor-help" style="display:flex; gap:8px; flex-wrap:wrap; padding:8px 0 14px; color:var(--fg-3); font-size:12px; border-bottom:1px dashed var(--border); margin-bottom:14px;">
+        <span style="display:inline-flex; gap:6px; align-items:center;">{% studio_icon "edit" size=12 stroke=2 %} Selecciona texto para <b>negritas</b>, <i>cursivas</i>, enlaces y resaltado</span>
+        <span style="opacity:.6">·</span>
+        <span>Presiona <kbd style="border:1px solid var(--border); padding:1px 6px; border-radius:4px; font-family:var(--font-mono); font-size:11px;">/</kbd> o usa el <b>+</b> para añadir bloques (encabezado, lista, imagen, código, embed)</span>
+      </div>
+      <div id="editorjs-container" class="madga-editor"></div>
+      <input type="hidden" name="body" id="id_body">
+      {% if form.body.errors %}<div class="madga-field-error">{{ form.body.errors }}</div>{% endif %}
+    </div>
+  </div>
+
+  <aside class="madga-editor-rail">
+    <div class="madga-rail-card">
+      <h3>Estado</h3>
+      <div class="madga-field">
+        <label class="madga-field-label">Status</label>
+        <select class="madga-select" name="status">
+          {% for value, label in form.status.field.choices %}
+            <option value="{{ value }}" {% if form.status.value == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="madga-field">
+        <label class="madga-field-label">Publicar el</label>
+        <input class="madga-input" type="datetime-local" name="published_at" value="{{ form.published_at.value|date:'Y-m-d\TH:i' }}">
+        <span class="madga-field-help">Si la fecha es futura, queda programado.</span>
+      </div>
+      <div class="madga-field">
+        <label class="madga-field-label">Slug</label>
+        <input class="madga-input" type="text" name="slug" value="{{ form.slug.value|default:'' }}" placeholder="auto-generado">
+      </div>
+    </div>
+
+    <div class="madga-rail-card">
+      <h3>Organización</h3>
+      <div class="madga-field">
+        <label class="madga-field-label">Categoría</label>
+        <select class="madga-select" name="category">
+          <option value="">— ninguna —</option>
+          {% for cat in categories %}
+            <option value="{{ cat.id }}" {% if form.category.value|stringformat:"s" == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="madga-field">
+        <label class="madga-field-label">Tags</label>
+        <select class="madga-select" name="tag_slugs" multiple size="4" style="height:auto; min-height:80px;">
+          {% for tag in tags %}
+            <option value="{{ tag.slug }}" {% if tag.slug in selected_tag_slugs %}selected{% endif %}>{{ tag.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="madga-field">
+        <label class="madga-field-label">Excerpt</label>
+        <textarea class="madga-textarea" name="excerpt" rows="3" maxlength="500">{{ form.excerpt.value|default:'' }}</textarea>
+      </div>
+    </div>
+
+    <div class="madga-rail-card">
+      <h3>SEO</h3>
+      <div class="madga-field">
+        <label class="madga-field-label">Meta title</label>
+        <input class="madga-input" type="text" name="meta_title" value="{{ form.meta_title.value|default:'' }}" maxlength="160">
+      </div>
+      <div class="madga-field">
+        <label class="madga-field-label">Meta description</label>
+        <textarea class="madga-textarea" name="meta_description" rows="2">{{ form.meta_description.value|default:'' }}</textarea>
+      </div>
+      <div class="madga-field">
+        <label class="madga-field-label">Focus keyword</label>
+        <input class="madga-input" type="text" name="focus_keyword" value="{{ form.focus_keyword.value|default:'' }}" maxlength="100">
+      </div>
+      <div class="madga-field">
+        <label class="madga-field-label">Canonical URL</label>
+        <input class="madga-input" type="url" name="canonical_url" value="{{ form.canonical_url.value|default:'' }}">
+      </div>
+    </div>
+
+    {% if post %}
+    <form method="post" action="{% url 'madga_studio:post_delete' pk=post.pk %}" onsubmit="return confirm('¿Mover a la papelera?');" class="madga-rail-card">
+      {% csrf_token %}
+      <h3>Peligro</h3>
+      <button type="submit" class="madga-btn madga-btn--sm madga-btn--danger" style="width:100%; justify-content:center;">{% studio_icon "trash" size=12 stroke=2 %} Mover a papelera</button>
+    </form>
+    {% endif %}
+  </aside>
+</form>
+
+<script>
+(function () {
+  const initialData = {{ post_body_json|safe }};
+  const csrf = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+  function init() {
+    if (typeof EditorJS === 'undefined') {
+      document.getElementById('editorjs-container').innerHTML =
+        '<div style="padding:14px; color:#ff7a7a; border:1px solid #ff7a7a; border-radius:8px;">Editor.js failed to load. Check Console.</div>';
+      return;
+    }
+    const inlineTools = ['bold', 'italic', 'underline', 'marker', 'link', 'inlineCode'];
+    const editor = new EditorJS({
+      holder: 'editorjs-container',
+      autofocus: false,
+      placeholder: 'Escribe algo, o presiona / para ver los bloques…',
+      data: initialData && initialData.blocks ? initialData : {blocks: []},
+      tools: {
+        header: { class: Header, inlineToolbar: inlineTools, config: { levels: [2, 3], defaultLevel: 2 } },
+        paragraph: { inlineToolbar: inlineTools },
+        list: { class: List, inlineToolbar: inlineTools },
+        quote: { class: Quote, inlineToolbar: inlineTools },
+        code: { class: CodeTool },
+        delimiter: { class: Delimiter },
+        marker: { class: Marker, shortcut: 'CMD+SHIFT+M' },
+        underline: { class: Underline, shortcut: 'CMD+U' },
+        inlineCode: { class: InlineCode, shortcut: 'CMD+SHIFT+C' },
+        image: {
+          class: ImageTool,
+          config: {
+            endpoints: { byFile: '{% url "madga_studio:media_upload" %}' },
+            additionalRequestHeaders: { 'X-CSRFToken': csrf },
+            field: 'image',
+          },
+        },
+        embed: {
+          class: Embed,
+          config: { services: { youtube: true, twitter: true, vimeo: true, instagram: true } },
+        },
+      },
+      onChange: () => { setDirty(); scheduleAutosave(); },
+    });
+
+    let dirty = false, autosaveTimer = null;
+    const statusEl = document.getElementById('autosave-status');
+    function setDirty() { dirty = true; statusEl.textContent = 'Cambios sin guardar'; }
+    function setSaved() { dirty = false; statusEl.textContent = 'Guardado · ' + new Date().toLocaleTimeString(); }
+    async function syncBody() {
+      const data = await editor.save();
+      document.getElementById('id_body').value = JSON.stringify(data);
+      return data;
+    }
+    function scheduleAutosave() { if (autosaveTimer) clearTimeout(autosaveTimer); autosaveTimer = setTimeout(autosave, 30000); }
+    async function autosave() {
+      if (!dirty) return;
+      await syncBody();
+      const fd = new FormData(document.getElementById('post-form'));
+      fd.set('status', 'draft');
+      try {
+        const r = await fetch(window.location.pathname, {
+          method: 'POST', body: fd,
+          headers: {'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': csrf},
+        });
+        if (r.ok) {
+          const j = await r.json();
+          if (j.ok) {
+            setSaved();
+            if (j.id && !window.location.pathname.includes(j.id)) {
+              history.replaceState({}, '', '/studio/posts/' + j.id + '/edit/');
+            }
+          }
+        }
+      } catch (e) { console.error(e); }
+    }
+    const form = document.getElementById('post-form');
+    // Submit-button intent: each button overrides the rail's status select before submitting.
+    let pendingStatus = null;
+    form.querySelectorAll('button[type=submit][data-set-status]').forEach(btn => {
+      btn.addEventListener('click', () => { pendingStatus = btn.dataset.setStatus; });
+    });
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await syncBody();
+      if (pendingStatus) {
+        const sel = form.querySelector('select[name="status"]');
+        if (sel) sel.value = pendingStatus;
+      }
+      form.submit();  // bypasses this listener; goes straight to network
+    });
+    document.getElementById('id_title').addEventListener('input', setDirty);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+{% endblock %}

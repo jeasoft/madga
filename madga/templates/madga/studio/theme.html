@@ -1,0 +1,193 @@
+{% extends "madga/studio/base.html" %}
+{% load madga_studio_tags %}
+
+{% block breadcrumbs %}<span class="crumb">Site</span><span class="sep">/</span><span class="crumb is-current">Theme</span>{% endblock %}
+
+{% block head_extra %}
+<style>
+  .madga-theme-grid { display: grid; grid-template-columns: 380px 1fr; gap: 18px; padding: 0 0 18px; align-items: start; }
+  .madga-theme-card { padding: 16px; }
+  .madga-theme-radios { display: flex; gap: 6px; flex-wrap: wrap; }
+  .madga-theme-radio {
+    flex: 1; min-width: 80px; text-align: center; padding: 8px 10px;
+    background: var(--bg-2); border: 1px solid var(--border);
+    border-radius: 6px; font-size: 12.5px; cursor: pointer; user-select: none;
+    color: var(--fg-1); transition: all .12s;
+  }
+  .madga-theme-radio input { display: none; }
+  .madga-theme-radio:has(input:checked) { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .madga-theme-preview-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px; padding: 8px 12px;
+    background: var(--bg-1); border: 1px solid var(--border); border-radius: 10px;
+  }
+  .madga-device-switcher { display: inline-flex; gap: 2px; padding: 2px; background: var(--bg-2); border-radius: 6px; }
+  .madga-device-switcher button {
+    padding: 5px 12px; font-size: 12px; color: var(--fg-2);
+    background: transparent; border: none; border-radius: 4px; cursor: pointer;
+  }
+  .madga-device-switcher button.active { background: var(--bg-1); color: var(--fg-0); box-shadow: var(--shadow-sm); }
+  .madga-theme-preview-frame-outer {
+    background: var(--bg-1); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px; min-height: 600px; display: grid; place-items: start center;
+  }
+  .madga-theme-preview-frame {
+    background: white; border: 1px solid var(--border); border-radius: 8px;
+    box-shadow: var(--shadow-md); transition: width .18s, height .18s;
+    width: 100%; height: 720px;
+  }
+  .madga-theme-preview-frame[data-device="mobile"] { width: 390px; height: 720px; }
+  .madga-theme-preview-frame[data-device="tablet"] { width: 820px; height: 720px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="madga-page">
+  <div class="madga-page-header">
+    <div class="madga-page-title-block">
+      <h1 class="madga-page-title">Theme</h1>
+      <p class="madga-page-subtitle">Tokens visuales con preview en vivo.</p>
+    </div>
+    <div class="madga-page-actions">
+      <button form="theme-form" type="submit" class="madga-btn madga-btn--primary">Guardar</button>
+    </div>
+  </div>
+
+  <div class="madga-theme-grid">
+    <form id="theme-form" method="post" enctype="multipart/form-data" style="display:flex; flex-direction:column; gap:14px;">
+      {% csrf_token %}
+
+      <div class="madga-card madga-theme-card">
+        <h3 style="font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--fg-2); margin:0 0 14px; font-weight:600;">Color</h3>
+        <div class="madga-field">
+          <label class="madga-field-label" for="id_accent_color">Accent</label>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <input class="madga-color" id="id_accent_color" type="color" name="accent_color" value="{{ form.accent_color.value|default:'#6C63FF' }}" oninput="MadgaTheme.updateAccent(this.value)">
+            <code id="accent-display" style="font-family:var(--font-mono); font-size:12px; color:var(--fg-1);">{{ form.accent_color.value|default:'#6C63FF' }}</code>
+          </div>
+        </div>
+        <div class="madga-field">
+          <label class="madga-field-label">Color scheme</label>
+          <div class="madga-theme-radios">
+            {% for value, label in form.color_scheme.field.choices %}
+              <label class="madga-theme-radio">
+                <input type="radio" name="color_scheme" value="{{ value }}" {% if form.color_scheme.value == value %}checked{% endif %} onchange="MadgaTheme.updateScheme(this.value)">
+                {{ label }}
+              </label>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="madga-field">
+          <label class="madga-field-label" for="id_theme">Theme preset</label>
+          <select class="madga-select" id="id_theme" name="theme">
+            {% for opt in theme_options|default:'essay,magazine,docs,minimal'|cut:""|stringformat:"s" %}{% endfor %}
+            {% if not theme_options %}
+              <option value="essay" {% if form.theme.value == 'essay' %}selected{% endif %}>essay</option>
+              <option value="magazine" {% if form.theme.value == 'magazine' %}selected{% endif %}>magazine</option>
+              <option value="docs" {% if form.theme.value == 'docs' %}selected{% endif %}>docs</option>
+              <option value="minimal" {% if form.theme.value == 'minimal' %}selected{% endif %}>minimal</option>
+            {% else %}
+              {% for opt in theme_options %}<option value="{{ opt }}" {% if form.theme.value == opt %}selected{% endif %}>{{ opt }}</option>{% endfor %}
+            {% endif %}
+          </select>
+        </div>
+      </div>
+
+      <div class="madga-card madga-theme-card">
+        <h3 style="font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--fg-2); margin:0 0 14px; font-weight:600;">Typography</h3>
+        <div class="madga-field">
+          <label class="madga-field-label">Heading font</label>
+          <select class="madga-select" name="heading_font" onchange="MadgaTheme.updateFont('heading', this.value)">
+            {% for f in font_choices|default:'Geist,Inter,Source Serif 4,JetBrains Mono,System UI'|cut:""|stringformat:"s" %}{% endfor %}
+            {% if not font_choices %}
+              <option {% if form.heading_font.value == 'Geist' %}selected{% endif %}>Geist</option>
+              <option {% if form.heading_font.value == 'Inter' %}selected{% endif %}>Inter</option>
+              <option {% if form.heading_font.value == 'Source Serif 4' %}selected{% endif %}>Source Serif 4</option>
+            {% else %}
+              {% for f in font_choices %}<option {% if form.heading_font.value == f %}selected{% endif %}>{{ f }}</option>{% endfor %}
+            {% endif %}
+          </select>
+        </div>
+        <div class="madga-field">
+          <label class="madga-field-label">Body font</label>
+          <select class="madga-select" name="body_font" onchange="MadgaTheme.updateFont('body', this.value)">
+            {% if not font_choices %}
+              <option {% if form.body_font.value == 'Geist' %}selected{% endif %}>Geist</option>
+              <option {% if form.body_font.value == 'Inter' %}selected{% endif %}>Inter</option>
+              <option {% if form.body_font.value == 'Source Serif 4' %}selected{% endif %}>Source Serif 4</option>
+            {% else %}
+              {% for f in font_choices %}<option {% if form.body_font.value == f %}selected{% endif %}>{{ f }}</option>{% endfor %}
+            {% endif %}
+          </select>
+        </div>
+      </div>
+
+      <div class="madga-card madga-theme-card">
+        <h3 style="font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--fg-2); margin:0 0 14px; font-weight:600;">Layout</h3>
+        <div class="madga-field">
+          <label class="madga-field-label">Border radius — <span id="radius-display">{{ form.border_radius.value|default:8 }}px</span></label>
+          <input class="madga-range" type="range" name="border_radius" min="0" max="24" step="1" value="{{ form.border_radius.value|default:8 }}" oninput="MadgaTheme.updateRadius(this.value)">
+        </div>
+        <div class="madga-field">
+          <label class="madga-field-label">Content density</label>
+          <div class="madga-theme-radios">
+            {% for value, label in form.content_density.field.choices %}
+              <label class="madga-theme-radio">
+                <input type="radio" name="content_density" value="{{ value }}" {% if form.content_density.value == value %}checked{% endif %} onchange="MadgaTheme.updateDensity(this.value)">
+                {{ label }}
+              </label>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      {# Hidden fields the form expects but not shown here. #}
+      <input type="hidden" name="name" value="{{ site.name|default:'' }}">
+      <input type="hidden" name="domain" value="{{ site.domain|default:'' }}">
+      <input type="hidden" name="description" value="{{ site.description|default:'' }}">
+      <input type="hidden" name="meta_title" value="{{ site.meta_title|default:'' }}">
+      <input type="hidden" name="meta_description" value="{{ site.meta_description|default:'' }}">
+      <input type="hidden" name="timezone" value="{{ site.timezone|default:'America/Santo_Domingo' }}">
+    </form>
+
+    <div>
+      <div class="madga-theme-preview-toolbar">
+        <div class="madga-device-switcher" role="group" aria-label="Device size">
+          <button type="button" data-device="mobile"  onclick="MadgaTheme.setDevice('mobile')">Mobile</button>
+          <button type="button" data-device="tablet"  onclick="MadgaTheme.setDevice('tablet')">Tablet</button>
+          <button type="button" data-device="desktop" class="active" onclick="MadgaTheme.setDevice('desktop')">Desktop</button>
+        </div>
+        <a href="/" target="_blank" rel="noopener" class="madga-btn madga-btn--sm">{% studio_icon "external" size=12 stroke=2 %} Abrir en pestaña</a>
+      </div>
+      <div class="madga-theme-preview-frame-outer">
+        <iframe id="theme-preview" class="madga-theme-preview-frame" data-device="desktop" src="/" loading="lazy"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+window.MadgaTheme = (function() {
+  const iframe = () => document.getElementById('theme-preview');
+  function inject(name, value) {
+    try {
+      const doc = iframe().contentDocument;
+      if (doc && doc.documentElement) doc.documentElement.style.setProperty(name, value);
+    } catch (_) {}
+  }
+  return {
+    setDevice(d) {
+      iframe().setAttribute('data-device', d);
+      document.querySelectorAll('.madga-device-switcher button').forEach(b => {
+        b.classList.toggle('active', b.dataset.device === d);
+      });
+    },
+    updateAccent(hex) { inject('--color-accent', hex); document.getElementById('accent-display').textContent = hex; },
+    updateScheme(s)   { try { iframe().contentDocument.documentElement.setAttribute('data-theme', s); } catch (_) {} },
+    updateFont(slot, name) { inject('--font-' + (slot === 'heading' ? 'heading' : 'sans'), `'${name}', system-ui, sans-serif`); },
+    updateRadius(px)  { inject('--radius', px + 'px'); document.getElementById('radius-display').textContent = px + 'px'; },
+    updateDensity(d)  { try { iframe().contentDocument.documentElement.setAttribute('data-density', d); } catch (_) {} },
+  };
+})();
+</script>
+{% endblock %}
