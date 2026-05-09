@@ -47,3 +47,7 @@ node_modules/
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Sibling sites that consume MADGA — they belong in their own repos.
+# Kept on disk for local dev convenience but never tracked here.
+/miscoreblog/

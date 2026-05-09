@@ -73,10 +73,10 @@
       <div class="madga-field"><label class="madga-field-label">Meta description</label><input class="madga-input" type="text" name="meta_description" value="{{ form.meta_description.value|default:'' }}"></div>
     </div>
     {% if page_obj %}
-    <form method="post" action="{% url 'madga_studio:page_delete' pk=page_obj.pk %}" onsubmit="return confirm('¿Borrar página?');" class="madga-rail-card">
+    <form method="post" action="{% url 'madga_studio:page_delete' pk=page_obj.pk %}" class="madga-rail-card">
       {% csrf_token %}
       <h3>Peligro</h3>
-      <button class="madga-btn madga-btn--sm madga-btn--danger" style="width:100%; justify-content:center;">{% studio_icon "trash" size=12 stroke=2 %} Eliminar página</button>
+      <button class="madga-btn madga-btn--sm madga-btn--danger" style="width:100%; justify-content:center;" data-madga-confirm="¿Borrar esta página? Esta acción no se puede deshacer.">{% studio_icon "trash" size=12 stroke=2 %} Eliminar página</button>
     </form>
     {% endif %}
   </aside>

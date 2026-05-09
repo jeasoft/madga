@@ -193,4 +193,65 @@
     }
   });
   document.addEventListener('DOMContentLoaded', refreshBulkBar);
+
+  // Toast auto-dismiss -------------------------------------------------------
+  function dismissToast(toast) {
+    if (!toast || toast.classList.contains('is-leaving')) return;
+    toast.classList.add('is-leaving');
+    setTimeout(() => toast.remove(), 250);
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('[data-madga-toast]').forEach(t => {
+      setTimeout(() => dismissToast(t), 4000);
+    });
+  });
+  document.addEventListener('click', function (e) {
+    const dismiss = e.target.closest('[data-madga-toast-dismiss]');
+    if (dismiss) dismissToast(dismiss.closest('[data-madga-toast]'));
+  });
+
+  // Confirm modal ------------------------------------------------------------
+  // Any element with data-madga-confirm="message" intercepts the form submit
+  // and asks for confirmation. data-madga-confirm-variant changes the OK
+  // button color (default, danger).
+  let pendingConfirmForm = null;
+  function openConfirm(message, form) {
+    pendingConfirmForm = form;
+    const modal = document.querySelector('[data-madga-confirm-backdrop]');
+    if (!modal) { return form.submit(); }  // graceful fallback
+    modal.querySelector('[data-madga-confirm-msg]').textContent = message;
+    modal.hidden = false;
+  }
+  function closeConfirm() {
+    pendingConfirmForm = null;
+    const modal = document.querySelector('[data-madga-confirm-backdrop]');
+    if (modal) modal.hidden = true;
+  }
+  document.addEventListener('submit', function (e) {
+    const trigger = e.submitter && e.submitter.closest('[data-madga-confirm]');
+    if (!trigger) return;
+    if (trigger.dataset.madgaConfirmAcknowledged === '1') {
+      delete trigger.dataset.madgaConfirmAcknowledged;
+      return;
+    }
+    e.preventDefault();
+    openConfirm(trigger.getAttribute('data-madga-confirm'), e.target);
+    pendingConfirmForm._submitter = e.submitter;
+  }, true);
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('[data-madga-confirm-cancel]')) { closeConfirm(); return; }
+    if (e.target.matches('[data-madga-confirm-backdrop]')) { closeConfirm(); return; }
+    if (e.target.closest('[data-madga-confirm-ok]')) {
+      const form = pendingConfirmForm;
+      const submitter = form && form._submitter;
+      closeConfirm();
+      if (!form) return;
+      if (submitter) {
+        submitter.dataset.madgaConfirmAcknowledged = '1';
+        submitter.click();
+      } else {
+        form.submit();
+      }
+    }
+  });
 })();

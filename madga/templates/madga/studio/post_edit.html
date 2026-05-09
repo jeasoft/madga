@@ -162,7 +162,7 @@
     </div>
 
     {% if post %}
-    <form method="post" action="{% url 'madga_studio:post_delete' pk=post.pk %}" onsubmit="return confirm('¿Mover a la papelera?');" class="madga-rail-card">
+    <form method="post" action="{% url 'madga_studio:post_delete' pk=post.pk %}" class="madga-rail-card">
       {% csrf_token %}
       <h3>Peligro</h3>
       <button type="submit" class="madga-btn madga-btn--sm madga-btn--danger" style="width:100%; justify-content:center;">{% studio_icon "trash" size=12 stroke=2 %} Mover a papelera</button>

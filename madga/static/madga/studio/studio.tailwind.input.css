@@ -217,6 +217,25 @@
   .madga-hb-visible { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--fg-1); padding: 6px 0; }
   .madga-hb-block-foot { padding-top: 6px; border-top: 1px dashed var(--border); margin-top: 4px; }
 
+  /* Toasts -------------------------------------------------------------- */
+  .madga-toasts { position: fixed; right: 16px; bottom: 16px; z-index: 200; display: flex; flex-direction: column-reverse; gap: 8px; max-width: calc(100vw - 32px); pointer-events: none; }
+  .madga-toast { pointer-events: auto; min-width: 280px; max-width: 420px; padding: 10px 14px; border-radius: 10px; background: var(--bg-1); border: 1px solid var(--border); box-shadow: var(--shadow-md); display: flex; gap: 10px; align-items: center; font-size: 13px; color: var(--fg-0); animation: madga-toast-in .2s ease; }
+  .madga-toast.is-leaving { animation: madga-toast-out .25s ease forwards; }
+  .madga-toast--success { border-left: 3px solid var(--status-published-fg, #44b78b); }
+  .madga-toast--error { border-left: 3px solid #ef4444; }
+  .madga-toast--info { border-left: 3px solid var(--accent); }
+  .madga-toast-close { background: transparent; border: 0; color: var(--fg-3); font-size: 16px; cursor: pointer; padding: 0 2px; line-height: 1; }
+  .madga-toast-close:hover { color: var(--fg-0); }
+  @keyframes madga-toast-in { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  @keyframes madga-toast-out { from { transform: translateX(0); opacity: 1; } to { transform: translateX(20px); opacity: 0; } }
+
+  /* Confirm modal ------------------------------------------------------- */
+  .madga-confirm-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 150; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .madga-confirm-backdrop[hidden] { display: none; }
+  .madga-confirm-modal { background: var(--bg-1); border: 1px solid var(--border); border-radius: 14px; padding: 20px; width: min(380px, 100%); box-shadow: var(--shadow-lg); }
+  .madga-confirm-msg { color: var(--fg-0); font-size: 14px; line-height: 1.5; margin-bottom: 16px; }
+  .madga-confirm-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
   /* Pagination ---------------------------------------------------------- */
   .madga-pagination { display: flex; gap: 10px; align-items: center; justify-content: center; padding: 16px 0 8px; flex-wrap: wrap; }
   .madga-pagination-btn { display: inline-flex; gap: 4px; align-items: center; padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 12.5px; color: var(--fg-1); text-decoration: none; transition: background .12s; }

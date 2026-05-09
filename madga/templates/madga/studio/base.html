@@ -36,16 +36,6 @@
     {% include "madga/studio/components/topbar.html" %}
 
     <div class="madga-main-scroll">
-      {% if messages %}
-        <div style="padding:12px 24px 0; display:flex; flex-direction:column; gap:6px;">
-          {% for message in messages %}
-            <div class="madga-badge madga-badge--{% if message.tags == 'error' %}archived{% elif message.tags == 'success' %}published{% else %}draft{% endif %}" style="padding:8px 12px; align-self:flex-start;">
-              {{ message }}
-            </div>
-          {% endfor %}
-        </div>
-      {% endif %}
-
       {% block content %}{% endblock %}
     </div>
   </main>
@@ -53,6 +43,29 @@
 
 {# Media picker portal — populated on demand via HTMX from any data-madga-mp-trigger button. #}
 <div class="madga-mp-backdrop" data-madga-mp-portal hidden></div>
+
+{# Toasts: rendered from Django messages framework, auto-dismiss after 4s. #}
+<div class="madga-toasts" data-madga-toasts>
+  {% if messages %}
+    {% for message in messages %}
+      <div class="madga-toast madga-toast--{% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% else %}info{% endif %}" data-madga-toast>
+        <span>{{ message }}</span>
+        <button type="button" class="madga-toast-close" aria-label="Cerrar" data-madga-toast-dismiss>&times;</button>
+      </div>
+    {% endfor %}
+  {% endif %}
+</div>
+
+{# Confirm modal — opened by any button with data-madga-confirm="message". The button must be inside a form. #}
+<div class="madga-confirm-backdrop" data-madga-confirm-backdrop hidden>
+  <div class="madga-confirm-modal" role="alertdialog" aria-modal="true">
+    <div class="madga-confirm-msg" data-madga-confirm-msg></div>
+    <div class="madga-confirm-actions">
+      <button type="button" class="madga-btn madga-btn--sm" data-madga-confirm-cancel>Cancelar</button>
+      <button type="button" class="madga-btn madga-btn--sm madga-btn--danger" data-madga-confirm-ok>Confirmar</button>
+    </div>
+  </div>
+</div>
 
 {% block body_extra %}{% endblock %}
 </body>
