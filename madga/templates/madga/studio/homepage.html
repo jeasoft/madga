@@ -8,52 +8,96 @@
   <div class="madga-page-header">
     <div class="madga-page-title-block">
       <h1 class="madga-page-title">Homepage</h1>
-      <p class="madga-page-subtitle">Bloques que aparecen en la home, en orden.</p>
+      <p class="madga-page-subtitle">Bloques que aparecen en la home, en orden. Arrastra el orden con las flechitas y desactiva un bloque sin borrarlo con el switch.</p>
     </div>
     <div class="madga-page-actions">
-      <form method="post" style="display:inline;">
-        {% csrf_token %}
-        <input type="hidden" name="action" value="create">
-        <select class="madga-select" name="block_type" onchange="this.form.submit()" style="display:inline-block; width:auto;">
-          <option>+ Add block…</option>
-          {% for value, label in block_type_choices %}<option value="{{ value }}">{{ label }}</option>{% endfor %}
-        </select>
-      </form>
+      <a href="/" target="_blank" rel="noopener" class="madga-btn madga-btn--sm madga-btn--ghost">
+        {% studio_icon "external" size=12 stroke=2 %} Ver homepage
+      </a>
     </div>
   </div>
 
-  {% for b in blocks %}
-  <details class="madga-card" style="margin-bottom:10px;" {% if forloop.first %}open{% endif %}>
-    <summary style="cursor:pointer; display:flex; align-items:center; gap:10px;">
-      <strong style="color:var(--fg-0);">{{ b.get_block_type_display|default:b.block_type }}</strong>
-      {% if not b.is_visible %}{% studio_badge "draft" "Oculto" %}{% endif %}
-      <span style="margin-left:auto; font-size:12px; color:var(--fg-2);">sort {{ b.sort_order }}</span>
-    </summary>
-    <form method="post" style="margin-top:14px;">
-      {% csrf_token %}
-      <input type="hidden" name="action" value="update">
-      <input type="hidden" name="id" value="{{ b.pk }}">
-      <div class="madga-field">
-        <label class="madga-field-label">Sort order</label>
-        <input class="madga-input" type="number" name="sort_order" value="{{ b.sort_order }}" style="width:120px;">
+  {# Add-block tray ------------------------------------------------------- #}
+  <div class="madga-hb-add">
+    <div class="madga-hb-add-title">Añadir un bloque</div>
+    <div class="madga-hb-add-grid">
+      {% for value, label in block_type_choices %}
+        <form method="post" class="madga-hb-add-tile-form">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="create">
+          <input type="hidden" name="block_type" value="{{ value }}">
+          <button type="submit" class="madga-hb-add-tile">
+            <span class="madga-hb-add-tile-name">{{ label }}</span>
+            <span class="madga-hb-add-tile-desc">{{ block_descriptions|get_item:value }}</span>
+          </button>
+        </form>
+      {% endfor %}
+    </div>
+  </div>
+
+  {# Existing blocks ------------------------------------------------------ #}
+  <div class="madga-hb-list">
+    {% for row in blocks %}
+      {% with b=row.obj %}
+      <div class="madga-hb-block">
+        <header class="madga-hb-block-head">
+          <div class="madga-hb-block-meta">
+            <span class="madga-hb-block-type">{{ b.get_block_type_display }}</span>
+            {% if not b.is_visible %}<span class="madga-hb-block-hidden">Oculto</span>{% endif %}
+            <span class="madga-hb-block-desc">{{ row.description }}</span>
+          </div>
+          <div class="madga-hb-block-actions">
+            <form method="post" style="display:inline;">{% csrf_token %}
+              <input type="hidden" name="action" value="move_up"><input type="hidden" name="pk" value="{{ b.pk }}">
+              <button type="submit" class="madga-icon-btn" title="Mover arriba" {% if row.is_first %}disabled{% endif %}>{% studio_icon "chevron-up" size=14 stroke=2 %}</button>
+            </form>
+            <form method="post" style="display:inline;">{% csrf_token %}
+              <input type="hidden" name="action" value="move_down"><input type="hidden" name="pk" value="{{ b.pk }}">
+              <button type="submit" class="madga-icon-btn" title="Mover abajo" {% if row.is_last %}disabled{% endif %}>{% studio_icon "chevron-down" size=14 stroke=2 %}</button>
+            </form>
+            <form method="post" style="display:inline;">{% csrf_token %}
+              <input type="hidden" name="action" value="toggle_visibility"><input type="hidden" name="pk" value="{{ b.pk }}">
+              <button type="submit" class="madga-icon-btn" title="{% if b.is_visible %}Ocultar{% else %}Mostrar{% endif %}">
+                {% if b.is_visible %}{% studio_icon "eye" size=14 stroke=2 %}{% else %}{% studio_icon "eye" size=14 stroke=2 css_class="madga-hb-eye-off" %}{% endif %}
+              </button>
+            </form>
+            <form method="post" style="display:inline;" onsubmit="return confirm('¿Borrar este bloque?');">{% csrf_token %}
+              <input type="hidden" name="action" value="delete"><input type="hidden" name="pk" value="{{ b.pk }}">
+              <button type="submit" class="madga-icon-btn" title="Borrar">{% studio_icon "trash" size=14 stroke=2 %}</button>
+            </form>
+          </div>
+        </header>
+        <form method="post" class="madga-hb-block-body">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="update">
+          <input type="hidden" name="pk" value="{{ b.pk }}">
+          {% for f in row.fields %}
+            <div class="madga-field">
+              <label class="madga-field-label" for="hb-{{ b.pk }}-{{ f.name }}">{{ f.label }}</label>
+              {% if f.kind == 'textarea' %}
+                <textarea class="madga-textarea" rows="2" name="{{ f.name }}" id="hb-{{ b.pk }}-{{ f.name }}">{{ f.value }}</textarea>
+              {% elif f.kind == 'int' %}
+                <input class="madga-input" type="number" min="1" max="20" name="{{ f.name }}" id="hb-{{ b.pk }}-{{ f.name }}" value="{{ f.value }}">
+              {% elif f.kind == 'url' %}
+                <input class="madga-input" type="url" name="{{ f.name }}" id="hb-{{ b.pk }}-{{ f.name }}" value="{{ f.value }}" placeholder="https://… o /ruta">
+              {% else %}
+                <input class="madga-input" type="text" name="{{ f.name }}" id="hb-{{ b.pk }}-{{ f.name }}" value="{{ f.value }}">
+              {% endif %}
+            </div>
+          {% endfor %}
+          <label class="madga-hb-visible">
+            <input type="checkbox" name="is_visible" {% if b.is_visible %}checked{% endif %}>
+            <span>Bloque visible en la homepage</span>
+          </label>
+          <div class="madga-hb-block-foot">
+            <button type="submit" class="madga-btn madga-btn--sm madga-btn--primary">Guardar cambios</button>
+          </div>
+        </form>
       </div>
-      <div class="madga-field">
-        <label class="madga-field-label" style="display:flex; align-items:center; gap:6px;">
-          <input type="checkbox" name="is_visible" {% if b.is_visible %}checked{% endif %}> Visible
-        </label>
-      </div>
-      <div class="madga-field">
-        <label class="madga-field-label">Config (JSON)</label>
-        <textarea class="madga-textarea" name="config" rows="6" style="font-family:var(--font-mono); font-size:12px;">{{ b.config|default:'{}' }}</textarea>
-      </div>
-      <div style="display:flex; gap:8px;">
-        <button type="submit" class="madga-btn madga-btn--sm madga-btn--primary">Guardar</button>
-        <button type="submit" name="action" value="delete" formnovalidate class="madga-btn madga-btn--sm madga-btn--danger" onclick="return confirm('¿Eliminar bloque?')">{% studio_icon "trash" size=12 stroke=2 %} Borrar</button>
-      </div>
-    </form>
-  </details>
-  {% empty %}
-    {% studio_empty title="Homepage vacía" message="Añade tu primer bloque desde el dropdown arriba." %}
-  {% endfor %}
+      {% endwith %}
+    {% empty %}
+      {% studio_empty title="Homepage vacía" message="Añade tu primer bloque desde el panel de arriba (sugerimos empezar con Hero)." %}
+    {% endfor %}
+  </div>
 </div>
 {% endblock %}

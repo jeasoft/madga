@@ -146,6 +146,14 @@ def studio_empty(title: str, message: str = "", action_label: str = "",
     }
 
 
+@register.filter
+def get_item(d, key):
+    """Dict lookup from templates: {{ mydict|get_item:keyvar }}."""
+    if not isinstance(d, dict):
+        return ""
+    return d.get(key, "")
+
+
 @register.simple_tag
 def studio_active(request, *url_names) -> str:
     """Return ``is-active`` if the current resolved url_name matches any given."""

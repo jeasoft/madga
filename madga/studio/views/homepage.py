@@ -1,8 +1,12 @@
-"""Studio homepage blocks builder (v0.2)."""
+"""Studio homepage blocks builder.
 
-import json
+Each HomepageBlock has a free-form ``config`` JSONField, but the editor
+maps known block_types to typed forms so non-technical users never see
+raw JSON. Unknown keys are preserved if the model already had them.
+"""
 
 from django.contrib import messages
+from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 
@@ -35,38 +39,93 @@ _DEFAULT_CONFIG = {
 }
 
 
+# Fields exposed per block type. Maps form field name → (label, kind).
+# kind ∈ {text, textarea, url, int}
+BLOCK_FIELDS = {
+    HomepageBlock.BLOCK_HERO: [
+        ("title", "Título", "text"),
+        ("subtitle", "Subtítulo", "textarea"),
+        ("cta_label", "Texto del botón", "text"),
+        ("cta_url", "Destino del botón", "url"),
+    ],
+    HomepageBlock.BLOCK_RECENT_POSTS: [
+        ("title", "Título de la sección", "text"),
+        ("count", "Cuántos posts mostrar", "int"),
+    ],
+    HomepageBlock.BLOCK_FEATURED_POST: [
+        ("slug", "Slug del post a destacar", "text"),
+    ],
+    HomepageBlock.BLOCK_NEWSLETTER: [
+        ("title", "Título", "text"),
+        ("subtitle", "Subtítulo", "textarea"),
+        ("button_label", "Texto del botón", "text"),
+    ],
+    HomepageBlock.BLOCK_TEXT: [
+        ("title", "Título (opcional)", "text"),
+        ("body", "Texto", "textarea"),
+    ],
+    HomepageBlock.BLOCK_CTA: [
+        ("title", "Título", "text"),
+        ("cta_label", "Texto del botón", "text"),
+        ("cta_url", "Destino del botón", "url"),
+    ],
+}
+
+BLOCK_DESCRIPTIONS = {
+    HomepageBlock.BLOCK_HERO: "Bloque grande de bienvenida con título, subtítulo y un CTA.",
+    HomepageBlock.BLOCK_RECENT_POSTS: "Lista de los últimos N posts publicados.",
+    HomepageBlock.BLOCK_FEATURED_POST: "Un post destacado mostrado a tamaño completo.",
+    HomepageBlock.BLOCK_NEWSLETTER: "Banda de suscripción al newsletter.",
+    HomepageBlock.BLOCK_TEXT: "Bloque de texto libre con título opcional.",
+    HomepageBlock.BLOCK_CTA: "Llamada a la acción simple con un botón.",
+}
+
+
+def _coerce(kind: str, raw: str):
+    """Convert a POST string to the right Python type for the block config."""
+    if kind == "int":
+        try:
+            return int(raw)
+        except (TypeError, ValueError):
+            return 0
+    return raw or ""
+
+
 class HomepageBuilderView(MadgaStudioMixin, View):
-    """Editor de bloques de la homepage.
-
-    Acciones (POST con ``action``): ``create``, ``update``, ``delete``,
-    ``toggle_visibility``. ``config`` se edita como JSON en un textarea para
-    mantener el editor genérico — el mapeo a UI específica por tipo se
-    consume desde el frontend público a través de la API.
-    """
-
     template_name = "madga/studio/homepage.html"
 
     def _render(self, request, site):
-        blocks = (
+        blocks = list(
             HomepageBlock.objects.filter(site=site)
             if site
             else HomepageBlock.objects.none()
         )
-        # Pre-serialize config so the textarea shows pretty JSON.
-        block_rows = []
-        for b in blocks:
-            block_rows.append(
+        rows = []
+        for idx, b in enumerate(blocks):
+            rows.append(
                 {
                     "obj": b,
-                    "config_json": json.dumps(b.config or {}, indent=2, ensure_ascii=False),
+                    "fields": [
+                        {
+                            "name": fname,
+                            "label": flabel,
+                            "kind": fkind,
+                            "value": (b.config or {}).get(fname, ""),
+                        }
+                        for (fname, flabel, fkind) in BLOCK_FIELDS.get(b.block_type, [])
+                    ],
+                    "description": BLOCK_DESCRIPTIONS.get(b.block_type, ""),
+                    "is_first": idx == 0,
+                    "is_last": idx == len(blocks) - 1,
                 }
             )
         return render(
             request,
             self.template_name,
             {
-                "blocks": block_rows,
-                "block_types": HomepageBlock.BLOCK_TYPE_CHOICES,
+                "blocks": rows,
+                "block_type_choices": HomepageBlock.BLOCK_TYPE_CHOICES,
+                "block_descriptions": BLOCK_DESCRIPTIONS,
                 "site": site,
                 "membership": self.get_membership(),
             },
@@ -105,22 +164,13 @@ class HomepageBuilderView(MadgaStudioMixin, View):
 
         elif action == "update":
             pk = request.POST.get("pk")
-            block = get_object_or_404(
-                HomepageBlock.objects.filter(site=site), pk=pk
-            )
-            raw_config = request.POST.get("config") or "{}"
-            try:
-                block.config = json.loads(raw_config)
-            except json.JSONDecodeError:
-                messages.error(
-                    request, f"JSON inválido en el bloque #{block.pk}."
-                )
-                return redirect("madga_studio:homepage_builder")
-            try:
-                block.sort_order = int(request.POST.get("sort_order") or 0)
-            except ValueError:
-                pass
-            block.is_visible = bool(request.POST.get("is_visible"))
+            block = get_object_or_404(HomepageBlock.objects.filter(site=site), pk=pk)
+            # Preserve unknown keys (so power-users editing via API don't lose data).
+            new_config = dict(block.config or {})
+            for fname, _flabel, fkind in BLOCK_FIELDS.get(block.block_type, []):
+                new_config[fname] = _coerce(fkind, request.POST.get(fname, ""))
+            block.config = new_config
+            block.is_visible = request.POST.get("is_visible") == "on"
             block.save()
             messages.success(request, "Bloque actualizado.")
 
@@ -135,5 +185,24 @@ class HomepageBuilderView(MadgaStudioMixin, View):
             if block:
                 block.is_visible = not block.is_visible
                 block.save(update_fields=["is_visible", "updated_at"])
+
+        elif action in ("move_up", "move_down"):
+            pk = request.POST.get("pk")
+            block = HomepageBlock.objects.filter(site=site, pk=pk).first()
+            if block:
+                ordered = list(
+                    HomepageBlock.objects.filter(site=site).order_by("sort_order", "id")
+                )
+                idx = next(
+                    (i for i, b in enumerate(ordered) if b.pk == block.pk), None
+                )
+                if idx is not None:
+                    swap = idx - 1 if action == "move_up" else idx + 1
+                    if 0 <= swap < len(ordered):
+                        with transaction.atomic():
+                            a, b = ordered[idx], ordered[swap]
+                            a.sort_order, b.sort_order = b.sort_order, a.sort_order
+                            a.save(update_fields=["sort_order"])
+                            b.save(update_fields=["sort_order"])
 
         return redirect("madga_studio:homepage_builder")
