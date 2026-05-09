@@ -25,3 +25,33 @@ def render_block(context, block):
         "block_type": bt,
     })
     return render_to_string(bt.template, ctx)
+
+
+@register.filter
+def media_url(value: str) -> str:
+    """Resolve a MediaFile UUID (string) to its file URL.
+
+    Use in templates rendered by block types that have an ImageField:
+    ``{{ config.image|media_url }}``. Empty / missing → empty string.
+    """
+    if not value:
+        return ""
+    from madga.models import MediaFile
+    try:
+        m = MediaFile.objects.filter(pk=value).only("file").first()
+        return m.file.url if m and m.file else ""
+    except Exception:
+        return ""
+
+
+@register.filter
+def media_alt(value: str) -> str:
+    """Resolve a MediaFile UUID to its alt_text (or filename fallback)."""
+    if not value:
+        return ""
+    from madga.models import MediaFile
+    try:
+        m = MediaFile.objects.filter(pk=value).only("alt_text", "filename").first()
+        return (m.alt_text or m.filename) if m else ""
+    except Exception:
+        return ""

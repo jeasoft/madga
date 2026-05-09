@@ -1,7 +1,5 @@
 {% load madga_studio_tags %}
-{# ListField widget. items[] is pre-rendered by Python (each sub-field's HTML
-   already includes the right name=…__idx__sub). The hidden <template> has
-   __INDEX__ placeholders that JS replaces with the next index. #}
+{# ListField widget. Items pre-rendered in Python; hidden <template> cloned by JS for new rows. #}
 <div class="madga-list-field" data-madga-list="{{ list_data_attr }}" data-next-idx="{{ next_idx }}">
   <div class="madga-list-items">
     {% for item in items %}
