@@ -69,7 +69,8 @@
 
     <div class="madga-editor-main">
       <input class="madga-editor-title" type="text" name="title" id="id_title"
-             value="{{ form.title.value|default:'' }}" placeholder="Título del post…" required>
+             value="{{ form.title.value|default:'' }}" placeholder="Título del post…" required
+             data-serp-source="title-fallback">
       <div class="madga-editor-help" style="display:flex; gap:8px; flex-wrap:wrap; padding:8px 0 14px; color:var(--fg-3); font-size:12px; border-bottom:1px dashed var(--border); margin-bottom:14px;">
         <span style="display:inline-flex; gap:6px; align-items:center;">{% studio_icon "edit" size=12 stroke=2 %} Selecciona texto para <b>negritas</b>, <i>cursivas</i>, enlaces y resaltado</span>
         <span style="opacity:.6">·</span>
@@ -99,7 +100,7 @@
       </div>
       <div class="madga-field">
         <label class="madga-field-label">Slug</label>
-        <input class="madga-input" type="text" name="slug" value="{{ form.slug.value|default:'' }}" placeholder="auto-generado">
+        <input class="madga-input" type="text" name="slug" id="id_slug" value="{{ form.slug.value|default:'' }}" placeholder="auto-generado" data-serp-source="slug">
       </div>
     </div>
 
@@ -128,20 +129,27 @@
         </select>
       </div>
       <div class="madga-field">
-        <label class="madga-field-label">Excerpt</label>
-        <textarea class="madga-textarea" name="excerpt" rows="3" maxlength="500">{{ form.excerpt.value|default:'' }}</textarea>
+        <label class="madga-field-label">Excerpt <span class="madga-char-counter" data-char-of="excerpt" data-char-max="160">0/160</span></label>
+        <textarea class="madga-textarea" name="excerpt" id="id_excerpt" rows="3" maxlength="500" data-serp-source="desc-fallback">{{ form.excerpt.value|default:'' }}</textarea>
       </div>
     </div>
 
-    <div class="madga-rail-card">
+    <div class="madga-rail-card" data-madga-serp>
       <h3>SEO</h3>
-      <div class="madga-field">
-        <label class="madga-field-label">Meta title</label>
-        <input class="madga-input" type="text" name="meta_title" value="{{ form.meta_title.value|default:'' }}" maxlength="160">
+
+      <div class="madga-serp" aria-label="Vista previa en Google">
+        <div class="madga-serp-url" data-serp-url>{{ site.domain|default:"midominio.com" }} › blog › {{ post.slug|default:"slug-del-post" }}</div>
+        <div class="madga-serp-title" data-serp-title>{{ post.meta_title|default:post.title|default:"Título del post" }}</div>
+        <div class="madga-serp-desc" data-serp-desc>{{ post.meta_description|default:post.excerpt|default:"Aquí aparecerá la meta description o, si está vacía, el excerpt del post." }}</div>
+      </div>
+
+      <div class="madga-field" style="margin-top:12px;">
+        <label class="madga-field-label">Meta title <span class="madga-char-counter" data-char-of="meta_title" data-char-max="60">0/60</span></label>
+        <input class="madga-input" type="text" name="meta_title" id="id_meta_title" value="{{ form.meta_title.value|default:'' }}" maxlength="160" data-serp-source="title">
       </div>
       <div class="madga-field">
-        <label class="madga-field-label">Meta description</label>
-        <textarea class="madga-textarea" name="meta_description" rows="2">{{ form.meta_description.value|default:'' }}</textarea>
+        <label class="madga-field-label">Meta description <span class="madga-char-counter" data-char-of="meta_description" data-char-max="160">0/160</span></label>
+        <textarea class="madga-textarea" name="meta_description" id="id_meta_description" rows="2" data-serp-source="desc">{{ form.meta_description.value|default:'' }}</textarea>
       </div>
       <div class="madga-field">
         <label class="madga-field-label">Focus keyword</label>
@@ -253,6 +261,47 @@
       form.submit();  // bypasses this listener; goes straight to network
     });
     document.getElementById('id_title').addEventListener('input', setDirty);
+
+    // SERP preview live updates --------------------------------------------
+    const siteDomain = "{{ site.domain|default:''|escapejs }}" || 'midominio.com';
+    const serpUrl = document.querySelector('[data-serp-url]');
+    const serpTitle = document.querySelector('[data-serp-title]');
+    const serpDesc = document.querySelector('[data-serp-desc]');
+    const titleInput = document.getElementById('id_title');
+    const slugInput = document.getElementById('id_slug');
+    const metaTitleInput = document.getElementById('id_meta_title');
+    const metaDescInput = document.getElementById('id_meta_description');
+    const excerptInput = document.getElementById('id_excerpt');
+    function updateSerp() {
+      if (!serpUrl) return;
+      const slug = (slugInput && slugInput.value) || (titleInput && titleInput.value || '')
+        .toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'slug-del-post';
+      serpUrl.textContent = siteDomain + ' › blog › ' + slug;
+      const t = (metaTitleInput && metaTitleInput.value) || (titleInput && titleInput.value) || 'Título del post';
+      serpTitle.textContent = t.length > 60 ? t.slice(0, 60) + '…' : t;
+      const d = (metaDescInput && metaDescInput.value) || (excerptInput && excerptInput.value) || 'Aquí aparecerá la meta description o, si está vacía, el excerpt del post.';
+      serpDesc.textContent = d.length > 160 ? d.slice(0, 160) + '…' : d;
+    }
+    [titleInput, slugInput, metaTitleInput, metaDescInput, excerptInput].forEach(el => {
+      if (el) el.addEventListener('input', updateSerp);
+    });
+    updateSerp();
+
+    // Character counters ---------------------------------------------------
+    function paintCounter(input, counter, max) {
+      const len = (input.value || '').length;
+      counter.textContent = len + '/' + max;
+      counter.classList.toggle('is-near', len > max * 0.85 && len <= max);
+      counter.classList.toggle('is-over', len > max);
+    }
+    document.querySelectorAll('[data-char-of]').forEach(counter => {
+      const id = 'id_' + counter.getAttribute('data-char-of');
+      const max = parseInt(counter.getAttribute('data-char-max'), 10);
+      const input = document.getElementById(id);
+      if (!input) return;
+      paintCounter(input, counter, max);
+      input.addEventListener('input', () => paintCounter(input, counter, max));
+    });
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
