@@ -25,6 +25,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/marker@1.4.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/inline-code@1.5.1"></script>
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/underline@1.2.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/editorjs-hyperlink@1.0.6/dist/bundle.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -67,10 +68,20 @@
       </div>
       <div class="madga-field"><label class="madga-field-label">Sort order</label><input class="madga-input" type="number" name="sort_order" value="{{ form.sort_order.value|default:0 }}"></div>
     </div>
+
+    <div class="madga-rail-card">
+      <h3>Imagen destacada</h3>
+      {% include "madga/studio/components/featured_image_field.html" with name="featured_image" media=page_obj.featured_image %}
+    </div>
+
     <div class="madga-rail-card">
       <h3>SEO</h3>
       <div class="madga-field"><label class="madga-field-label">Meta title</label><input class="madga-input" type="text" name="meta_title" value="{{ form.meta_title.value|default:'' }}"></div>
       <div class="madga-field"><label class="madga-field-label">Meta description</label><input class="madga-input" type="text" name="meta_description" value="{{ form.meta_description.value|default:'' }}"></div>
+      <div class="madga-field" style="margin-top:8px;">
+        <label class="madga-field-label" style="margin-bottom:8px;">Imagen para Open Graph</label>
+        {% include "madga/studio/components/featured_image_field.html" with name="og_image" media=page_obj.og_image %}
+      </div>
     </div>
     {% if page_obj %}
     <form method="post" action="{% url 'madga_studio:page_delete' pk=page_obj.pk %}" class="madga-rail-card">
@@ -88,7 +99,7 @@
   const csrf = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
   function init() {
     if (typeof EditorJS === 'undefined') return;
-    const inlineTools = ['bold', 'italic', 'underline', 'marker', 'link', 'inlineCode'];
+    const inlineTools = ['bold', 'italic', 'underline', 'marker', 'hyperlink', 'inlineCode'];
     const editor = new EditorJS({
       holder: 'editorjs-container',
       placeholder: 'Escribe algo, o presiona / para ver los bloques…',
@@ -103,6 +114,7 @@
         marker: { class: Marker, shortcut: 'CMD+SHIFT+M' },
         underline: { class: Underline, shortcut: 'CMD+U' },
         inlineCode: { class: InlineCode, shortcut: 'CMD+SHIFT+C' },
+        hyperlink: { class: Hyperlink, config: { shortcut: 'CMD+K', target: '_blank', rel: 'nofollow' } },
         image: { class: ImageTool, config: { endpoints: { byFile: '{% url "madga_studio:media_upload" %}' }, additionalRequestHeaders: { 'X-CSRFToken': csrf }, field: 'image' } },
       },
     });

@@ -7,10 +7,12 @@ the studio reads them via all_block_types() / get_block_type(key).
 
 from __future__ import annotations
 
+import logging
 from typing import Optional
 
 
 _REGISTRY: dict[str, "BlockType"] = {}
+log = logging.getLogger("madga.blocks")
 
 
 class BlockType:
@@ -36,9 +38,31 @@ class BlockType:
 
 
 def register_block_type(cls):
-    """Class decorator: register a BlockType subclass under cls.key."""
+    """Class decorator: register a BlockType subclass under cls.key.
+
+    Validates that the class declares the required attributes. Loud failure
+    here beats silent broken-block-in-studio later.
+    """
+    name = cls.__name__
     if not getattr(cls, "key", ""):
-        raise ValueError(f"{cls.__name__} must define a non-empty `key`.")
+        raise ValueError(f"{name} must define a non-empty `key`.")
+    if not getattr(cls, "label", ""):
+        raise ValueError(f"{name} (key={cls.key!r}) must define a `label`.")
+    if not getattr(cls, "template", ""):
+        raise ValueError(
+            f"{name} (key={cls.key!r}) must define a `template` path."
+        )
+    if not isinstance(getattr(cls, "fields", None), list):
+        raise ValueError(
+            f"{name} (key={cls.key!r}) must define `fields` as a list "
+            f"(empty list is fine)."
+        )
+    if cls.key in _REGISTRY:
+        existing = type(_REGISTRY[cls.key]).__name__
+        log.warning(
+            "Block type %r is being re-registered: %s overrides %s",
+            cls.key, name, existing,
+        )
     _REGISTRY[cls.key] = cls()
     return cls
 

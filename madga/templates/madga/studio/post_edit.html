@@ -44,6 +44,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/marker@1.4.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/inline-code@1.5.1"></script>
 <script src="https://cdn.jsdelivr.net/npm/@editorjs/underline@1.2.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/editorjs-hyperlink@1.0.6/dist/bundle.js"></script>
 {# Note: 'link' inline tool is built into Editor.js core — referenced by string in inlineToolbar. #}
 {% endblock %}
 
@@ -182,7 +183,7 @@
         '<div style="padding:14px; color:#ff7a7a; border:1px solid #ff7a7a; border-radius:8px;">Editor.js failed to load. Check Console.</div>';
       return;
     }
-    const inlineTools = ['bold', 'italic', 'underline', 'marker', 'link', 'inlineCode'];
+    const inlineTools = ['bold', 'italic', 'underline', 'marker', 'hyperlink', 'inlineCode'];
     const editor = new EditorJS({
       holder: 'editorjs-container',
       autofocus: false,
@@ -198,6 +199,7 @@
         marker: { class: Marker, shortcut: 'CMD+SHIFT+M' },
         underline: { class: Underline, shortcut: 'CMD+U' },
         inlineCode: { class: InlineCode, shortcut: 'CMD+SHIFT+C' },
+        hyperlink: { class: Hyperlink, config: { shortcut: 'CMD+K', target: '_blank', rel: 'nofollow' } },
         image: {
           class: ImageTool,
           config: {

@@ -115,8 +115,23 @@ class Page(UUIDMixin, TimestampMixin, models.Model):
     )
     sort_order = models.PositiveIntegerField(default=0)
 
+    featured_image = models.ForeignKey(
+        "madga.MediaFile",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="featured_in_pages",
+    )
+
     meta_title = models.CharField(max_length=160, blank=True)
     meta_description = models.TextField(blank=True)
+    og_image = models.ForeignKey(
+        "madga.MediaFile",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="og_in_pages",
+    )
 
     class Meta:
         ordering = ["sort_order"]

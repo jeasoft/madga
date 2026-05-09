@@ -57,8 +57,10 @@ class PageForm(forms.ModelForm):
             "layout",
             "parent",
             "sort_order",
+            "featured_image",
             "meta_title",
             "meta_description",
+            "og_image",
         ]
 
     def clean_body(self):
