@@ -43,6 +43,12 @@ def madga_tokens(site):
     return {"site": site}
 
 
+@register.inclusion_tag("madga/includes/tracking.html")
+def madga_tracking(site):
+    """Render GA4 + Meta Pixel snippets if configured on the Site."""
+    return {"site": site}
+
+
 @register.simple_tag
 def madga_seo(post_or_page):
     """Render <title> + <meta> tags for a Post or Page."""

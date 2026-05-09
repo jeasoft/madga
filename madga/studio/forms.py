@@ -104,4 +104,6 @@ class SiteSettingsForm(forms.ModelForm):
             "meta_title",
             "meta_description",
             "timezone",
+            "google_analytics_id",
+            "facebook_pixel_id",
         ]

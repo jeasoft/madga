@@ -1,4 +1,4 @@
-{% load static %}<!DOCTYPE html>
+{% load static madga_tags %}<!DOCTYPE html>
 <html lang="es" data-theme="{{ site.color_scheme|default:'auto' }}">
 <head>
   <meta charset="UTF-8">
@@ -26,6 +26,7 @@
   </style>
   {% endif %}
   {% block head_extra %}{% endblock %}
+  {% madga_tracking site %}
 </head>
 <body class="font-sans antialiased text-slate-900 bg-white dark:bg-slate-950 dark:text-slate-100">
 

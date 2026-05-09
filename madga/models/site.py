@@ -49,6 +49,18 @@ class Site(TimestampMixin, models.Model):
     # Per-site layout/nav settings stored as JSON for flexibility
     settings = models.JSONField(default=dict, blank=True)
 
+    # Analytics & tracking — injected into the public site head when set.
+    google_analytics_id = models.CharField(
+        max_length=32,
+        blank=True,
+        help_text="GA4 measurement id, e.g. G-XXXXXXX. Empty disables tracking.",
+    )
+    facebook_pixel_id = models.CharField(
+        max_length=32,
+        blank=True,
+        help_text="Meta (Facebook) Pixel numeric id. Empty disables.",
+    )
+
     api_key = models.CharField(max_length=64, unique=True, default=_new_api_key)
 
     class Meta:
