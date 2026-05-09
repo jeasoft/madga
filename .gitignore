@@ -15,8 +15,12 @@ env/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+miscoreblog.sqlite3
+miscoreblog.sqlite3-journal
 media/
 staticfiles/
+miscoreblog_media/
+miscoreblog_staticfiles/
 
 # uv / pip
 .uv/
