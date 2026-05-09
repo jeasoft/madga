@@ -94,6 +94,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/studio/login/'
 LOGIN_REDIRECT_URL = '/studio/'
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'noreply@localhost'
+
 MADGA = {
     'SITE_DOMAIN': 'localhost',
     'DEFAULT_THEME': 'essay',

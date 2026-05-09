@@ -29,7 +29,12 @@ from .views.taxonomy import (
     TagDeleteView,
     TaxonomyListView,
 )
-from .views.users import UserInviteView, UserListView, UserRoleUpdateView
+from .views.users import (
+    AcceptInviteView,
+    UserInviteView,
+    UserListView,
+    UserRoleUpdateView,
+)
 
 app_name = "madga_studio"
 
@@ -67,6 +72,7 @@ urlpatterns = [
     path("users/", UserListView.as_view(), name="user_list"),
     path("users/invite/", UserInviteView.as_view(), name="user_invite"),
     path("users/<int:pk>/role/", UserRoleUpdateView.as_view(), name="user_role"),
+    path("accept-invite/<str:token>/", AcceptInviteView.as_view(), name="accept_invite"),
 
     path("settings/", SettingsView.as_view(), name="settings"),
     path("theme/", ThemeView.as_view(), name="theme"),
