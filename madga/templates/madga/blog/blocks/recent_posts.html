@@ -1,0 +1,14 @@
+{% load madga_tags %}
+<section class="max-w-3xl mx-auto px-4 sm:px-6 py-12">
+  <h2 class="text-sm uppercase tracking-wider text-slate-500 mb-6">{{ config.title|default:"Últimas publicaciones" }}</h2>
+  <ul class="divide-y divide-slate-100 dark:divide-slate-800">
+    {% for post in block.resolved %}
+      <li class="py-5 first:pt-0">
+        <a href="/blog/{{ post.slug }}/" class="group flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-6">
+          <time class="text-sm text-slate-500 sm:w-28 shrink-0" datetime="{{ post.published_at|date:'c' }}">{{ post.published_at|date:"j M, Y" }}</time>
+          <span class="font-medium leading-snug group-hover:text-accent transition-colors">{{ post.title }}</span>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+</section>

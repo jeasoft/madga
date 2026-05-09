@@ -1,0 +1,45 @@
+{% load madga_studio_tags %}
+{# ListField widget. items[] is pre-rendered by Python (each sub-field's HTML
+   already includes the right name=…__idx__sub). The hidden <template> has
+   __INDEX__ placeholders that JS replaces with the next index. #}
+<div class="madga-list-field" data-madga-list="{{ list_data_attr }}" data-next-idx="{{ next_idx }}">
+  <div class="madga-list-items">
+    {% for item in items %}
+      <div class="madga-list-item" data-idx="{{ item.idx }}">
+        <div class="madga-list-item-head">
+          <span class="madga-list-item-label">{{ list_field.item_label }} <span data-madga-list-itemnum>#{{ item.human_idx }}</span></span>
+          <button type="button" class="madga-icon-btn" data-madga-list-remove title="Quitar">{% studio_icon "x" size=12 stroke=2 %}</button>
+        </div>
+        <div class="madga-list-item-body">
+          {% for f in item.fields %}
+            <div class="madga-field">
+              <label class="madga-field-label">{{ f.label }}</label>
+              {{ f.html }}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <template data-madga-list-template>
+    <div class="madga-list-item" data-idx="__INDEX__">
+      <div class="madga-list-item-head">
+        <span class="madga-list-item-label">{{ list_field.item_label }} <span data-madga-list-itemnum>#__HUMAN__</span></span>
+        <button type="button" class="madga-icon-btn" data-madga-list-remove>{% studio_icon "x" size=12 stroke=2 %}</button>
+      </div>
+      <div class="madga-list-item-body">
+        {% for f in tpl.fields %}
+          <div class="madga-field">
+            <label class="madga-field-label">{{ f.label }}</label>
+            {{ f.html }}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </template>
+
+  <button type="button" class="madga-btn madga-btn--sm madga-list-add" data-madga-list-add>
+    {% studio_icon "plus" size=12 stroke=2.5 %} Agregar {{ list_field.item_label|lower }}
+  </button>
+</div>

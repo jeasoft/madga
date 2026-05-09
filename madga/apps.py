@@ -8,3 +8,4 @@ class MadgaConfig(AppConfig):
 
     def ready(self):
         from madga import signals  # noqa: F401
+        from madga.blocks import builtin  # noqa: F401  registers default block types

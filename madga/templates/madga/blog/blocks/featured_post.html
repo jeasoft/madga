@@ -1,0 +1,8 @@
+{% if block.resolved %}
+<section class="max-w-3xl mx-auto px-4 sm:px-6 py-12">
+  <a href="/blog/{{ block.resolved.slug }}/" class="block group">
+    <h2 class="text-3xl font-semibold tracking-tight leading-tight group-hover:text-accent transition-colors">{{ block.resolved.title }}</h2>
+    {% if block.resolved.excerpt %}<p class="mt-3 text-slate-600 dark:text-slate-400">{{ block.resolved.excerpt }}</p>{% endif %}
+  </a>
+</section>
+{% endif %}
