@@ -194,6 +194,40 @@
   });
   document.addEventListener('DOMContentLoaded', refreshBulkBar);
 
+  // ListField — clone <template> on Agregar, replace __INDEX__ in names ------
+  function reindexListItems(wrap) {
+    const items = wrap.querySelectorAll('.madga-list-item');
+    items.forEach((it, i) => {
+      const num = it.querySelector('[data-madga-list-itemnum]');
+      if (num) num.textContent = '#' + (i + 1);
+    });
+  }
+  document.addEventListener('click', function (e) {
+    const addBtn = e.target.closest('[data-madga-list-add]');
+    if (addBtn) {
+      const wrap = addBtn.closest('[data-madga-list]');
+      const tpl = wrap.querySelector('[data-madga-list-template]');
+      if (!tpl) return;
+      const idx = parseInt(wrap.dataset.nextIdx || '0', 10);
+      const human = wrap.querySelectorAll('.madga-list-item').length + 1;
+      const html = tpl.innerHTML
+        .replace(/__INDEX__/g, idx)
+        .replace(/__HUMAN__/g, human);
+      const placeholder = document.createElement('div');
+      placeholder.innerHTML = html;
+      wrap.querySelector('.madga-list-items').appendChild(placeholder.firstElementChild);
+      wrap.dataset.nextIdx = idx + 1;
+      reindexListItems(wrap);
+      return;
+    }
+    const removeBtn = e.target.closest('[data-madga-list-remove]');
+    if (removeBtn) {
+      const wrap = removeBtn.closest('[data-madga-list]');
+      removeBtn.closest('.madga-list-item').remove();
+      if (wrap) reindexListItems(wrap);
+    }
+  });
+
   // Toast auto-dismiss -------------------------------------------------------
   function dismissToast(toast) {
     if (!toast || toast.classList.contains('is-leaving')) return;

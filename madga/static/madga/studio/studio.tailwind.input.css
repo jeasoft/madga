@@ -224,6 +224,15 @@
   .madga-settings-tab.is-active { background: var(--accent-soft); color: var(--accent); }
   .madga-settings-pane { display: flex; flex-direction: column; gap: 12px; }
 
+  /* List field (block sub-items: profile cards, testimonios, FAQ items) - */
+  .madga-list-field { background: var(--bg-2); border: 1px solid var(--border); border-radius: 10px; padding: 10px; }
+  .madga-list-items { display: flex; flex-direction: column; gap: 8px; }
+  .madga-list-item { background: var(--bg-1); border: 1px solid var(--border); border-radius: 8px; }
+  .madga-list-item-head { display: flex; align-items: center; padding: 8px 10px; border-bottom: 1px solid var(--border); background: var(--bg-2); border-radius: 8px 8px 0 0; }
+  .madga-list-item-label { font-size: 11.5px; font-weight: 600; color: var(--fg-2); flex: 1; text-transform: uppercase; letter-spacing: .04em; }
+  .madga-list-item-body { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .madga-list-add { margin-top: 10px; }
+
   /* Toasts -------------------------------------------------------------- */
   .madga-toasts { position: fixed; right: 16px; bottom: 16px; z-index: 200; display: flex; flex-direction: column-reverse; gap: 8px; max-width: calc(100vw - 32px); pointer-events: none; }
   .madga-toast { pointer-events: auto; min-width: 280px; max-width: 420px; padding: 10px 14px; border-radius: 10px; background: var(--bg-1); border: 1px solid var(--border); box-shadow: var(--shadow-md); display: flex; gap: 10px; align-items: center; font-size: 13px; color: var(--fg-0); animation: madga-toast-in .2s ease; }

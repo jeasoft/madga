@@ -8,7 +8,7 @@
   <div class="madga-page-header">
     <div class="madga-page-title-block">
       <h1 class="madga-page-title">Homepage</h1>
-      <p class="madga-page-subtitle">Bloques que aparecen en la home, en orden. Arrastra el orden con las flechitas y desactiva un bloque sin borrarlo con el switch.</p>
+      <p class="madga-page-subtitle">Bloques que aparecen en la home, en orden. Mové con las flechitas y desactivá un bloque sin borrarlo con el switch.</p>
     </div>
     <div class="madga-page-actions">
       <a href="/" target="_blank" rel="noopener" class="madga-btn madga-btn--sm madga-btn--ghost">
@@ -17,32 +17,32 @@
     </div>
   </div>
 
-  {# Add-block tray ------------------------------------------------------- #}
+  {# Add-block tray (driven by registered block types) ------------------- #}
   <div class="madga-hb-add">
     <div class="madga-hb-add-title">Añadir un bloque</div>
     <div class="madga-hb-add-grid">
-      {% for value, label in block_type_choices %}
+      {% for bt in block_types %}
         <form method="post" class="madga-hb-add-tile-form">
           {% csrf_token %}
           <input type="hidden" name="action" value="create">
-          <input type="hidden" name="block_type" value="{{ value }}">
+          <input type="hidden" name="block_type" value="{{ bt.key }}">
           <button type="submit" class="madga-hb-add-tile">
-            <span class="madga-hb-add-tile-name">{{ label }}</span>
-            <span class="madga-hb-add-tile-desc">{{ block_descriptions|get_item:value }}</span>
+            <span class="madga-hb-add-tile-name">{{ bt.label }}</span>
+            <span class="madga-hb-add-tile-desc">{{ bt.description }}</span>
           </button>
         </form>
       {% endfor %}
     </div>
   </div>
 
-  {# Existing blocks ------------------------------------------------------ #}
+  {# Existing blocks ----------------------------------------------------- #}
   <div class="madga-hb-list">
     {% for row in blocks %}
       {% with b=row.obj %}
       <div class="madga-hb-block">
         <header class="madga-hb-block-head">
           <div class="madga-hb-block-meta">
-            <span class="madga-hb-block-type">{{ b.get_block_type_display }}</span>
+            <span class="madga-hb-block-type">{{ row.label }}</span>
             {% if not b.is_visible %}<span class="madga-hb-block-hidden">Oculto</span>{% endif %}
             <span class="madga-hb-block-desc">{{ row.description }}</span>
           </div>
@@ -67,22 +67,16 @@
             </form>
           </div>
         </header>
+        {% if row.type %}
         <form method="post" class="madga-hb-block-body">
           {% csrf_token %}
           <input type="hidden" name="action" value="update">
           <input type="hidden" name="pk" value="{{ b.pk }}">
-          {% for f in row.fields %}
+          {% for f in row.fields_html %}
             <div class="madga-field">
-              <label class="madga-field-label" for="hb-{{ b.pk }}-{{ f.name }}">{{ f.label }}</label>
-              {% if f.kind == 'textarea' %}
-                <textarea class="madga-textarea" rows="2" name="{{ f.name }}" id="hb-{{ b.pk }}-{{ f.name }}">{{ f.value }}</textarea>
-              {% elif f.kind == 'int' %}
-                <input class="madga-input" type="number" min="1" max="20" name="{{ f.name }}" id="hb-{{ b.pk }}-{{ f.name }}" value="{{ f.value }}">
-              {% elif f.kind == 'url' %}
-                <input class="madga-input" type="url" name="{{ f.name }}" id="hb-{{ b.pk }}-{{ f.name }}" value="{{ f.value }}" placeholder="https://… o /ruta">
-              {% else %}
-                <input class="madga-input" type="text" name="{{ f.name }}" id="hb-{{ b.pk }}-{{ f.name }}" value="{{ f.value }}">
-              {% endif %}
+              <label class="madga-field-label">{{ f.label }}</label>
+              {{ f.html }}
+              {% if f.help_text %}<span class="madga-field-help">{{ f.help_text }}</span>{% endif %}
             </div>
           {% endfor %}
           <label class="madga-hb-visible">
@@ -93,10 +87,15 @@
             <button type="submit" class="madga-btn madga-btn--sm madga-btn--primary">Guardar cambios</button>
           </div>
         </form>
+        {% else %}
+        <div class="madga-hb-block-body">
+          <p style="color:var(--fg-3); font-size:12.5px;">El tipo "{{ b.block_type }}" no está registrado. Borralo o restaurá el tipo en código.</p>
+        </div>
+        {% endif %}
       </div>
       {% endwith %}
     {% empty %}
-      {% studio_empty title="Homepage vacía" message="Añade tu primer bloque desde el panel de arriba (sugerimos empezar con Hero)." %}
+      {% studio_empty title="Homepage vacía" message="Añadí tu primer bloque desde el panel de arriba." %}
     {% endfor %}
   </div>
 </div>
