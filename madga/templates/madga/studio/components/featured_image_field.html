@@ -1,0 +1,38 @@
+{% load madga_studio_tags %}
+{# Featured image picker field. Renders a hidden input with the MediaFile id
+   plus a thumbnail preview / chooser. Args:
+     name      — hidden input name (the form field bound to Post.featured_image)
+     media     — current MediaFile instance, or None
+#}
+<div class="madga-fi" data-madga-featured>
+  <input type="hidden" name="{{ name }}" value="{{ media.id|default_if_none:'' }}" data-fi-input>
+
+  <div class="madga-fi-preview" data-fi-preview {% if not media %}hidden{% endif %}>
+    {% if media %}
+      <img src="{{ media.file.url }}" alt="{{ media.alt_text|default:media.filename }}" data-fi-img>
+    {% else %}
+      <img src="" alt="" data-fi-img>
+    {% endif %}
+  </div>
+
+  <button type="button" class="madga-fi-empty" data-fi-pick {% if media %}hidden{% endif %}>
+    {% studio_icon "image" size=22 stroke=1.6 %}
+    <span>Elegir imagen</span>
+  </button>
+
+  <div class="madga-fi-actions" data-fi-actions {% if not media %}hidden{% endif %}>
+    <button type="button" class="madga-btn madga-btn--sm" data-fi-pick>{% studio_icon "image" size=12 stroke=2 %} Cambiar</button>
+    <button type="button" class="madga-btn madga-btn--sm madga-btn--ghost" data-fi-clear>{% studio_icon "x" size=12 stroke=2 %} Quitar</button>
+  </div>
+
+  {% if media %}
+    <div class="madga-field-help" style="margin-top:8px;">
+      <strong data-fi-filename>{{ media.filename }}</strong>
+      {% if media.alt_text %}<br><span style="color:var(--fg-3)">Alt: <span data-fi-alt>{{ media.alt_text }}</span></span>{% endif %}
+    </div>
+  {% else %}
+    <div class="madga-field-help" style="margin-top:8px; display:none;" data-fi-filename-wrap>
+      <strong data-fi-filename></strong>
+    </div>
+  {% endif %}
+</div>

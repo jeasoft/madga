@@ -104,6 +104,11 @@
     </div>
 
     <div class="madga-rail-card">
+      <h3>Imagen destacada</h3>
+      {% include "madga/studio/components/featured_image_field.html" with name="featured_image" media=post.featured_image alt_name="featured_image_alt" %}
+    </div>
+
+    <div class="madga-rail-card">
       <h3>Organización</h3>
       <div class="madga-field">
         <label class="madga-field-label">Categoría</label>

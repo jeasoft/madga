@@ -1,6 +1,7 @@
 """Studio Media library + Editor.js upload endpoint."""
 
 from django.contrib import messages
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
@@ -23,6 +24,39 @@ class MediaListView(MadgaStudioMixin, TemplateView):
             qs = qs.filter(file_type=kind)
         ctx["media"] = qs.order_by("-created_at")
         ctx["current_kind"] = kind or "all"
+        return ctx
+
+
+class MediaPickerView(MadgaStudioMixin, TemplateView):
+    """Modal-friendly picker. Returns a fragment listing media images.
+
+    Used by the editor rail's Featured image card and (future) by the
+    Editor.js image-from-library affordance. The page wrapper is the
+    full template; HTMX requests get just the grid fragment so search
+    and filters can swap in-place.
+    """
+
+    template_name = "madga/studio/components/media_picker.html"
+
+    def get_template_names(self):
+        if self.request.headers.get("HX-Request"):
+            return ["madga/studio/components/media_picker_grid.html"]
+        return [self.template_name]
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        site = self.get_site()
+        qs = MediaFile.objects.filter(site=site) if site else MediaFile.objects.none()
+        kind = self.request.GET.get("kind") or MediaFile.TYPE_IMAGE
+        if kind in {MediaFile.TYPE_IMAGE, MediaFile.TYPE_VIDEO, MediaFile.TYPE_DOCUMENT}:
+            qs = qs.filter(file_type=kind)
+        q = self.request.GET.get("q", "").strip()
+        if q:
+            qs = qs.filter(Q(filename__icontains=q) | Q(alt_text__icontains=q))
+        ctx["media"] = qs.order_by("-created_at")[:60]
+        ctx["current_kind"] = kind
+        ctx["search_q"] = q
+        ctx["picker_target"] = self.request.GET.get("target", "")
         return ctx
 
 

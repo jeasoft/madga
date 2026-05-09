@@ -6,7 +6,12 @@ from django.views.generic import RedirectView
 from .views.auth import StudioLoginView, StudioLogoutView
 from .views.dashboard import DashboardView
 from .views.homepage import HomepageBuilderView
-from .views.media import MediaDeleteView, MediaListView, MediaUploadView
+from .views.media import (
+    MediaDeleteView,
+    MediaListView,
+    MediaPickerView,
+    MediaUploadView,
+)
 from .views.navigation import NavigationView
 from .views.pages import PageDeleteView, PageEditView, PageListView
 from .views.posts import (
@@ -49,6 +54,7 @@ urlpatterns = [
     path("pages/<uuid:pk>/preview/", PagePreviewView.as_view(), name="page_preview"),
 
     path("media/", MediaListView.as_view(), name="media_list"),
+    path("media/picker/", MediaPickerView.as_view(), name="media_picker"),
     path("media/upload/", MediaUploadView.as_view(), name="media_upload"),
     path("media/<uuid:pk>/delete/", MediaDeleteView.as_view(), name="media_delete"),
 
