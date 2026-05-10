@@ -37,6 +37,9 @@
     <a href="{% url 'madga_studio:theme' %}" class="madga-nav-item {% studio_active request 'theme' %}">
       {% studio_icon "theme" %} Theme
     </a>
+    <a href="{% url 'madga_studio:theme_gallery' %}" class="madga-nav-item {% studio_active request 'theme_gallery' %}">
+      {% studio_icon "image" %} Theme gallery
+    </a>
     <a href="{% url 'madga_studio:layouts' %}" class="madga-nav-item {% studio_active request 'layouts' %}">
       {% studio_icon "layouts" %} Layouts
     </a>

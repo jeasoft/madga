@@ -21,7 +21,11 @@
 </head>
 <body>
   <header class="preview-toolbar">
-    <a href="javascript:history.back()" class="madga-btn madga-btn--sm madga-btn--ghost">← Volver</a>
+    {% if edit_url_name and obj %}
+      <a href="{% url edit_url_name pk=obj.pk %}" class="madga-btn madga-btn--sm madga-btn--ghost">← Volver al editor</a>
+    {% else %}
+      <a href="/studio/" class="madga-btn madga-btn--sm madga-btn--ghost">← Studio</a>
+    {% endif %}
     <span class="preview-url">{{ public_url|default:'' }}</span>
     <div class="device-switcher">
       <button data-device="mobile"  {% if device == 'mobile' %}class="active"{% endif %}  onclick="setDevice('mobile')">Mobile</button>

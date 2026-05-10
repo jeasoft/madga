@@ -38,6 +38,35 @@ def get_categories(site=None):
     return list(qs)
 
 
+@register.simple_tag(takes_context=True)
+def get_header_nav_items(context):
+    """Return top-level NavItems with location=header for the current Site."""
+    from madga.models import NavItem
+    site = context.get("site")
+    if site is None:
+        return []
+    return list(
+        NavItem.objects
+        .filter(site=site, location="header", parent__isnull=True)
+        .order_by("sort_order", "id")
+    )
+
+
+@register.simple_tag(takes_context=True)
+def get_footer_nav_columns(context):
+    """Return footer column NavItems (location=footer, no parent) with their children."""
+    from madga.models import NavItem
+    site = context.get("site")
+    if site is None:
+        return []
+    return list(
+        NavItem.objects
+        .filter(site=site, location="footer", parent__isnull=True)
+        .order_by("sort_order", "id")
+        .prefetch_related("children")
+    )
+
+
 @register.inclusion_tag("madga/includes/site_tokens.html")
 def madga_tokens(site):
     return {"site": site}

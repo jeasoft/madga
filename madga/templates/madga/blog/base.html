@@ -1,4 +1,4 @@
-{% load static madga_tags %}<!DOCTYPE html>
+{% load static madga_tags madga_blocks %}<!DOCTYPE html>
 <html lang="es" data-theme="{{ site.color_scheme|default:'auto' }}">
 <head>
   <meta charset="UTF-8">
@@ -42,13 +42,63 @@
       {% endif %}
       <span>{{ site.name|default:"MADGA" }}</span>
     </a>
-    <nav class="ml-auto flex items-center gap-4 text-sm">
-      <a href="/" class="hover:text-accent">Home</a>
-      <a href="/blog/" class="hover:text-accent">Blog</a>
-      <a href="/p/about/" class="hover:text-accent hidden sm:inline">About</a>
+
+    {# Pull header nav items from the Site, fall back to a sensible default #}
+    {% get_header_nav_items as nav_items %}
+
+    {# Desktop nav — visible from sm: up #}
+    <nav class="ml-auto hidden sm:flex items-center gap-4 text-sm">
+      {% if nav_items %}
+        {% for item in nav_items %}
+          <a href="{{ item.url }}" class="hover:text-accent" {% if item.open_in_new_tab %}target="_blank" rel="noopener"{% endif %}>{{ item.label }}</a>
+        {% endfor %}
+      {% else %}
+        <a href="/" class="hover:text-accent">Home</a>
+        <a href="/blog/" class="hover:text-accent">Blog</a>
+      {% endif %}
     </nav>
+
+    {# Mobile hamburger — visible up to sm: #}
+    <button type="button" class="ml-auto sm:hidden inline-flex items-center justify-center w-10 h-10 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800" aria-label="Abrir menú" data-madga-mobile-nav-toggle>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="madga-icon-burger">
+        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="madga-icon-x" style="display:none;">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
   </div>
+
+  {# Mobile drawer #}
+  <nav class="sm:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950" data-madga-mobile-nav hidden>
+    <div class="max-w-3xl mx-auto px-4 py-3 flex flex-col gap-1 text-base">
+      {% if nav_items %}
+        {% for item in nav_items %}
+          <a href="{{ item.url }}" class="py-2.5 px-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800" {% if item.open_in_new_tab %}target="_blank" rel="noopener"{% endif %}>{{ item.label }}</a>
+        {% endfor %}
+      {% else %}
+        <a href="/" class="py-2.5 px-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800">Home</a>
+        <a href="/blog/" class="py-2.5 px-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800">Blog</a>
+      {% endif %}
+    </div>
+  </nav>
 </header>
+
+<script>
+(function(){
+  document.addEventListener('click', function(e){
+    var btn = e.target.closest('[data-madga-mobile-nav-toggle]');
+    if (!btn) return;
+    var nav = document.querySelector('[data-madga-mobile-nav]');
+    if (!nav) return;
+    var open = !nav.hidden;
+    nav.hidden = open;
+    btn.querySelector('.madga-icon-burger').style.display = open ? '' : 'none';
+    btn.querySelector('.madga-icon-x').style.display = open ? 'none' : '';
+    btn.setAttribute('aria-label', open ? 'Abrir menú' : 'Cerrar menú');
+  });
+})();
+</script>
 
 <main>
   {% block content %}{% endblock %}

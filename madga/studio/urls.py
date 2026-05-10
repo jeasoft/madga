@@ -27,6 +27,7 @@ from .views.preview import (
     PostPreviewView,
 )
 from .views.settings import LayoutsView, SettingsView, ThemeView
+from .views.themes import ThemeGalleryView
 from .views.taxonomy import (
     CategoryCreateView,
     CategoryDeleteView,
@@ -83,6 +84,7 @@ urlpatterns = [
 
     path("settings/", SettingsView.as_view(), name="settings"),
     path("theme/", ThemeView.as_view(), name="theme"),
+    path("theme-gallery/", ThemeGalleryView.as_view(), name="theme_gallery"),
     path("layouts/", LayoutsView.as_view(), name="layouts"),
     path("nav/", NavigationView.as_view(), name="navigation"),
     path("homepage/", HomepageBuilderView.as_view(), name="homepage_builder"),
