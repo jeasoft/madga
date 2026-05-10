@@ -1,0 +1,53 @@
+{% extends "madga/blog/base.html" %}
+
+{% block title %}{{ post.meta_title|default:post.title }} · {{ site.name }}{% endblock %}
+{% block meta_description %}{{ post.meta_description|default:post.excerpt }}{% endblock %}
+
+{% block content %}
+{# Longform: wider column, drop cap on first paragraph, larger body type. #}
+<article class="max-w-2xl mx-auto px-4 sm:px-6 py-10 sm:py-20">
+  <header class="mb-12 text-center">
+    <div class="text-xs uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 mb-4">
+      <time datetime="{{ post.published_at|date:'c' }}">{{ post.published_at|date:"j F, Y" }}</time>
+      {% if post.category %}&nbsp;·&nbsp;<span style="color:{{ post.category.color }};">{{ post.category.name }}</span>{% endif %}
+    </div>
+    <h1 class="font-heading text-4xl sm:text-6xl font-semibold tracking-tight leading-[1.05]">{{ post.title }}</h1>
+    {% if post.excerpt %}<p class="mt-6 text-xl text-slate-600 dark:text-slate-400 leading-relaxed italic">{{ post.excerpt }}</p>{% endif %}
+    {% if post.author %}<div class="mt-8 text-sm text-slate-500">por {{ post.author.get_full_name|default:post.author.username }}</div>{% endif %}
+  </header>
+
+  {% if post.featured_image %}
+  <figure class="mb-16 -mx-4 sm:-mx-12">
+    <img src="{{ post.featured_image.file.url }}" alt="{{ post.featured_image.alt_text }}" class="w-full sm:rounded-2xl">
+    {% if post.featured_image.caption %}<figcaption class="mt-3 text-sm text-center text-slate-500 italic">{{ post.featured_image.caption }}</figcaption>{% endif %}
+  </figure>
+  {% endif %}
+
+  <div class="prose prose-lg longform-prose">
+    <style>
+      .longform-prose { font-size: 1.15rem; line-height: 1.75; }
+      .longform-prose > p:first-of-type::first-letter {
+        float: left; font-family: var(--font-heading); font-size: 4rem;
+        line-height: 0.85; padding: 6px 12px 0 0; font-weight: 600;
+        color: var(--color-accent, #6C63FF);
+      }
+      .longform-prose h2 { margin-top: 2.5em; font-size: 1.6rem; }
+      .longform-prose blockquote { font-size: 1.4rem; font-style: italic;
+        border-left: 4px solid var(--color-accent, #6C63FF); padding: 0 0 0 24px; margin: 1.5em 0; }
+    </style>
+    {{ post.body_html|safe }}
+  </div>
+
+  {% if post.tags.all %}
+  <div class="mt-16 pt-8 border-t border-slate-100 dark:border-slate-800 flex flex-wrap gap-2 justify-center">
+    {% for t in post.tags.all %}
+      <a href="/blog/?tag={{ t.slug }}" class="text-xs px-3 py-1 rounded-full border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-accent hover:text-accent">#{{ t.name }}</a>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <nav class="mt-12 text-center">
+    <a href="/blog/" class="text-sm text-slate-500 hover:text-accent">← Volver al blog</a>
+  </nav>
+</article>
+{% endblock %}

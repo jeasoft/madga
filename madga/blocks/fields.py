@@ -78,14 +78,26 @@ class TextField(Field):
 
 
 class UrlField(Field):
+    """Accepts both absolute URLs (https://…) and site-relative paths (/foo/).
+
+    Rendered as ``<input type="text">`` rather than ``<input type="url">``
+    because the browser's URL validation rejects paths like ``/blog/post/``,
+    which are perfectly valid CTA destinations for a CMS.
+    """
+
     kind = "url"
 
     def render_input(self, value, prefix=""):
         v = "" if value is None else escape(str(value))
         return mark_safe(
-            f'<input class="madga-input" type="url" name="{prefix}{self.name}" '
-            f'value="{v}" placeholder="https://… o /ruta">'
+            f'<input class="madga-input" type="text" name="{prefix}{self.name}" '
+            f'value="{v}" placeholder="https://ejemplo.com  ó  /blog/mi-entrada  ó  #seccion" '
+            f'inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false">'
         )
+
+    def coerce_from_post(self, post, prefix=""):
+        raw = (post.get(prefix + self.name, self.default) or "").strip()
+        return raw
 
 
 class IntField(Field):

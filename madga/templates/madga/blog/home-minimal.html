@@ -1,0 +1,28 @@
+{% extends "madga/blog/base.html" %}
+{% block title %}{{ site.name }}{% endblock %}
+
+{% block content %}
+{# Minimal: just the most-recent posts as a clean list. No hero, no chrome. #}
+<section class="max-w-xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
+  <header class="mb-12">
+    <h1 class="font-heading text-2xl font-semibold tracking-tight">{{ site.name }}</h1>
+    {% if site.description %}<p class="mt-2 text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{{ site.description }}</p>{% endif %}
+  </header>
+
+  {% if posts %}
+  <ol class="space-y-3">
+    {% for post in posts %}
+      <li>
+        <a href="/blog/{{ post.slug }}/" class="group flex items-baseline gap-3 py-1.5">
+          <time class="text-xs text-slate-400 tabular-nums shrink-0 w-16" datetime="{{ post.published_at|date:'c' }}">{{ post.published_at|date:"j M" }}</time>
+          <span class="text-sm group-hover:text-accent transition-colors">{{ post.title }}</span>
+        </a>
+      </li>
+    {% endfor %}
+  </ol>
+  <a href="/blog/" class="inline-block mt-10 text-xs text-slate-500 hover:text-accent">Ver todo el blog →</a>
+  {% else %}
+  <p class="text-sm text-slate-500">Sin posts todavía.</p>
+  {% endif %}
+</section>
+{% endblock %}

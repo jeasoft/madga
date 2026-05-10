@@ -1,0 +1,22 @@
+{% extends "madga/blog/base.html" %}
+{% block title %}{{ page.meta_title|default:page.title }} · {{ site.name }}{% endblock %}
+
+{% block content %}
+{# Docs page: left sidebar listing siblings (Page rows where parent == page.parent). #}
+<div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-10">
+  <aside class="lg:sticky lg:top-24 lg:self-start text-sm">
+    <div class="text-xs uppercase tracking-wide text-slate-500 mb-3 font-medium">Páginas</div>
+    <nav class="space-y-1.5 text-slate-600 dark:text-slate-400" id="docs-sidebar">
+      {# Server-rendered sibling list could go here; for now we fall back to JS later. #}
+      <a href="/" class="block hover:text-accent">Inicio</a>
+      <a href="/blog/" class="block hover:text-accent">Blog</a>
+    </nav>
+  </aside>
+  <article>
+    <header class="mb-8 pb-6 border-b border-slate-100 dark:border-slate-800">
+      <h1 class="font-heading text-3xl sm:text-4xl font-semibold tracking-tight">{{ page.title }}</h1>
+    </header>
+    <div class="prose">{{ page.body_html|safe }}</div>
+  </article>
+</div>
+{% endblock %}
