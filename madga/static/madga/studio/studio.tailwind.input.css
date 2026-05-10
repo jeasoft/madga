@@ -237,6 +237,23 @@
   .madga-list-item-body { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
   .madga-list-add { margin-top: 10px; }
 
+  /* Theme gallery ------------------------------------------------------- */
+  .madga-theme-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .madga-theme-card-item { background: var(--bg-1); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; transition: border-color .12s; display: flex; flex-direction: column; }
+  .madga-theme-card-item.is-active { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+  .madga-theme-card-preview { aspect-ratio: 16 / 10; padding: 18px; display: flex; align-items: stretch; position: relative; flex-shrink: 0; }
+  .madga-theme-card-mock { background: #fff; border-radius: 6px; padding: 12px; flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; overflow: hidden; }
+  .madga-theme-card-mock-h { font-size: 14px; font-weight: 600; margin-bottom: 3px; line-height: 1.1; }
+  .madga-theme-card-mock-line { height: 5px; background: #e2e8f0; border-radius: 3px; }
+  .madga-theme-card-mock-cta { display: inline-block; align-self: flex-start; padding: 3px 8px; color: #fff; border-radius: 4px; font-size: 8px; font-weight: 600; margin-top: 4px; line-height: 1; letter-spacing: .04em; text-transform: uppercase; }
+  .madga-theme-card-badge { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,.65); color: #fff; font-size: 9.5px; font-weight: 600; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: .04em; z-index: 1; }
+  .madga-theme-card-meta { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .madga-theme-card-name { font-size: 15px; font-weight: 600; color: var(--fg-0); display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .madga-theme-card-key { font-family: var(--font-mono); font-size: 10.5px; color: var(--fg-3); font-weight: 400; }
+  .madga-theme-card-desc { font-size: 12.5px; color: var(--fg-2); line-height: 1.45; margin: 2px 0 4px; }
+  .madga-theme-card-author { font-size: 11px; color: var(--fg-3); margin-bottom: 8px; }
+  .madga-theme-card-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; }
+
   /* Layouts page -------------------------------------------------------- */
   .madga-layout-group { padding: 18px 20px; margin-bottom: 14px; }
   .madga-layout-group-title { font-size: 13px; font-weight: 600; color: var(--fg-0); margin: 0 0 12px; }
