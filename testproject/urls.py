@@ -11,6 +11,7 @@ from . import prototype_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('i18n/', include('django.conf.urls.i18n')),  # set_language endpoint
     path('studio/', include('madga.studio.urls')),
     path('api/madga/v1/', madga_api.urls),
     # django-allauth: headless JSON API (signup, login, password reset, MFA, ...)

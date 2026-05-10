@@ -16,6 +16,17 @@
     {% studio_icon "moon" size=16 stroke=2 css_class="madga-icon-moon" %}
     {% studio_icon "sun" size=16 stroke=2 css_class="madga-icon-sun" %}
   </button>
+  {% get_current_language as LANGUAGE_CODE %}
+  {% get_available_languages as LANGUAGES %}
+  <form action="{% url 'set_language' %}" method="post" class="madga-lang-switch" title="{% trans 'Language' %}">
+    {% csrf_token %}
+    <input name="next" type="hidden" value="{{ request.path }}">
+    <select name="language" onchange="this.form.submit()" aria-label="{% trans 'Language' %}">
+      {% for code, label in LANGUAGES %}
+        <option value="{{ code }}" {% if code == LANGUAGE_CODE %}selected{% endif %}>{{ code|upper }}</option>
+      {% endfor %}
+    </select>
+  </form>
   <button type="button" class="madga-icon-btn" title="{% trans 'Recent activity' %}" aria-label="{% trans 'Notifications' %}" data-madga-popover-toggle="notifications">
     {% studio_icon "bell" size=16 stroke=2 %}
   </button>
@@ -68,6 +79,13 @@
 <style>
   [data-theme="dark"] .madga-icon-moon { display:none; }
   [data-theme="light"] .madga-icon-sun { display:none; }
+  .madga-lang-switch { margin: 0; }
+  .madga-lang-switch select {
+    background: transparent; border: 1px solid var(--border); color: var(--fg-1);
+    border-radius: 6px; padding: 5px 6px; font-size: 11px; font-weight: 600;
+    font-family: var(--font-mono); cursor: pointer; letter-spacing: .04em;
+  }
+  .madga-lang-switch select:hover { border-color: var(--border-strong); color: var(--fg-0); }
   .madga-popover {
     position: fixed; top: 60px; right: 14px; width: min(360px, calc(100vw - 28px));
     background: var(--bg-1); border: 1px solid var(--border); border-radius: 12px;
