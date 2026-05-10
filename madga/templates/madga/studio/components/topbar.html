@@ -1,25 +1,25 @@
-{% load madga_studio_tags %}
+{% load i18n madga_studio_tags %}
 <header class="madga-topbar">
-  <button type="button" class="madga-icon-btn madga-sidebar-toggle" aria-label="Abrir menú" data-madga-sidebar-toggle>
+  <button type="button" class="madga-icon-btn madga-sidebar-toggle" aria-label="{% trans 'Open menu' %}" data-madga-sidebar-toggle>
     {% studio_icon "menu" size=18 stroke=2 %}
   </button>
   <nav class="madga-breadcrumbs">
-    {% block breadcrumbs %}<span class="crumb is-current">Studio</span>{% endblock %}
+    {% block breadcrumbs %}<span class="crumb is-current">{% trans "Studio" %}</span>{% endblock %}
   </nav>
   <div style="flex:1"></div>
   <form class="madga-search" action="{% url 'madga_studio:post_list' %}" method="get" role="search">
     {% studio_icon "search" size=14 stroke=2 %}
-    <input type="text" name="q" placeholder="Buscar posts, páginas…" aria-label="Buscar" data-madga-search>
+    <input type="text" name="q" placeholder="{% trans 'Search posts, pages…' %}" aria-label="{% trans 'Search' %}" data-madga-search>
     <span class="madga-kbd">⌘K</span>
   </form>
-  <button type="button" class="madga-icon-btn" title="Cambiar tema" aria-label="Cambiar tema" data-madga-theme-toggle>
+  <button type="button" class="madga-icon-btn" title="{% trans 'Toggle theme' %}" aria-label="{% trans 'Toggle theme' %}" data-madga-theme-toggle>
     {% studio_icon "moon" size=16 stroke=2 css_class="madga-icon-moon" %}
     {% studio_icon "sun" size=16 stroke=2 css_class="madga-icon-sun" %}
   </button>
-  <button type="button" class="madga-icon-btn" title="Actividad reciente" aria-label="Notificaciones" data-madga-popover-toggle="notifications">
+  <button type="button" class="madga-icon-btn" title="{% trans 'Recent activity' %}" aria-label="{% trans 'Notifications' %}" data-madga-popover-toggle="notifications">
     {% studio_icon "bell" size=16 stroke=2 %}
   </button>
-  <button type="button" class="madga-icon-btn" title="Ayuda y atajos" aria-label="Ayuda" data-madga-popover-toggle="help">
+  <button type="button" class="madga-icon-btn" title="{% trans 'Help and shortcuts' %}" aria-label="{% trans 'Help' %}" data-madga-popover-toggle="help">
     {% studio_icon "help" size=16 stroke=2 %}
   </button>
 </header>
@@ -59,7 +59,7 @@
     </div>
     <div class="madga-popover-section">
       <div class="madga-popover-section-title">Publicación</div>
-      <div class="madga-popover-row"><span>Guarda un borrador o pulsa <strong>Publicar</strong> para que sea visible públicamente.</span></div>
+      <div class="madga-popover-row"><span>Guarda un borrador o pulsa <strong>{% trans "Publicar" %}</strong> para que sea visible públicamente.</span></div>
       <div class="madga-popover-row"><span>Si pones una fecha futura en "Publicar el", el post quedará programado.</span></div>
     </div>
   </div>

@@ -3,6 +3,7 @@
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.views import View
+from django.utils.translation import gettext as _
 
 from madga.themes import all_themes, get_theme
 
@@ -22,18 +23,18 @@ class ThemeGalleryView(MadgaStudioMixin, View):
 
     def post(self, request):
         if not self.has_perm("manage_settings"):
-            messages.error(request, "Permiso denegado.")
+            messages.error(request, _("Permiso denegado."))
             return redirect("madga_studio:theme_gallery")
         site = self.get_site()
         if site is None:
-            messages.error(request, "No hay site activo.")
+            messages.error(request, _("No hay site activo."))
             return redirect("madga_studio:theme_gallery")
 
         action = request.POST.get("action")
         key = request.POST.get("theme")
         theme = get_theme(key) if key else None
         if theme is None:
-            messages.error(request, "Theme no encontrado.")
+            messages.error(request, _("Theme no encontrado."))
             return redirect("madga_studio:theme_gallery")
 
         if action == "activate":

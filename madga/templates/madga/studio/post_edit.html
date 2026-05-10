@@ -1,5 +1,5 @@
 {% extends "madga/studio/base.html" %}
-{% load static madga_studio_tags %}
+{% load i18n static madga_studio_tags %}
 
 {% block title %}{% if post %}{{ post.title|default:"Editar post" }}{% else %}Nuevo post{% endif %} · Studio{% endblock %}
 {% block breadcrumbs %}
@@ -62,10 +62,10 @@
           <a href="/blog/{{ post.slug }}/" target="_blank" class="madga-btn madga-btn--ghost madga-btn--sm">{% studio_icon "external" size=12 stroke=2 %} Live</a>
         {% endif %}
       {% else %}
-        <span class="madga-btn madga-btn--sm" aria-disabled="true" style="opacity:.5; cursor:not-allowed;" title="Guarda primero">Preview</span>
+        <span class="madga-btn madga-btn--sm" aria-disabled="true" style="opacity:.5; cursor:not-allowed;" title="Guarda primero">{% trans "Preview" %}</span>
       {% endif %}
-      <button type="submit" data-set-status="draft" class="madga-btn madga-btn--sm">Guardar borrador</button>
-      <button type="submit" data-set-status="published" class="madga-btn madga-btn--sm madga-btn--primary">Publicar</button>
+      <button type="submit" data-set-status="draft" class="madga-btn madga-btn--sm">{% trans "Guardar borrador" %}</button>
+      <button type="submit" data-set-status="published" class="madga-btn madga-btn--sm madga-btn--primary">{% trans "Publicar" %}</button>
     </div>
 
     <div class="madga-editor-main">
@@ -85,7 +85,7 @@
 
   <aside class="madga-editor-rail">
     <div class="madga-rail-card">
-      <h3>Estado</h3>
+      <h3>{% trans "Estado" %}</h3>
       <div class="madga-field">
         <label class="madga-field-label">Status</label>
         <select class="madga-select" name="status">
@@ -100,20 +100,20 @@
         <span class="madga-field-help">Si la fecha es futura, queda programado.</span>
       </div>
       <div class="madga-field">
-        <label class="madga-field-label">Slug</label>
+        <label class="madga-field-label">{% trans "Slug" %}</label>
         <input class="madga-input" type="text" name="slug" id="id_slug" value="{{ form.slug.value|default:'' }}" placeholder="auto-generado" data-serp-source="slug">
       </div>
     </div>
 
     <div class="madga-rail-card">
-      <h3>Imagen destacada</h3>
+      <h3>{% trans "Imagen destacada" %}</h3>
       {% include "madga/studio/components/featured_image_field.html" with name="featured_image" media=post.featured_image alt_name="featured_image_alt" %}
     </div>
 
     <div class="madga-rail-card">
-      <h3>Organización</h3>
+      <h3>{% trans "Organización" %}</h3>
       <div class="madga-field">
-        <label class="madga-field-label">Categoría</label>
+        <label class="madga-field-label">{% trans "Categoría" %}</label>
         <select class="madga-select" name="category">
           <option value="">— ninguna —</option>
           {% for cat in categories %}
@@ -122,7 +122,7 @@
         </select>
       </div>
       <div class="madga-field">
-        <label class="madga-field-label">Tags</label>
+        <label class="madga-field-label">{% trans "Tags" %}</label>
         <select class="madga-select" name="tag_slugs" multiple size="4" style="height:auto; min-height:80px;">
           {% for tag in tags %}
             <option value="{{ tag.slug }}" {% if tag.slug in selected_tag_slugs %}selected{% endif %}>{{ tag.name }}</option>
@@ -130,13 +130,13 @@
         </select>
       </div>
       <div class="madga-field">
-        <label class="madga-field-label">Excerpt <span class="madga-char-counter" data-char-of="excerpt" data-char-max="160">0/160</span></label>
+        <label class="madga-field-label">{% trans "Excerpt" %} <span class="madga-char-counter" data-char-of="excerpt" data-char-max="160">0/160</span></label>
         <textarea class="madga-textarea" name="excerpt" id="id_excerpt" rows="3" maxlength="500" data-serp-source="desc-fallback">{{ form.excerpt.value|default:'' }}</textarea>
       </div>
     </div>
 
     <div class="madga-rail-card" data-madga-serp>
-      <h3>SEO</h3>
+      <h3>{% trans "SEO" %}</h3>
 
       <div class="madga-serp" aria-label="Vista previa en Google">
         <div class="madga-serp-url" data-serp-url>{{ site.domain|default:"midominio.com" }} › blog › {% if post %}{{ post.slug|default:"slug-del-post" }}{% else %}slug-del-post{% endif %}</div>
@@ -145,19 +145,19 @@
       </div>
 
       <div class="madga-field" style="margin-top:12px;">
-        <label class="madga-field-label">Meta title <span class="madga-char-counter" data-char-of="meta_title" data-char-max="60">0/60</span></label>
+        <label class="madga-field-label">{% trans "Meta title" %} <span class="madga-char-counter" data-char-of="meta_title" data-char-max="60">0/60</span></label>
         <input class="madga-input" type="text" name="meta_title" id="id_meta_title" value="{{ form.meta_title.value|default:'' }}" maxlength="160" data-serp-source="title">
       </div>
       <div class="madga-field">
-        <label class="madga-field-label">Meta description <span class="madga-char-counter" data-char-of="meta_description" data-char-max="160">0/160</span></label>
+        <label class="madga-field-label">{% trans "Meta description" %} <span class="madga-char-counter" data-char-of="meta_description" data-char-max="160">0/160</span></label>
         <textarea class="madga-textarea" name="meta_description" id="id_meta_description" rows="2" data-serp-source="desc">{{ form.meta_description.value|default:'' }}</textarea>
       </div>
       <div class="madga-field">
-        <label class="madga-field-label">Focus keyword</label>
+        <label class="madga-field-label">{% trans "Focus keyword" %}</label>
         <input class="madga-input" type="text" name="focus_keyword" value="{{ form.focus_keyword.value|default:'' }}" maxlength="100">
       </div>
       <div class="madga-field">
-        <label class="madga-field-label">Canonical URL</label>
+        <label class="madga-field-label">{% trans "Canonical URL" %}</label>
         <input class="madga-input" type="url" name="canonical_url" value="{{ form.canonical_url.value|default:'' }}">
       </div>
     </div>
@@ -165,7 +165,7 @@
     {% if post %}
     <form method="post" action="{% url 'madga_studio:post_delete' pk=post.pk %}" class="madga-rail-card">
       {% csrf_token %}
-      <h3>Peligro</h3>
+      <h3>{% trans "Peligro" %}</h3>
       <button type="submit" class="madga-btn madga-btn--sm madga-btn--danger" style="width:100%; justify-content:center;">{% studio_icon "trash" size=12 stroke=2 %} Mover a papelera</button>
     </form>
     {% endif %}

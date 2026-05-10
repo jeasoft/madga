@@ -1,0 +1,602 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-10 02:37-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
+#: madga/blocks/builtin.py:16
+msgid "Hero"
+msgstr "Hero"
+
+#: madga/blocks/builtin.py:17
+msgid "Large welcome block with title, subtitle and a CTA."
+msgstr "Bloque grande de bienvenida con título, subtítulo y un CTA."
+
+#: madga/blocks/builtin.py:21 madga/blocks/builtin.py:61
+#: madga/blocks/builtin.py:88
+msgid "Title"
+msgstr "Título"
+
+#: madga/blocks/builtin.py:22 madga/blocks/builtin.py:62
+msgid "Subtitle"
+msgstr "Subtítulo"
+
+#: madga/blocks/builtin.py:23 madga/blocks/builtin.py:63
+#: madga/blocks/builtin.py:89
+msgid "Button label"
+msgstr "Texto del botón"
+
+#: madga/blocks/builtin.py:24 madga/blocks/builtin.py:90
+msgid "Button destination"
+msgstr "Destino del botón"
+
+#: madga/blocks/builtin.py:31
+msgid "Recent posts"
+msgstr "Posts recientes"
+
+#: madga/blocks/builtin.py:32
+msgid "List of the latest N published posts."
+msgstr "Lista de los últimos N posts publicados."
+
+#: madga/blocks/builtin.py:36
+msgid "Section title"
+msgstr "Título de la sección"
+
+#: madga/blocks/builtin.py:37
+msgid "How many posts to show"
+msgstr "Cuántos posts mostrar"
+
+#: madga/blocks/builtin.py:44
+msgid "Featured post"
+msgstr "Post destacado"
+
+#: madga/blocks/builtin.py:45
+msgid "One featured post shown at full size."
+msgstr "Un post destacado mostrado a tamaño completo."
+
+#: madga/blocks/builtin.py:49
+msgid "Slug of the post to feature"
+msgstr "Slug del post a destacar"
+
+#: madga/blocks/builtin.py:56
+msgid "Newsletter"
+msgstr "Newsletter"
+
+#: madga/blocks/builtin.py:57
+msgid "Newsletter signup band."
+msgstr "Banda de suscripción al newsletter."
+
+#: madga/blocks/builtin.py:70 madga/blocks/builtin.py:76
+msgid "Text"
+msgstr "Texto"
+
+#: madga/blocks/builtin.py:71
+msgid "Free-form text block with optional title."
+msgstr "Bloque de texto libre con título opcional."
+
+#: madga/blocks/builtin.py:75
+msgid "Title (optional)"
+msgstr "Título (opcional)"
+
+#: madga/blocks/builtin.py:83
+msgid "Call to action"
+msgstr "Llamada a la acción"
+
+#: madga/blocks/builtin.py:84
+msgid "Simple call-to-action with a button."
+msgstr "Llamada a la acción simple con un botón."
+
+#: madga/studio/views/homepage.py:77 madga/studio/views/navigation.py:51
+#: madga/studio/views/settings.py:73 madga/studio/views/settings.py:121
+#: madga/studio/views/settings.py:181 madga/studio/views/themes.py:26
+#: madga/studio/views/users.py:144
+msgid "Permiso denegado."
+msgstr ""
+
+#: madga/studio/views/homepage.py:81 madga/studio/views/navigation.py:55
+#: madga/studio/views/settings.py:185 madga/studio/views/themes.py:30
+msgid "No hay site activo."
+msgstr ""
+
+#: madga/studio/views/homepage.py:90
+msgid "Tipo de bloque inválido."
+msgstr ""
+
+#: madga/studio/views/homepage.py:106
+msgid "Este tipo de bloque ya no existe."
+msgstr ""
+
+#: madga/studio/views/homepage.py:114
+msgid "Bloque actualizado."
+msgstr ""
+
+#: madga/studio/views/homepage.py:119
+msgid "Bloque eliminado."
+msgstr ""
+
+#: madga/studio/views/media.py:122
+msgid "Archivo eliminado."
+msgstr ""
+
+#: madga/studio/views/navigation.py:74
+msgid "Label y URL son obligatorios."
+msgstr ""
+
+#: madga/studio/views/navigation.py:85
+msgid "Item creado."
+msgstr ""
+
+#: madga/studio/views/navigation.py:105
+msgid "Item actualizado."
+msgstr ""
+
+#: madga/studio/views/navigation.py:110
+msgid "Item eliminado."
+msgstr ""
+
+#: madga/studio/views/pages.py:79
+msgid "Página eliminada."
+msgstr ""
+
+#: madga/studio/views/posts.py:104
+msgid "Tu rol no permite publicar."
+msgstr ""
+
+#: madga/studio/views/posts.py:176
+msgid "Tu rol no permite publicar — guardado como borrador."
+msgstr ""
+
+#: madga/studio/views/posts.py:231
+msgid "Post enviado a la papelera."
+msgstr ""
+
+#: madga/studio/views/settings.py:18
+msgid "General"
+msgstr "General"
+
+#: madga/studio/views/settings.py:23
+msgid "Branding"
+msgstr "Marca"
+
+#: madga/studio/views/settings.py:31
+#: madga/templates/madga/studio/page_edit.html:78
+#: madga/templates/madga/studio/post_edit.html:139
+msgid "SEO"
+msgstr "SEO"
+
+#: madga/studio/views/settings.py:36
+msgid "Integrations"
+msgstr "Integraciones"
+
+#: madga/studio/views/settings.py:80
+msgid "Settings actualizados."
+msgstr ""
+
+#: madga/studio/views/settings.py:127
+msgid "Theme actualizado."
+msgstr ""
+
+#: madga/studio/views/settings.py:134 madga/studio/views/settings.py:139
+#: madga/studio/views/settings.py:144 madga/themes/builtin.py:11
+msgid "Default"
+msgstr "Predeterminado"
+
+#: madga/studio/views/settings.py:134
+msgid "HomepageBlocks-driven home (recommended)."
+msgstr "Home basada en HomepageBlocks (recomendado)."
+
+#: madga/studio/views/settings.py:135
+msgid "Editorial"
+msgstr "Editorial"
+
+#: madga/studio/views/settings.py:135
+msgid "Hero + curated articles in a magazine grid."
+msgstr "Hero + artículos curados en grid magazine."
+
+#: madga/studio/views/settings.py:136 madga/themes/builtin.py:33
+msgid "Minimal"
+msgstr "Mínimo"
+
+#: madga/studio/views/settings.py:136
+msgid "Just the most-recent posts in a clean list."
+msgstr "Solo los posts más recientes en lista limpia."
+
+#: madga/studio/views/settings.py:139
+msgid "Chronological list with category filters."
+msgstr "Lista cronológica con filtros por categoría."
+
+#: madga/studio/views/settings.py:140
+msgid "Grid"
+msgstr "Grid"
+
+#: madga/studio/views/settings.py:140
+msgid "Cards with thumbnails, 2 columns."
+msgstr "Cards con thumbnails, 2 columnas."
+
+#: madga/studio/views/settings.py:141
+msgid "Compact"
+msgstr "Compacto"
+
+#: madga/studio/views/settings.py:141
+msgid "Title + date, no excerpt, dense."
+msgstr "Título + fecha, sin excerpt, denso."
+
+#: madga/studio/views/settings.py:144
+msgid "Centered article column with featured image hero."
+msgstr "Columna centrada con featured image como hero."
+
+#: madga/studio/views/settings.py:145
+msgid "Longform"
+msgstr "Longform"
+
+#: madga/studio/views/settings.py:145
+msgid "Wider column, drop caps, larger type."
+msgstr "Columna ancha, drop caps, tipografía grande."
+
+#: madga/studio/views/settings.py:146 madga/studio/views/settings.py:151
+msgid "Docs"
+msgstr "Docs"
+
+#: madga/studio/views/settings.py:146
+msgid "Sidebar TOC + content."
+msgstr "Sidebar TOC + contenido."
+
+#: madga/studio/views/settings.py:149
+msgid "Simple"
+msgstr "Simple"
+
+#: madga/studio/views/settings.py:149
+msgid "Centered prose. Good for legal pages."
+msgstr "Prosa centrada. Ideal para legales."
+
+#: madga/studio/views/settings.py:150
+msgid "Sidebar"
+msgstr "Sidebar"
+
+#: madga/studio/views/settings.py:150
+msgid "Right sidebar with table of contents."
+msgstr "Sidebar derecha con table of contents."
+
+#: madga/studio/views/settings.py:151
+msgid "Left sidebar with sibling pages."
+msgstr "Sidebar izquierda con páginas hermanas."
+
+#: madga/studio/views/settings.py:196
+msgid "Layouts actualizados."
+msgstr ""
+
+#: madga/studio/views/taxonomy.py:38
+msgid "Categoría creada."
+msgstr ""
+
+#: madga/studio/views/taxonomy.py:40
+msgid "No se pudo crear la categoría."
+msgstr ""
+
+#: madga/studio/views/taxonomy.py:50
+msgid "Categoría eliminada."
+msgstr ""
+
+#: madga/studio/views/taxonomy.py:63
+msgid "Tag creado."
+msgstr ""
+
+#: madga/studio/views/taxonomy.py:65
+msgid "No se pudo crear el tag."
+msgstr ""
+
+#: madga/studio/views/taxonomy.py:73
+msgid "Tag eliminado."
+msgstr ""
+
+#: madga/studio/views/themes.py:37
+msgid "Theme no encontrado."
+msgstr ""
+
+#: madga/studio/views/users.py:45
+msgid "No tienes permiso para invitar usuarios."
+msgstr ""
+
+#: madga/studio/views/users.py:51
+msgid "Email requerido."
+msgstr ""
+
+#: madga/studio/views/users.py:104
+msgid "Esta invitación ya no es válida."
+msgstr ""
+
+#: madga/studio/views/users.py:153
+msgid "Rol actualizado."
+msgstr ""
+
+#: madga/templates/madga/studio/accept_invite.html:13
+#: madga/templates/madga/studio/accept_invite.html:17
+msgid "Ir al login"
+msgstr ""
+
+#: madga/templates/madga/studio/accept_invite.html:26
+msgid "Aceptar invitación"
+msgstr ""
+
+#: madga/templates/madga/studio/base.html:65
+msgid "Cancelar"
+msgstr ""
+
+#: madga/templates/madga/studio/base.html:66
+msgid "Confirmar"
+msgstr ""
+
+#: madga/templates/madga/studio/components/featured_image_field.html:16
+msgid "Elegir imagen"
+msgstr ""
+
+#: madga/templates/madga/studio/components/media_picker.html:5
+msgid "Elegir desde la biblioteca"
+msgstr ""
+
+#: madga/templates/madga/studio/components/post_list_rows.html:7
+#: madga/templates/madga/studio/page_edit.html:57
+#: madga/templates/madga/studio/page_list.html:24
+#: madga/templates/madga/studio/post_edit.html:88
+msgid "Estado"
+msgstr ""
+
+#: madga/templates/madga/studio/components/post_list_rows.html:8
+#: madga/templates/madga/studio/post_edit.html:116
+msgid "Categoría"
+msgstr ""
+
+#: madga/templates/madga/studio/components/post_list_rows.html:38
+#: madga/templates/madga/studio/page_list.html:45
+msgid "Editar"
+msgstr ""
+
+#: madga/templates/madga/studio/components/sidebar.html:15
+msgid "New post"
+msgstr "Nuevo post"
+
+#: madga/templates/madga/studio/components/sidebar.html:20
+msgid "Dashboard"
+msgstr "Panel"
+
+#: madga/templates/madga/studio/components/sidebar.html:23
+msgid "Posts"
+msgstr "Posts"
+
+#: madga/templates/madga/studio/components/sidebar.html:27
+msgid "Pages"
+msgstr "Páginas"
+
+#: madga/templates/madga/studio/components/sidebar.html:30
+msgid "Media library"
+msgstr "Biblioteca de media"
+
+#: madga/templates/madga/studio/components/sidebar.html:33
+msgid "Categories & tags"
+msgstr "Categorías y tags"
+
+#: madga/templates/madga/studio/components/sidebar.html:36
+msgid "Site"
+msgstr "Site"
+
+#: madga/templates/madga/studio/components/sidebar.html:38
+msgid "Theme"
+msgstr "Theme"
+
+#: madga/templates/madga/studio/components/sidebar.html:41
+msgid "Theme gallery"
+msgstr "Galería de themes"
+
+#: madga/templates/madga/studio/components/sidebar.html:44
+msgid "Layouts"
+msgstr "Layouts"
+
+#: madga/templates/madga/studio/components/sidebar.html:47
+msgid "Navigation"
+msgstr "Navegación"
+
+#: madga/templates/madga/studio/components/sidebar.html:50
+msgid "Homepage"
+msgstr "Homepage"
+
+#: madga/templates/madga/studio/components/sidebar.html:53
+msgid "Workspace"
+msgstr "Workspace"
+
+#: madga/templates/madga/studio/components/sidebar.html:55
+msgid "Users"
+msgstr "Usuarios"
+
+#: madga/templates/madga/studio/components/sidebar.html:58
+msgid "Settings"
+msgstr "Configuración"
+
+#: madga/templates/madga/studio/components/sidebar.html:68
+msgid "View site"
+msgstr "Ver site"
+
+#: madga/templates/madga/studio/components/sidebar.html:78
+msgid "Superuser"
+msgstr "Superuser"
+
+#: madga/templates/madga/studio/components/sidebar.html:79
+msgid "Sign out"
+msgstr "Salir"
+
+#: madga/templates/madga/studio/components/topbar.html:3
+msgid "Open menu"
+msgstr "Abrir menú"
+
+#: madga/templates/madga/studio/components/topbar.html:7
+msgid "Studio"
+msgstr ""
+
+#: madga/templates/madga/studio/components/topbar.html:12
+msgid "Search posts, pages…"
+msgstr "Buscar posts, páginas…"
+
+#: madga/templates/madga/studio/components/topbar.html:12
+msgid "Search"
+msgstr "Buscar"
+
+#: madga/templates/madga/studio/components/topbar.html:15
+msgid "Toggle theme"
+msgstr "Cambiar tema"
+
+#: madga/templates/madga/studio/components/topbar.html:19
+msgid "Recent activity"
+msgstr "Actividad reciente"
+
+#: madga/templates/madga/studio/components/topbar.html:19
+msgid "Notifications"
+msgstr "Notificaciones"
+
+#: madga/templates/madga/studio/components/topbar.html:22
+msgid "Help and shortcuts"
+msgstr "Ayuda y atajos"
+
+#: madga/templates/madga/studio/components/topbar.html:22
+msgid "Help"
+msgstr "Ayuda"
+
+#: madga/templates/madga/studio/components/topbar.html:62
+#: madga/templates/madga/studio/post_edit.html:68
+msgid "Publicar"
+msgstr ""
+
+#: madga/templates/madga/studio/homepage.html:88
+#: madga/templates/madga/studio/settings.html:43
+msgid "Guardar cambios"
+msgstr ""
+
+#: madga/templates/madga/studio/navigation.html:17
+msgid "Header"
+msgstr ""
+
+#: madga/templates/madga/studio/navigation.html:61
+msgid "Footer"
+msgstr ""
+
+#: madga/templates/madga/studio/page_edit.html:40
+#: madga/templates/madga/studio/post_edit.html:65
+msgid "Preview"
+msgstr ""
+
+#: madga/templates/madga/studio/page_edit.html:42
+#: madga/templates/madga/studio/theme.html:52
+msgid "Guardar"
+msgstr ""
+
+#: madga/templates/madga/studio/page_edit.html:58
+#: madga/templates/madga/studio/page_list.html:23
+#: madga/templates/madga/studio/post_edit.html:103
+msgid "Slug"
+msgstr ""
+
+#: madga/templates/madga/studio/page_edit.html:62
+#: madga/templates/madga/studio/page_list.html:25
+#: madga/templates/madga/studio/theme.html:126
+msgid "Layout"
+msgstr ""
+
+#: madga/templates/madga/studio/page_edit.html:69
+msgid "Sort order"
+msgstr ""
+
+#: madga/templates/madga/studio/page_edit.html:73
+#: madga/templates/madga/studio/post_edit.html:109
+msgid "Imagen destacada"
+msgstr ""
+
+#: madga/templates/madga/studio/page_edit.html:79
+#: madga/templates/madga/studio/post_edit.html:148
+msgid "Meta title"
+msgstr ""
+
+#: madga/templates/madga/studio/page_edit.html:80
+#: madga/templates/madga/studio/post_edit.html:152
+msgid "Meta description"
+msgstr ""
+
+#: madga/templates/madga/studio/page_edit.html:89
+#: madga/templates/madga/studio/post_edit.html:168
+msgid "Peligro"
+msgstr ""
+
+#: madga/templates/madga/studio/post_edit.html:67
+msgid "Guardar borrador"
+msgstr ""
+
+#: madga/templates/madga/studio/post_edit.html:114
+msgid "Organización"
+msgstr ""
+
+#: madga/templates/madga/studio/post_edit.html:125
+#: madga/templates/madga/studio/taxonomy.html:37
+msgid "Tags"
+msgstr ""
+
+#: madga/templates/madga/studio/post_edit.html:133
+msgid "Excerpt"
+msgstr ""
+
+#: madga/templates/madga/studio/post_edit.html:156
+msgid "Focus keyword"
+msgstr ""
+
+#: madga/templates/madga/studio/post_edit.html:160
+msgid "Canonical URL"
+msgstr ""
+
+#: madga/templates/madga/studio/preview.html:38
+msgid "Live"
+msgstr ""
+
+#: madga/templates/madga/studio/theme_gallery.html:46
+msgid "Activar"
+msgstr ""
+
+#: madga/themes/builtin.py:12
+msgid ""
+"MADGA's stock theme. Tailwind-driven, generous whitespace, sans-serif "
+"throughout."
+msgstr ""
+
+#: madga/themes/builtin.py:22
+msgid "Essay"
+msgstr "Essay"
+
+#: madga/themes/builtin.py:23
+msgid ""
+"Personal-blog feel. Wider type, longform-friendly. Best with detail-longform "
+"layout."
+msgstr ""
+
+#: madga/themes/builtin.py:34
+msgid ""
+"Stripped-down everything. Tiny date column + post titles. Pairs with home-"
+"minimal + list-compact."
+msgstr ""
+
+#: madga/themes/builtin.py:44
+msgid "Magazine"
+msgstr "Revista"
+
+#: madga/themes/builtin.py:45
+msgid ""
+"Editorial home with hero post + 4-up grid. Pairs with home-editorial + list-"
+"grid."
+msgstr ""

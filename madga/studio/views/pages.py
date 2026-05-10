@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 from django.views.generic import TemplateView
+from django.utils.translation import gettext as _
 
 from madga.models import Page
 
@@ -75,5 +76,5 @@ class PageDeleteView(MadgaStudioMixin, View):
     def post(self, request, pk):
         page = get_object_or_404(Page.objects.filter(site=self.get_site()), pk=pk)
         page.delete()
-        messages.success(request, "Página eliminada.")
+        messages.success(request, _("Página eliminada."))
         return redirect("madga_studio:page_list")

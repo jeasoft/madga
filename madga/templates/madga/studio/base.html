@@ -1,4 +1,4 @@
-{% load static madga_studio_tags %}<!DOCTYPE html>
+{% load i18n static madga_studio_tags %}
 <html lang="es" data-theme="{% if site.color_scheme == 'light' %}light{% else %}dark{% endif %}">
 <head>
   <meta charset="UTF-8">
@@ -62,8 +62,8 @@
   <div class="madga-confirm-modal" role="alertdialog" aria-modal="true">
     <div class="madga-confirm-msg" data-madga-confirm-msg></div>
     <div class="madga-confirm-actions">
-      <button type="button" class="madga-btn madga-btn--sm" data-madga-confirm-cancel>Cancelar</button>
-      <button type="button" class="madga-btn madga-btn--sm madga-btn--danger" data-madga-confirm-ok>Confirmar</button>
+      <button type="button" class="madga-btn madga-btn--sm" data-madga-confirm-cancel>{% trans "Cancelar" %}</button>
+      <button type="button" class="madga-btn madga-btn--sm madga-btn--danger" data-madga-confirm-ok>{% trans "Confirmar" %}</button>
     </div>
   </div>
 </div>

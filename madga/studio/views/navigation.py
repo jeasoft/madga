@@ -5,6 +5,7 @@ from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
+from django.utils.translation import gettext as _
 
 from madga.models import NavItem
 
@@ -47,11 +48,11 @@ class NavigationView(MadgaStudioMixin, View):
 
     def post(self, request):
         if not self.has_perm("manage_settings"):
-            messages.error(request, "Permiso denegado.")
+            messages.error(request, _("Permiso denegado."))
             return redirect("madga_studio:navigation")
         site = self.get_site()
         if site is None:
-            messages.error(request, "No hay site activo.")
+            messages.error(request, _("No hay site activo."))
             return redirect("madga_studio:navigation")
 
         action = request.POST.get("action") or "create"
@@ -70,7 +71,7 @@ class NavigationView(MadgaStudioMixin, View):
             # everything else does.
             requires_url = not (location == NavItem.LOCATION_FOOTER and parent is None)
             if not label or (requires_url and not url):
-                messages.error(request, "Label y URL son obligatorios.")
+                messages.error(request, _("Label y URL son obligatorios."))
                 return redirect("madga_studio:navigation")
             NavItem.objects.create(
                 site=site,
@@ -81,7 +82,7 @@ class NavigationView(MadgaStudioMixin, View):
                 sort_order=int(request.POST.get("sort_order") or 0),
                 open_in_new_tab=bool(request.POST.get("open_in_new_tab")),
             )
-            messages.success(request, "Item creado.")
+            messages.success(request, _("Item creado."))
 
         elif action == "update":
             pk = request.POST.get("pk")
@@ -101,12 +102,12 @@ class NavigationView(MadgaStudioMixin, View):
                 pass
             item.open_in_new_tab = bool(request.POST.get("open_in_new_tab"))
             item.save()
-            messages.success(request, "Item actualizado.")
+            messages.success(request, _("Item actualizado."))
 
         elif action == "delete":
             pk = request.POST.get("pk")
             NavItem.objects.filter(site=site, pk=pk).delete()
-            messages.success(request, "Item eliminado.")
+            messages.success(request, _("Item eliminado."))
 
         elif action == "reorder":
             ids = request.POST.getlist("ids[]") or request.POST.getlist("ids")

@@ -1,11 +1,11 @@
-{% load madga_studio_tags %}
+{% load i18n madga_studio_tags %}
 <table class="madga-table">
   <thead>
     <tr>
       <th class="col-check"><input type="checkbox" data-madga-select-all form="post-bulk-form"></th>
       <th>Título</th>
-      <th>Estado</th>
-      <th>Categoría</th>
+      <th>{% trans "Estado" %}</th>
+      <th>{% trans "Categoría" %}</th>
       <th>Autor</th>
       <th>Fecha</th>
       <th style="text-align:right;">Vistas</th>
@@ -35,7 +35,7 @@
           {% if post.slug %}
             <a href="{% url 'madga_studio:post_preview' pk=post.pk %}" target="_blank" class="madga-btn madga-btn--ghost madga-btn--sm" title="Preview">{% studio_icon "eye" size=14 stroke=2 %}</a>
           {% endif %}
-          <a href="{% url 'madga_studio:post_edit' pk=post.pk %}" class="madga-btn madga-btn--ghost madga-btn--sm">Editar</a>
+          <a href="{% url 'madga_studio:post_edit' pk=post.pk %}" class="madga-btn madga-btn--ghost madga-btn--sm">{% trans "Editar" %}</a>
         </div>
       </td>
     </tr>

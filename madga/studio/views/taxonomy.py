@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from django.views.generic import TemplateView
+from django.utils.translation import gettext as _
 from slugify import slugify
 
 from madga.models import Category, Tag
@@ -34,9 +35,9 @@ class CategoryCreateView(MadgaStudioMixin, View):
             if not obj.slug:
                 obj.slug = slugify(obj.name)[:99]
             obj.save()
-            messages.success(request, "Categoría creada.")
+            messages.success(request, _("Categoría creada."))
         else:
-            messages.error(request, "No se pudo crear la categoría.")
+            messages.error(request, _("No se pudo crear la categoría."))
         return redirect("madga_studio:taxonomy_list")
 
 
@@ -46,7 +47,7 @@ class CategoryDeleteView(MadgaStudioMixin, View):
             Category.objects.filter(site=self.get_site()), pk=pk
         )
         obj.delete()
-        messages.success(request, "Categoría eliminada.")
+        messages.success(request, _("Categoría eliminada."))
         return redirect("madga_studio:taxonomy_list")
 
 
@@ -59,9 +60,9 @@ class TagCreateView(MadgaStudioMixin, View):
             if not obj.slug:
                 obj.slug = slugify(obj.name)[:99]
             obj.save()
-            messages.success(request, "Tag creado.")
+            messages.success(request, _("Tag creado."))
         else:
-            messages.error(request, "No se pudo crear el tag.")
+            messages.error(request, _("No se pudo crear el tag."))
         return redirect("madga_studio:taxonomy_list")
 
 
@@ -69,5 +70,5 @@ class TagDeleteView(MadgaStudioMixin, View):
     def post(self, request, pk):
         obj = get_object_or_404(Tag.objects.filter(site=self.get_site()), pk=pk)
         obj.delete()
-        messages.success(request, "Tag eliminado.")
+        messages.success(request, _("Tag eliminado."))
         return redirect("madga_studio:taxonomy_list")

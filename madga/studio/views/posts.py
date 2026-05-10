@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views import View
 from django.views.generic import TemplateView
+from django.utils.translation import gettext as _
 
 from madga.models import Category, Post, Tag
 
@@ -100,7 +101,7 @@ class PostBulkActionView(MadgaStudioMixin, View):
 
         # Per-action permission checks.
         if action == "publish" and not self.has_perm("publish_post"):
-            messages.error(request, "Tu rol no permite publicar.")
+            messages.error(request, _("Tu rol no permite publicar."))
             return redirect(request.META.get("HTTP_REFERER", "/studio/posts/"))
         if action in ("trash", "delete"):
             # Filter to posts the user can actually delete.
@@ -172,7 +173,7 @@ class PostEditView(MadgaStudioMixin, View):
                 post_data = request.POST.copy()
                 post_data["status"] = Post.STATUS_DRAFT
                 request.POST = post_data
-                messages.warning(request, "Tu rol no permite publicar — guardado como borrador.")
+                messages.warning(request, _("Tu rol no permite publicar — guardado como borrador."))
         form = PostForm(request.POST, request.FILES, instance=post)
         if not form.is_valid():
             if request.headers.get("HX-Request") or request.headers.get(
@@ -227,5 +228,5 @@ class PostDeleteView(MadgaStudioMixin, View):
         if not self.can_delete_post(post):
             raise PermissionDenied("No podés borrar este post.")
         post.soft_delete()
-        messages.success(request, "Post enviado a la papelera.")
+        messages.success(request, _("Post enviado a la papelera."))
         return redirect("madga_studio:post_list")

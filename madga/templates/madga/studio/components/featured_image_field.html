@@ -1,4 +1,4 @@
-{% load madga_studio_tags %}
+{% load i18n madga_studio_tags %}
 {# Featured image picker. Args: name (hidden input form field), media (current MediaFile or None). #}
 <div class="madga-fi" data-madga-featured>
   <input type="hidden" name="{{ name }}" value="{{ media.id|default_if_none:'' }}" data-fi-input>
@@ -13,7 +13,7 @@
 
   <button type="button" class="madga-fi-empty" data-fi-pick {% if media %}hidden{% endif %}>
     {% studio_icon "image" size=22 stroke=1.6 %}
-    <span>Elegir imagen</span>
+    <span>{% trans "Elegir imagen" %}</span>
   </button>
 
   <div class="madga-fi-actions" data-fi-actions {% if not media %}hidden{% endif %}>

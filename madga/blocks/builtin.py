@@ -1,8 +1,10 @@
 """Built-in block types: hero, recent_posts, featured_post, newsletter, text, cta.
 
-These mirror the original hardcoded BLOCK_FIELDS in the homepage view so existing
-HomepageBlock rows keep rendering. Loaded by madga/apps.py.ready().
+Labels and descriptions use ``gettext_lazy`` so they translate at render time
+based on the active language.
 """
+
+from django.utils.translation import gettext_lazy as _
 
 from .fields import IntField, TextField, UrlField
 from .registry import BlockType, register_block_type
@@ -11,79 +13,79 @@ from .registry import BlockType, register_block_type
 @register_block_type
 class HeroBlock(BlockType):
     key = "hero"
-    label = "Hero"
-    description = "Bloque grande de bienvenida con título, subtítulo y un CTA."
+    label = _("Hero")
+    description = _("Large welcome block with title, subtitle and a CTA.")
     template = "madga/blog/blocks/hero.html"
     icon = "post"
     fields = [
-        TextField("title", "Título", default="Bienvenido"),
-        TextField("subtitle", "Subtítulo", multiline=True, default="Subtítulo del hero"),
-        TextField("cta_label", "Texto del botón", default="Saber más"),
-        UrlField("cta_url", "Destino del botón", default="/blog/"),
+        TextField("title", _("Title"), default="Welcome"),
+        TextField("subtitle", _("Subtitle"), multiline=True, default="Hero subtitle"),
+        TextField("cta_label", _("Button label"), default="Learn more"),
+        UrlField("cta_url", _("Button destination"), default="/blog/"),
     ]
 
 
 @register_block_type
 class RecentPostsBlock(BlockType):
     key = "recent_posts"
-    label = "Posts recientes"
-    description = "Lista de los últimos N posts publicados."
+    label = _("Recent posts")
+    description = _("List of the latest N published posts.")
     template = "madga/blog/blocks/recent_posts.html"
     icon = "post"
     fields = [
-        TextField("title", "Título de la sección", default="Últimas publicaciones"),
-        IntField("count", "Cuántos posts mostrar", min=1, max=20, default=3),
+        TextField("title", _("Section title"), default="Latest posts"),
+        IntField("count", _("How many posts to show"), min=1, max=20, default=3),
     ]
 
 
 @register_block_type
 class FeaturedPostBlock(BlockType):
     key = "featured_post"
-    label = "Post destacado"
-    description = "Un post destacado mostrado a tamaño completo."
+    label = _("Featured post")
+    description = _("One featured post shown at full size.")
     template = "madga/blog/blocks/featured_post.html"
     icon = "post"
     fields = [
-        TextField("slug", "Slug del post a destacar"),
+        TextField("slug", _("Slug of the post to feature")),
     ]
 
 
 @register_block_type
 class NewsletterBlock(BlockType):
     key = "newsletter"
-    label = "Newsletter"
-    description = "Banda de suscripción al newsletter."
+    label = _("Newsletter")
+    description = _("Newsletter signup band.")
     template = "madga/blog/blocks/newsletter.html"
     icon = "globe"
     fields = [
-        TextField("title", "Título", default="Suscríbete"),
-        TextField("subtitle", "Subtítulo", multiline=True, default="Una vez al mes, sin spam."),
-        TextField("button_label", "Texto del botón", default="Suscribirme"),
+        TextField("title", _("Title"), default="Subscribe"),
+        TextField("subtitle", _("Subtitle"), multiline=True, default="Once a month, no spam."),
+        TextField("button_label", _("Button label"), default="Subscribe"),
     ]
 
 
 @register_block_type
 class TextBlock(BlockType):
     key = "text"
-    label = "Texto"
-    description = "Bloque de texto libre con título opcional."
+    label = _("Text")
+    description = _("Free-form text block with optional title.")
     template = "madga/blog/blocks/text.html"
     icon = "edit"
     fields = [
-        TextField("title", "Título (opcional)"),
-        TextField("body", "Texto", multiline=True, rows=5),
+        TextField("title", _("Title (optional)")),
+        TextField("body", _("Text"), multiline=True, rows=5),
     ]
 
 
 @register_block_type
 class CtaBlock(BlockType):
     key = "cta"
-    label = "Call to action"
-    description = "Llamada a la acción simple con un botón."
+    label = _("Call to action")
+    description = _("Simple call-to-action with a button.")
     template = "madga/blog/blocks/cta.html"
     icon = "check"
     fields = [
-        TextField("title", "Título", default="Llamada a la acción"),
-        TextField("cta_label", "Texto del botón", default="Empezar"),
-        UrlField("cta_url", "Destino del botón", default="/blog/"),
+        TextField("title", _("Title"), default="Call to action"),
+        TextField("cta_label", _("Button label"), default="Get started"),
+        UrlField("cta_url", _("Button destination"), default="/blog/"),
     ]

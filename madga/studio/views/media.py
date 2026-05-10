@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from django.views.generic import TemplateView
+from django.utils.translation import gettext as _
 
 from madga.models import MediaFile
 
@@ -118,5 +119,5 @@ class MediaDeleteView(MadgaStudioMixin, View):
         media = get_object_or_404(MediaFile.objects.filter(site=self.get_site()), pk=pk)
         media.file.delete(save=False)
         media.delete()
-        messages.success(request, "Archivo eliminado.")
+        messages.success(request, _("Archivo eliminado."))
         return redirect("madga_studio:media_list")

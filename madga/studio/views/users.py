@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views import View
 from django.views.generic import TemplateView
+from django.utils.translation import gettext as _
 
 from madga.models import SiteUser, UserInvitation
 
@@ -41,13 +42,13 @@ class UserListView(MadgaStudioMixin, TemplateView):
 class UserInviteView(MadgaStudioMixin, View):
     def post(self, request):
         if not self.has_perm("manage_users"):
-            messages.error(request, "No tienes permiso para invitar usuarios.")
+            messages.error(request, _("No tienes permiso para invitar usuarios."))
             return redirect("madga_studio:user_list")
         site = self.get_site()
         email = (request.POST.get("email") or "").strip().lower()
         role = request.POST.get("role") or SiteUser.ROLE_AUTHOR
         if not email:
-            messages.error(request, "Email requerido.")
+            messages.error(request, _("Email requerido."))
             return redirect("madga_studio:user_list")
         invitation, created = UserInvitation.objects.update_or_create(
             site=site,
@@ -100,7 +101,7 @@ class AcceptInviteView(View):
     def post(self, request, token):
         inv = self._resolve(token)
         if inv is None or self._is_expired(inv):
-            messages.error(request, "Esta invitación ya no es válida.")
+            messages.error(request, _("Esta invitación ya no es válida."))
             return redirect("madga_studio:login")
 
         User = get_user_model()
@@ -140,7 +141,7 @@ class AcceptInviteView(View):
 class UserRoleUpdateView(MadgaStudioMixin, View):
     def post(self, request, pk):
         if not self.has_perm("manage_users"):
-            messages.error(request, "Permiso denegado.")
+            messages.error(request, _("Permiso denegado."))
             return redirect("madga_studio:user_list")
         membership = get_object_or_404(
             SiteUser.objects.filter(site=self.get_site()), pk=pk
@@ -149,5 +150,5 @@ class UserRoleUpdateView(MadgaStudioMixin, View):
         if role in dict(SiteUser.ROLE_CHOICES):
             membership.role = role
             membership.save(update_fields=["role"])
-            messages.success(request, "Rol actualizado.")
+            messages.success(request, _("Rol actualizado."))
         return redirect("madga_studio:user_list")

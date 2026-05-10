@@ -1,4 +1,4 @@
-{% load static madga_studio_tags %}<!DOCTYPE html>
+{% load i18n static madga_studio_tags %}
 <html lang="es" data-theme="dark">
 <head>
   <meta charset="UTF-8">
@@ -35,7 +35,7 @@
     {% if is_published and public_url %}
       <a href="{{ public_url }}" target="_blank" class="madga-btn madga-btn--sm">{% studio_icon "external" size=12 stroke=2 %} Abrir live</a>
     {% else %}
-      <span class="madga-btn madga-btn--sm" style="opacity:.5; cursor:not-allowed;" title="Publicá primero para tener URL pública">Live</span>
+      <span class="madga-btn madga-btn--sm" style="opacity:.5; cursor:not-allowed;" title="Publicá primero para tener URL pública">{% trans "Live" %}</span>
     {% endif %}
   </header>
   <div class="preview-frame-outer">

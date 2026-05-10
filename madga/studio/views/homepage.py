@@ -13,6 +13,7 @@ from django.contrib import messages
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
+from django.utils.translation import gettext as _
 
 from madga.blocks import all_block_types, get_block_type
 from madga.models import HomepageBlock
@@ -73,11 +74,11 @@ class HomepageBuilderView(MadgaStudioMixin, View):
 
     def post(self, request):
         if not self.has_perm("manage_settings"):
-            messages.error(request, "Permiso denegado.")
+            messages.error(request, _("Permiso denegado."))
             return redirect("madga_studio:homepage_builder")
         site = self.get_site()
         if site is None:
-            messages.error(request, "No hay site activo.")
+            messages.error(request, _("No hay site activo."))
             return redirect("madga_studio:homepage_builder")
 
         action = request.POST.get("action") or "create"
@@ -86,7 +87,7 @@ class HomepageBuilderView(MadgaStudioMixin, View):
             block_type_key = request.POST.get("block_type")
             bt = get_block_type(block_type_key)
             if bt is None:
-                messages.error(request, "Tipo de bloque inválido.")
+                messages.error(request, _("Tipo de bloque inválido."))
                 return redirect("madga_studio:homepage_builder")
             next_order = HomepageBlock.objects.filter(site=site).count() + 1
             HomepageBlock.objects.create(
@@ -102,7 +103,7 @@ class HomepageBuilderView(MadgaStudioMixin, View):
             block = get_object_or_404(HomepageBlock.objects.filter(site=site), pk=pk)
             bt = get_block_type(block.block_type)
             if bt is None:
-                messages.error(request, "Este tipo de bloque ya no existe.")
+                messages.error(request, _("Este tipo de bloque ya no existe."))
                 return redirect("madga_studio:homepage_builder")
             # Preserve unknown keys (so future fields don't lose data).
             new_cfg = dict(block.config or {})
@@ -110,12 +111,12 @@ class HomepageBuilderView(MadgaStudioMixin, View):
             block.config = new_cfg
             block.is_visible = request.POST.get("is_visible") == "on"
             block.save()
-            messages.success(request, "Bloque actualizado.")
+            messages.success(request, _("Bloque actualizado."))
 
         elif action == "delete":
             pk = request.POST.get("pk")
             HomepageBlock.objects.filter(site=site, pk=pk).delete()
-            messages.success(request, "Bloque eliminado.")
+            messages.success(request, _("Bloque eliminado."))
 
         elif action == "toggle_visibility":
             pk = request.POST.get("pk")

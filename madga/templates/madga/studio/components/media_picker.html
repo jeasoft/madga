@@ -1,8 +1,8 @@
-{% load madga_studio_tags %}
+{% load i18n madga_studio_tags %}
 {# Full picker shell. Lives in a hidden wrapper that the editor rail toggles. #}
 <div class="madga-mp-modal" data-madga-mp-target="{{ picker_target }}">
   <div class="madga-mp-head">
-    <strong>Elegir desde la biblioteca</strong>
+    <strong>{% trans "Elegir desde la biblioteca" %}</strong>
     <button type="button" class="madga-icon-btn" data-madga-mp-close aria-label="Cerrar">
       {% studio_icon "x" size=16 stroke=2 %}
     </button>

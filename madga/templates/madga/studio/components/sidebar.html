@@ -1,4 +1,4 @@
-{% load madga_studio_tags %}
+{% load i18n madga_studio_tags %}
 <aside class="madga-sidebar">
   <div class="madga-brand">
     <span class="madga-brand-mark">{% studio_icon "post" size=14 stroke=2.4 %}</span>
@@ -12,50 +12,50 @@
   </div>
 
   <a href="{% url 'madga_studio:post_create' %}" class="madga-new-post-btn">
-    {% studio_icon "plus" size=14 stroke=2.5 %} New post
+    {% studio_icon "plus" size=14 stroke=2.5 %} {% trans "New post" %}
   </a>
 
   <nav class="madga-nav">
     <a href="{% url 'madga_studio:dashboard' %}" class="madga-nav-item {% studio_active request 'dashboard' %}">
-      {% studio_icon "dashboard" %} Dashboard
+      {% studio_icon "dashboard" %} {% trans "Dashboard" %}
     </a>
     <a href="{% url 'madga_studio:post_list' %}" class="madga-nav-item {% studio_active request 'post_list' 'post_create' 'post_edit' %}">
-      {% studio_icon "post" %} Posts
+      {% studio_icon "post" %} {% trans "Posts" %}
       {% if posts_count is not None %}<span class="madga-nav-count">{{ posts_count }}</span>{% endif %}
     </a>
     <a href="{% url 'madga_studio:page_list' %}" class="madga-nav-item {% studio_active request 'page_list' 'page_create' 'page_edit' %}">
-      {% studio_icon "page" %} Pages
+      {% studio_icon "page" %} {% trans "Pages" %}
     </a>
     <a href="{% url 'madga_studio:media_list' %}" class="madga-nav-item {% studio_active request 'media_list' %}">
-      {% studio_icon "media" %} Media library
+      {% studio_icon "media" %} {% trans "Media library" %}
     </a>
     <a href="{% url 'madga_studio:taxonomy_list' %}" class="madga-nav-item {% studio_active request 'taxonomy_list' %}">
-      {% studio_icon "tag" %} Categories &amp; tags
+      {% studio_icon "tag" %} {% trans "Categories & tags" %}
     </a>
 
-    <div class="madga-nav-section">Site</div>
+    <div class="madga-nav-section">{% trans "Site" %}</div>
     <a href="{% url 'madga_studio:theme' %}" class="madga-nav-item {% studio_active request 'theme' %}">
-      {% studio_icon "theme" %} Theme
+      {% studio_icon "theme" %} {% trans "Theme" %}
     </a>
     <a href="{% url 'madga_studio:theme_gallery' %}" class="madga-nav-item {% studio_active request 'theme_gallery' %}">
-      {% studio_icon "image" %} Theme gallery
+      {% studio_icon "image" %} {% trans "Theme gallery" %}
     </a>
     <a href="{% url 'madga_studio:layouts' %}" class="madga-nav-item {% studio_active request 'layouts' %}">
-      {% studio_icon "layouts" %} Layouts
+      {% studio_icon "layouts" %} {% trans "Layouts" %}
     </a>
     <a href="{% url 'madga_studio:navigation' %}" class="madga-nav-item {% studio_active request 'navigation' %}">
-      {% studio_icon "navigation" %} Navigation
+      {% studio_icon "navigation" %} {% trans "Navigation" %}
     </a>
     <a href="{% url 'madga_studio:homepage_builder' %}" class="madga-nav-item {% studio_active request 'homepage_builder' %}">
-      {% studio_icon "homepage" %} Homepage
+      {% studio_icon "homepage" %} {% trans "Homepage" %}
     </a>
 
-    <div class="madga-nav-section">Workspace</div>
+    <div class="madga-nav-section">{% trans "Workspace" %}</div>
     <a href="{% url 'madga_studio:user_list' %}" class="madga-nav-item {% studio_active request 'user_list' %}">
-      {% studio_icon "users" %} Users
+      {% studio_icon "users" %} {% trans "Users" %}
     </a>
     <a href="{% url 'madga_studio:settings' %}" class="madga-nav-item {% studio_active request 'settings' %}">
-      {% studio_icon "settings" %} Settings
+      {% studio_icon "settings" %} {% trans "Settings" %}
     </a>
   </nav>
 
@@ -65,7 +65,7 @@
     {% if site %}
     <a href="/" target="_blank" rel="noopener" class="madga-nav-item">
       {% studio_icon "globe" %}
-      <span>View site</span>
+      <span>{% trans "View site" %}</span>
       <span style="margin-left:auto; opacity:.55;">{% studio_icon "external" size=11 stroke=2 %}</span>
     </a>
     {% endif %}
@@ -75,8 +75,8 @@
       <div style="flex:1; min-width:0;">
         <div class="madga-user-name">{{ request.user.get_full_name|default:request.user.username }}</div>
         <div class="madga-user-role">
-          {% if membership %}{{ membership.get_role_display }}{% elif request.user.is_superuser %}Superuser{% endif %}
-          · <a href="{% url 'madga_studio:logout' %}" style="color:inherit;">Salir</a>
+          {% if membership %}{{ membership.get_role_display }}{% elif request.user.is_superuser %}{% trans "Superuser" %}{% endif %}
+          · <a href="{% url 'madga_studio:logout' %}" style="color:inherit;">{% trans "Sign out" %}</a>
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 {% extends "madga/studio/base.html" %}
-{% load madga_studio_tags %}
+{% load i18n madga_studio_tags %}
 
 {% block breadcrumbs %}<span class="crumb is-current">Categories &amp; tags</span>{% endblock %}
 
@@ -34,7 +34,7 @@
     </div>
 
     <div class="madga-card">
-      <h2 class="madga-card-title">Tags</h2>
+      <h2 class="madga-card-title">{% trans "Tags" %}</h2>
       <form method="post" action="{% url 'madga_studio:tag_create' %}" style="display:flex; gap:6px; margin:12px 0;">
         {% csrf_token %}
         <input class="madga-input" name="name" placeholder="Nombre" required style="flex:1;">

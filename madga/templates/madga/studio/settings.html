@@ -1,5 +1,5 @@
 {% extends "madga/studio/base.html" %}
-{% load madga_studio_tags %}
+{% load i18n madga_studio_tags %}
 
 {% block breadcrumbs %}<span class="crumb is-current">Settings</span>{% endblock %}
 
@@ -40,7 +40,7 @@
     {% endfor %}
 
     <div style="display:flex; gap:8px; margin-top:14px; padding-top:14px; border-top:1px solid var(--border);">
-      <button type="submit" class="madga-btn madga-btn--primary">Guardar cambios</button>
+      <button type="submit" class="madga-btn madga-btn--primary">{% trans "Guardar cambios" %}</button>
     </div>
   </form>
 

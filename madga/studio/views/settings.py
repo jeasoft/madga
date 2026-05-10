@@ -2,6 +2,7 @@
 
 from django.contrib import messages
 from django.shortcuts import redirect, render
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import TemplateView
 
@@ -14,12 +15,12 @@ from ..mixins import MadgaStudioMixin
 SETTINGS_TABS = [
     {
         "key": "general",
-        "label": "General",
+        "label": _("General"),
         "fields": ["name", "domain", "description", "logo", "favicon", "timezone"],
     },
     {
         "key": "branding",
-        "label": "Marca",
+        "label": _("Branding"),
         "fields": [
             "accent_color", "heading_font", "body_font",
             "border_radius", "content_density", "color_scheme", "theme",
@@ -27,12 +28,12 @@ SETTINGS_TABS = [
     },
     {
         "key": "seo",
-        "label": "SEO",
+        "label": _("SEO"),
         "fields": ["meta_title", "meta_description"],
     },
     {
         "key": "integrations",
-        "label": "Integraciones",
+        "label": _("Integrations"),
         "fields": ["google_analytics_id", "facebook_pixel_id"],
     },
 ]
@@ -69,14 +70,14 @@ class SettingsView(MadgaStudioMixin, View):
 
     def post(self, request):
         if not self.has_perm("manage_settings"):
-            messages.error(request, "Permiso denegado.")
+            messages.error(request, _("Permiso denegado."))
             return redirect("madga_studio:settings")
         site = self.get_site()
         tab = request.POST.get("active_tab") or self._resolve_tab(request)
         form = SiteSettingsForm(request.POST, request.FILES, instance=site)
         if form.is_valid():
             form.save()
-            messages.success(request, "Settings actualizados.")
+            messages.success(request, _("Settings actualizados."))
             url = "/studio/settings/"
             if tab and tab != "general":
                 url += f"?tab={tab}"
@@ -117,37 +118,37 @@ class ThemeView(MadgaStudioMixin, View):
 
     def post(self, request):
         if not self.has_perm("manage_settings"):
-            messages.error(request, "Permiso denegado.")
+            messages.error(request, _("Permiso denegado."))
             return redirect("madga_studio:theme")
         site = self.get_site()
         form = SiteSettingsForm(request.POST, request.FILES, instance=site)
         if form.is_valid():
             form.save()
-            messages.success(request, "Theme actualizado.")
+            messages.success(request, _("Theme actualizado."))
             return redirect("madga_studio:theme")
         return self._render(request, form, site)
 
 
 LAYOUT_CHOICES = {
     "home": [
-        ("default", "Default", "HomepageBlocks-driven home (recommended)."),
-        ("editorial", "Editorial", "Hero + curated articles in a magazine grid."),
-        ("minimal", "Minimal", "Just the most-recent posts in a clean list."),
+        ("default", _("Default"), _("HomepageBlocks-driven home (recommended).")),
+        ("editorial", _("Editorial"), _("Hero + curated articles in a magazine grid.")),
+        ("minimal", _("Minimal"), _("Just the most-recent posts in a clean list.")),
     ],
     "list": [
-        ("default", "Default", "Chronological list with category filters."),
-        ("grid", "Grid", "Cards with thumbnails, 2 columns."),
-        ("compact", "Compact", "Title + date, no excerpt, dense."),
+        ("default", _("Default"), _("Chronological list with category filters.")),
+        ("grid", _("Grid"), _("Cards with thumbnails, 2 columns.")),
+        ("compact", _("Compact"), _("Title + date, no excerpt, dense.")),
     ],
     "detail": [
-        ("default", "Default", "Centered article column with featured image hero."),
-        ("longform", "Longform", "Wider column, drop caps, larger type."),
-        ("docs", "Docs", "Sidebar TOC + content."),
+        ("default", _("Default"), _("Centered article column with featured image hero.")),
+        ("longform", _("Longform"), _("Wider column, drop caps, larger type.")),
+        ("docs", _("Docs"), _("Sidebar TOC + content.")),
     ],
     "page": [
-        ("simple", "Simple", "Centered prose. Good for legal pages."),
-        ("sidebar", "Sidebar", "Right sidebar with table of contents."),
-        ("docs", "Docs", "Left sidebar with sibling pages."),
+        ("simple", _("Simple"), _("Centered prose. Good for legal pages.")),
+        ("sidebar", _("Sidebar"), _("Right sidebar with table of contents.")),
+        ("docs", _("Docs"), _("Left sidebar with sibling pages.")),
     ],
 }
 
@@ -177,11 +178,11 @@ class LayoutsView(MadgaStudioMixin, View):
 
     def post(self, request):
         if not self.has_perm("manage_settings"):
-            messages.error(request, "Permiso denegado.")
+            messages.error(request, _("Permiso denegado."))
             return redirect("madga_studio:layouts")
         site = self.get_site()
         if site is None:
-            messages.error(request, "No hay site activo.")
+            messages.error(request, _("No hay site activo."))
             return redirect("madga_studio:layouts")
 
         new_settings = dict(site.settings or {})
@@ -192,5 +193,5 @@ class LayoutsView(MadgaStudioMixin, View):
                 new_settings[f"layout_{kind}"] = chosen
         site.settings = new_settings
         site.save(update_fields=["settings"])
-        messages.success(request, "Layouts actualizados.")
+        messages.success(request, _("Layouts actualizados."))
         return redirect("madga_studio:layouts")

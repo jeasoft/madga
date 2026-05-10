@@ -1,5 +1,5 @@
 {% extends "madga/studio/base.html" %}
-{% load madga_studio_tags %}
+{% load i18n madga_studio_tags %}
 
 {% block breadcrumbs %}<span class="crumb is-current">Pages</span>{% endblock %}
 
@@ -20,9 +20,9 @@
       <thead>
         <tr>
           <th>Título</th>
-          <th>Slug</th>
-          <th>Estado</th>
-          <th>Layout</th>
+          <th>{% trans "Slug" %}</th>
+          <th>{% trans "Estado" %}</th>
+          <th>{% trans "Layout" %}</th>
           <th>Actualizada</th>
           <th class="col-actions"></th>
         </tr>
@@ -42,7 +42,7 @@
               {% if p.slug %}
                 <a href="{% url 'madga_studio:page_preview' pk=p.pk %}" target="_blank" class="madga-btn madga-btn--ghost madga-btn--sm" title="Preview">{% studio_icon "eye" size=14 stroke=2 %}</a>
               {% endif %}
-              <a href="{% url 'madga_studio:page_edit' pk=p.pk %}" class="madga-btn madga-btn--ghost madga-btn--sm">Editar</a>
+              <a href="{% url 'madga_studio:page_edit' pk=p.pk %}" class="madga-btn madga-btn--ghost madga-btn--sm">{% trans "Editar" %}</a>
             </div>
           </td>
         </tr>

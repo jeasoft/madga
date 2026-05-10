@@ -1,5 +1,5 @@
 {% extends "madga/studio/base.html" %}
-{% load madga_studio_tags %}
+{% load i18n madga_studio_tags %}
 
 {% block breadcrumbs %}<span class="crumb">Site</span><span class="sep">/</span><span class="crumb is-current">Theme</span>{% endblock %}
 
@@ -49,7 +49,7 @@
       <p class="madga-page-subtitle">Tokens visuales con preview en vivo.</p>
     </div>
     <div class="madga-page-actions">
-      <button form="theme-form" type="submit" class="madga-btn madga-btn--primary">Guardar</button>
+      <button form="theme-form" type="submit" class="madga-btn madga-btn--primary">{% trans "Guardar" %}</button>
     </div>
   </div>
 
@@ -123,7 +123,7 @@
       </div>
 
       <div class="madga-card madga-theme-card">
-        <h3 style="font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--fg-2); margin:0 0 14px; font-weight:600;">Layout</h3>
+        <h3 style="font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--fg-2); margin:0 0 14px; font-weight:600;">{% trans "Layout" %}</h3>
         <div class="madga-field">
           <label class="madga-field-label">Border radius — <span id="radius-display">{{ form.border_radius.value|default:8 }}px</span></label>
           <input class="madga-range" type="range" name="border_radius" min="0" max="24" step="1" value="{{ form.border_radius.value|default:8 }}" oninput="MadgaTheme.updateRadius(this.value)">
