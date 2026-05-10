@@ -4,60 +4,130 @@
 {% block breadcrumbs %}<span class="crumb">Site</span><span class="sep">/</span><span class="crumb is-current">Navigation</span>{% endblock %}
 
 {% block content %}
-<div class="madga-page" style="max-width:780px;">
+<div class="madga-page" style="max-width:880px;">
   <div class="madga-page-header">
     <div class="madga-page-title-block">
       <h1 class="madga-page-title">Navigation</h1>
-      <p class="madga-page-subtitle">Items del menú público del site.</p>
+      <p class="madga-page-subtitle">Items del menú del header. Arrastrá del handle para reordenar.</p>
     </div>
   </div>
 
-  <div class="madga-card" style="margin-bottom:18px;">
-    <h2 class="madga-card-title">Nuevo item</h2>
-    <form method="post" action="{% url 'madga_studio:navigation' %}" style="display:grid; grid-template-columns: 1fr 1fr 90px 90px 60px; gap:8px; margin-top:10px; align-items:end;">
+  {# Header items ----------------------------------------------------- #}
+  <div class="madga-card" style="margin-bottom:14px;">
+    <h2 class="madga-card-title">Header</h2>
+
+    <div class="madga-nav-list" data-madga-sortable data-reorder-url="{% url 'madga_studio:navigation' %}">
+      {% for item in items %}
+        {% if item.location != 'footer' %}
+        <div class="madga-nav-row" data-pk="{{ item.pk }}">
+          <span class="madga-nav-drag-handle" title="Arrastrar para reordenar">{% studio_icon "more-v" size=14 stroke=2 %}{% studio_icon "more-v" size=14 stroke=2 %}</span>
+          <form method="post" class="madga-nav-form">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="update">
+            <input type="hidden" name="pk" value="{{ item.pk }}">
+            <input class="madga-input" name="label" value="{{ item.label }}" placeholder="Label">
+            <input class="madga-input" name="url" value="{{ item.url }}" placeholder="/ruta o https://...">
+            <label class="madga-nav-checkbox" title="Abrir en nueva pestaña">
+              <input type="checkbox" name="open_in_new_tab" {% if item.open_in_new_tab %}checked{% endif %}>
+              <span>↗</span>
+            </label>
+            <button type="submit" class="madga-icon-btn" title="Guardar">{% studio_icon "check" size=14 stroke=2.5 %}</button>
+          </form>
+          <form method="post" style="margin:0;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="pk" value="{{ item.pk }}">
+            <button type="submit" class="madga-icon-btn" data-madga-confirm="¿Borrar este item?" title="Borrar">{% studio_icon "trash" size=14 stroke=2 %}</button>
+          </form>
+        </div>
+        {% endif %}
+      {% empty %}
+        <p class="madga-nav-empty">Sin items todavía. Añadí el primero abajo.</p>
+      {% endfor %}
+    </div>
+
+    <form method="post" class="madga-nav-add">
       {% csrf_token %}
       <input type="hidden" name="action" value="create">
-      <div class="madga-field" style="margin:0;"><label class="madga-field-label">Label</label><input class="madga-input" type="text" name="label" required></div>
-      <div class="madga-field" style="margin:0;"><label class="madga-field-label">URL</label><input class="madga-input" type="text" name="url" placeholder="/blog/" required></div>
-      <div class="madga-field" style="margin:0;"><label class="madga-field-label">Sort</label><input class="madga-input" type="number" name="sort_order" value="0"></div>
-      <div class="madga-field" style="margin:0;"><label class="madga-field-label" style="font-size:11px;">Nueva tab</label><label style="display:flex; align-items:center; gap:6px; padding-top:5px;"><input type="checkbox" name="open_in_new_tab"></label></div>
-      <button type="submit" class="madga-btn madga-btn--primary">{% studio_icon "plus" size=14 stroke=2.5 %}</button>
+      <input type="hidden" name="location" value="header">
+      <input class="madga-input" name="label" placeholder="Label" required>
+      <input class="madga-input" name="url" placeholder="/blog o https://..." required>
+      <button type="submit" class="madga-btn madga-btn--sm madga-btn--primary">{% studio_icon "plus" size=12 stroke=2.5 %} Añadir</button>
     </form>
   </div>
 
-  <div class="madga-table-wrap">
-    <table class="madga-table">
-      <thead><tr><th>Label</th><th>URL</th><th>Sort</th><th>Nueva tab</th><th class="col-actions"></th></tr></thead>
-      <tbody>
-        {% for item in nav_items %}
-        <tr>
-          <form method="post" action="{% url 'madga_studio:navigation' %}" style="display:contents;">
+  {# Footer columns ---------------------------------------------------- #}
+  <div class="madga-card">
+    <h2 class="madga-card-title">Footer</h2>
+    <p class="madga-card-subtitle">Cada columna del footer es un item con sub-items. Crea primero la columna; después le añadís links.</p>
+
+    {% for col in footer_columns %}
+      <div class="madga-footer-col">
+        <div class="madga-footer-col-head">
+          <span class="madga-nav-drag-handle">{% studio_icon "more-v" size=14 stroke=2 %}{% studio_icon "more-v" size=14 stroke=2 %}</span>
+          <form method="post" class="madga-nav-form">
             {% csrf_token %}
             <input type="hidden" name="action" value="update">
-            <input type="hidden" name="id" value="{{ item.pk }}">
-            <td><input class="madga-input" name="label" value="{{ item.label }}"></td>
-            <td><input class="madga-input" name="url" value="{{ item.url }}"></td>
-            <td><input class="madga-input" type="number" name="sort_order" value="{{ item.sort_order }}" style="width:70px;"></td>
-            <td><input type="checkbox" name="open_in_new_tab" {% if item.open_in_new_tab %}checked{% endif %}></td>
-            <td class="col-actions">
-              <div style="display:flex; gap:4px; justify-content:flex-end;">
-                <button type="submit" class="madga-btn madga-btn--ghost madga-btn--sm" title="Guardar">{% studio_icon "check" size=12 stroke=2.5 %}</button>
-              </div>
-            </td>
+            <input type="hidden" name="pk" value="{{ col.pk }}">
+            <input class="madga-input" name="label" value="{{ col.label }}" placeholder="Título de la columna">
+            <input class="madga-input" name="url" value="{{ col.url|default:'#' }}" placeholder="(opcional)">
+            <button type="submit" class="madga-icon-btn" title="Guardar">{% studio_icon "check" size=14 stroke=2.5 %}</button>
           </form>
-          <td colspan="0" style="padding:0;">
-            <form method="post" action="{% url 'madga_studio:navigation' %}" style="margin:0; display:none;">
-              {% csrf_token %}
-              <input type="hidden" name="action" value="delete">
-              <input type="hidden" name="id" value="{{ item.pk }}">
-            </form>
-          </td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="5">{% studio_empty title="Sin items todavía" message="Crea el primero arriba." %}</td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
+          <form method="post" style="margin:0;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="pk" value="{{ col.pk }}">
+            <button type="submit" class="madga-icon-btn" data-madga-confirm="¿Borrar columna y sus links?" title="Borrar columna">{% studio_icon "trash" size=14 stroke=2 %}</button>
+          </form>
+        </div>
+        <div class="madga-footer-col-children" data-madga-sortable data-reorder-url="{% url 'madga_studio:navigation' %}">
+          {% for child in col.children.all %}
+            <div class="madga-nav-row madga-nav-row--child" data-pk="{{ child.pk }}">
+              <span class="madga-nav-drag-handle">{% studio_icon "more-v" size=12 stroke=2 %}{% studio_icon "more-v" size=12 stroke=2 %}</span>
+              <form method="post" class="madga-nav-form">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update">
+                <input type="hidden" name="pk" value="{{ child.pk }}">
+                <input type="hidden" name="parent" value="{{ col.pk }}">
+                <input class="madga-input" name="label" value="{{ child.label }}" placeholder="Label">
+                <input class="madga-input" name="url" value="{{ child.url }}" placeholder="/ruta o https://...">
+                <label class="madga-nav-checkbox" title="Nueva pestaña">
+                  <input type="checkbox" name="open_in_new_tab" {% if child.open_in_new_tab %}checked{% endif %}>
+                  <span>↗</span>
+                </label>
+                <button type="submit" class="madga-icon-btn" title="Guardar">{% studio_icon "check" size=14 stroke=2.5 %}</button>
+              </form>
+              <form method="post" style="margin:0;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete">
+                <input type="hidden" name="pk" value="{{ child.pk }}">
+                <button type="submit" class="madga-icon-btn" data-madga-confirm="¿Borrar este link?" title="Borrar">{% studio_icon "trash" size=14 stroke=2 %}</button>
+              </form>
+            </div>
+          {% endfor %}
+        </div>
+        <form method="post" class="madga-nav-add madga-nav-add--child">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="create">
+          <input type="hidden" name="location" value="footer">
+          <input type="hidden" name="parent" value="{{ col.pk }}">
+          <input class="madga-input" name="label" placeholder="Link label" required>
+          <input class="madga-input" name="url" placeholder="/ruta o https://..." required>
+          <button type="submit" class="madga-btn madga-btn--sm">{% studio_icon "plus" size=12 stroke=2.5 %} Añadir link</button>
+        </form>
+      </div>
+    {% empty %}
+      <p class="madga-nav-empty" style="margin: 12px 0 0;">Sin columnas todavía.</p>
+    {% endfor %}
+
+    <form method="post" class="madga-nav-add" style="margin-top: 18px;">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="create">
+      <input type="hidden" name="location" value="footer">
+      <input class="madga-input" name="label" placeholder="Título de columna nueva (ej: Producto)" required>
+      <input type="hidden" name="url" value="">
+      <button type="submit" class="madga-btn madga-btn--sm madga-btn--primary">{% studio_icon "plus" size=12 stroke=2.5 %} Añadir columna</button>
+    </form>
   </div>
 </div>
 {% endblock %}

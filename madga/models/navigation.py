@@ -8,18 +8,29 @@ from .base import TimestampMixin
 class NavItem(TimestampMixin, models.Model):
     """A single item in a Site's navigation menu.
 
-    Items can nest via ``parent`` (one level is enough for v0.2 but the model
-    permits arbitrary depth). Ordering is purely numeric — the Studio editor
-    offers integer inputs for ``sort_order`` instead of drag-and-drop.
+    Items can nest via ``parent`` (one level is enough but the model permits
+    arbitrary depth). ``location`` separates header items from footer
+    columns — footer parents are column titles; their children are links.
     """
+
+    LOCATION_HEADER = "header"
+    LOCATION_FOOTER = "footer"
+    LOCATION_CHOICES = [
+        (LOCATION_HEADER, "Header"),
+        (LOCATION_FOOTER, "Footer"),
+    ]
 
     site = models.ForeignKey(
         "madga.Site", on_delete=models.CASCADE, related_name="nav_items"
     )
+    location = models.CharField(
+        max_length=20, choices=LOCATION_CHOICES, default=LOCATION_HEADER,
+    )
     label = models.CharField(max_length=100)
     url = models.CharField(
         max_length=500,
-        help_text="Relative path (e.g. /blog/) or absolute URL.",
+        blank=True,
+        help_text="Relative path (e.g. /blog/), absolute URL, or empty for footer column titles.",
     )
     parent = models.ForeignKey(
         "self",
@@ -33,7 +44,7 @@ class NavItem(TimestampMixin, models.Model):
 
     class Meta:
         ordering = ["sort_order", "id"]
-        indexes = [models.Index(fields=["site", "parent", "sort_order"])]
+        indexes = [models.Index(fields=["site", "location", "parent", "sort_order"])]
 
     def __str__(self) -> str:
         return self.label

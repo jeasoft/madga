@@ -20,7 +20,12 @@ from .views.posts import (
     PostEditView,
     PostListView,
 )
-from .views.preview import PagePreviewView, PostPreviewView
+from .views.preview import (
+    PagePreviewIframeView,
+    PagePreviewView,
+    PostPreviewIframeView,
+    PostPreviewView,
+)
 from .views.settings import LayoutsView, SettingsView, ThemeView
 from .views.taxonomy import (
     CategoryCreateView,
@@ -50,6 +55,7 @@ urlpatterns = [
     path("posts/<uuid:pk>/edit/", PostEditView.as_view(), name="post_edit"),
     path("posts/<uuid:pk>/delete/", PostDeleteView.as_view(), name="post_delete"),
     path("posts/<uuid:pk>/preview/", PostPreviewView.as_view(), name="post_preview"),
+    path("posts/<uuid:pk>/preview/iframe/", PostPreviewIframeView.as_view(), name="post_preview_iframe"),
     path("posts/bulk/", PostBulkActionView.as_view(), name="post_bulk"),
 
     path("pages/", PageListView.as_view(), name="page_list"),
@@ -57,6 +63,7 @@ urlpatterns = [
     path("pages/<uuid:pk>/edit/", PageEditView.as_view(), name="page_edit"),
     path("pages/<uuid:pk>/delete/", PageDeleteView.as_view(), name="page_delete"),
     path("pages/<uuid:pk>/preview/", PagePreviewView.as_view(), name="page_preview"),
+    path("pages/<uuid:pk>/preview/iframe/", PagePreviewIframeView.as_view(), name="page_preview_iframe"),
 
     path("media/", MediaListView.as_view(), name="media_list"),
     path("media/picker/", MediaPickerView.as_view(), name="media_picker"),

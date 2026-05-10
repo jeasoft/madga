@@ -4,7 +4,9 @@ from django.db.models import F, Q
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django.utils.feedgenerator import Rss201rev2Feed
+from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import TemplateView, View
 
 from madga.models import Category, HomepageBlock, Page, Post, Site, Tag
@@ -31,6 +33,7 @@ def _public_posts(site: Site):
     )
 
 
+@method_decorator(xframe_options_sameorigin, name="dispatch")
 class PostListView(View):
     def get(self, request):
         site = _resolve_site(request)
@@ -81,6 +84,7 @@ def _themed_templates(site, kind: str):
     return chain
 
 
+@method_decorator(xframe_options_sameorigin, name="dispatch")
 class PostDetailView(View):
     def get(self, request, slug):
         site = _resolve_site(request)
@@ -95,6 +99,7 @@ class PostDetailView(View):
         )
 
 
+@method_decorator(xframe_options_sameorigin, name="dispatch")
 class PageDetailView(View):
     def get(self, request, slug):
         site = _resolve_site(request)
@@ -185,6 +190,7 @@ class RssFeedView(View):
         )
 
 
+@method_decorator(xframe_options_sameorigin, name="dispatch")
 class HomepageView(TemplateView):
     """Public homepage. If the active Site has HomepageBlocks, render them;
     otherwise fall back to a generic recent-posts list.

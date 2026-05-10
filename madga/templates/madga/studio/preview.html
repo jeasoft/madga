@@ -28,10 +28,14 @@
       <button data-device="tablet"  {% if device == 'tablet' %}class="active"{% endif %}  onclick="setDevice('tablet')">Tablet</button>
       <button data-device="desktop" {% if device == 'desktop' or not device %}class="active"{% endif %} onclick="setDevice('desktop')">Desktop</button>
     </div>
-    {% if public_url %}<a href="{{ public_url }}" target="_blank" class="madga-btn madga-btn--sm">{% studio_icon "external" size=12 stroke=2 %} Abrir</a>{% endif %}
+    {% if is_published and public_url %}
+      <a href="{{ public_url }}" target="_blank" class="madga-btn madga-btn--sm">{% studio_icon "external" size=12 stroke=2 %} Abrir live</a>
+    {% else %}
+      <span class="madga-btn madga-btn--sm" style="opacity:.5; cursor:not-allowed;" title="Publicá primero para tener URL pública">Live</span>
+    {% endif %}
   </header>
   <div class="preview-frame-outer">
-    <iframe class="preview-frame" data-device="{{ device|default:'desktop' }}" src="{{ public_url|default:'/' }}" loading="lazy"></iframe>
+    <iframe class="preview-frame" data-device="{{ device|default:'desktop' }}" src="{{ iframe_url|default:public_url|default:'/' }}" loading="lazy"></iframe>
   </div>
   <script>
     function setDevice(d) {
