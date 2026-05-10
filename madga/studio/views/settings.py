@@ -128,6 +128,69 @@ class ThemeView(MadgaStudioMixin, View):
         return self._render(request, form, site)
 
 
-class LayoutsView(MadgaStudioMixin, TemplateView):
-    """v0.2: layout selector por tipo de página."""
+LAYOUT_CHOICES = {
+    "home": [
+        ("default", "Default", "HomepageBlocks-driven home (recommended)."),
+        ("editorial", "Editorial", "Hero + curated articles in a magazine grid."),
+        ("minimal", "Minimal", "Just the most-recent posts in a clean list."),
+    ],
+    "list": [
+        ("default", "Default", "Chronological list with category filters."),
+        ("grid", "Grid", "Cards with thumbnails, 2 columns."),
+        ("compact", "Compact", "Title + date, no excerpt, dense."),
+    ],
+    "detail": [
+        ("default", "Default", "Centered article column with featured image hero."),
+        ("longform", "Longform", "Wider column, drop caps, larger type."),
+        ("docs", "Docs", "Sidebar TOC + content."),
+    ],
+    "page": [
+        ("simple", "Simple", "Centered prose. Good for legal pages."),
+        ("sidebar", "Sidebar", "Right sidebar with table of contents."),
+        ("docs", "Docs", "Left sidebar with sibling pages."),
+    ],
+}
+
+
+class LayoutsView(MadgaStudioMixin, View):
+    """Layout selector per content-type. Selections persist on Site.settings."""
+
     template_name = "madga/studio/layouts.html"
+
+    def _current_selection(self, site) -> dict:
+        s = (site.settings if site else {}) or {}
+        return {
+            "home":   s.get("layout_home", "default"),
+            "list":   s.get("layout_list", "default"),
+            "detail": s.get("layout_detail", "default"),
+            "page":   s.get("layout_page", "simple"),
+        }
+
+    def get(self, request):
+        site = self.get_site()
+        return render(request, self.template_name, {
+            "site": site,
+            "membership": self.get_membership(),
+            "groups": LAYOUT_CHOICES,
+            "selection": self._current_selection(site),
+        })
+
+    def post(self, request):
+        if not self.has_perm("manage_settings"):
+            messages.error(request, "Permiso denegado.")
+            return redirect("madga_studio:layouts")
+        site = self.get_site()
+        if site is None:
+            messages.error(request, "No hay site activo.")
+            return redirect("madga_studio:layouts")
+
+        new_settings = dict(site.settings or {})
+        for kind, options in LAYOUT_CHOICES.items():
+            valid = {key for key, _, _ in options}
+            chosen = request.POST.get(f"layout_{kind}")
+            if chosen in valid:
+                new_settings[f"layout_{kind}"] = chosen
+        site.settings = new_settings
+        site.save(update_fields=["settings"])
+        messages.success(request, "Layouts actualizados.")
+        return redirect("madga_studio:layouts")

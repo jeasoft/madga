@@ -61,12 +61,24 @@ class PostListView(View):
 
 
 def _themed_templates(site, kind: str):
-    """Return template lookup chain: theme-specific first, default fallback."""
+    """Return template lookup chain: theme-specific first, default fallback.
+
+    If the Site has a ``layout_<kind>`` set in ``settings``, the chain prefers
+    ``<kind>-<layout>.html`` so users can pick a layout per content-type
+    from /studio/layouts/.
+    """
     theme = (site.theme if site else "default") or "default"
-    return [
+    chain = []
+    if site:
+        layout = (site.settings or {}).get(f"layout_{kind}")
+        if layout and layout != "default":
+            chain.append(f"madga/themes/{theme}/{kind}-{layout}.html")
+            chain.append(f"madga/blog/{kind}-{layout}.html")
+    chain += [
         f"madga/themes/{theme}/{kind}.html",
         f"madga/blog/{kind}.html",
     ]
+    return chain
 
 
 class PostDetailView(View):

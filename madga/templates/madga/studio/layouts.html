@@ -4,13 +4,44 @@
 {% block breadcrumbs %}<span class="crumb">Site</span><span class="sep">/</span><span class="crumb is-current">Layouts</span>{% endblock %}
 
 {% block content %}
-<div class="madga-page">
+<div class="madga-page" style="max-width:880px;">
   <div class="madga-page-header">
     <div class="madga-page-title-block">
       <h1 class="madga-page-title">Layouts</h1>
-      <p class="madga-page-subtitle">Selección de layout por tipo de página. <strong>v0.2 — pendiente UI.</strong></p>
+      <p class="madga-page-subtitle">Elige cómo se renderiza cada tipo de página en el sitio público. La selección se persiste en <code>Site.settings</code>; los templates resuelven el sufijo automáticamente.</p>
     </div>
   </div>
-  {% studio_empty title="Próximamente" message="Selector de layout para Homepage, Blog index, Post detail y Static pages." %}
+
+  <form method="post">
+    {% csrf_token %}
+
+    {% for kind, options in groups.items %}
+      <div class="madga-card madga-layout-group">
+        <h2 class="madga-layout-group-title">
+          {% if kind == "home" %}Homepage
+          {% elif kind == "list" %}Blog index
+          {% elif kind == "detail" %}Post detail
+          {% elif kind == "page" %}Static pages
+          {% endif %}
+        </h2>
+
+        <div class="madga-layout-grid">
+          {% for value, label, desc in options %}
+            <label class="madga-layout-tile {% if selection|get_item:kind == value %}is-active{% endif %}">
+              <input type="radio" name="layout_{{ kind }}" value="{{ value }}"
+                     {% if selection|get_item:kind == value %}checked{% endif %}>
+              <span class="madga-layout-tile-name">{{ label }}</span>
+              <span class="madga-layout-tile-desc">{{ desc }}</span>
+              <span class="madga-layout-tile-active">En uso</span>
+            </label>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
+
+    <div style="display:flex; gap:8px; margin-top:18px;">
+      <button type="submit" class="madga-btn madga-btn--primary">Guardar layouts</button>
+    </div>
+  </form>
 </div>
 {% endblock %}
