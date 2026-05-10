@@ -1,0 +1,29 @@
+{% load madga_studio_tags %}
+{# Inner fragment: just the grid + empty state. HTMX swaps this on search/filter. #}
+{% if media %}
+  <div class="madga-mp-grid">
+    {% for m in media %}
+      <button type="button" class="madga-mp-tile" data-madga-pick
+              data-pick-id="{{ m.id }}"
+              data-pick-url="{{ m.file.url }}"
+              data-pick-width="{{ m.width|default:0 }}"
+              data-pick-height="{{ m.height|default:0 }}"
+              data-pick-alt="{{ m.alt_text|default:m.filename }}"
+              data-pick-filename="{{ m.filename }}"
+              title="{{ m.filename }}">
+        {% if m.file_type == 'image' and m.file %}
+          <img src="{{ m.file.url }}" alt="{{ m.alt_text|default:m.filename }}" loading="lazy">
+        {% else %}
+          <span class="madga-mp-tile-icon">{% studio_icon "media" size=22 stroke=1.6 %}</span>
+        {% endif %}
+        <span class="madga-mp-tile-meta">{{ m.filename }}</span>
+      </button>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="madga-mp-empty">
+    {% studio_icon "media" size=28 stroke=1.5 %}
+    <p>No hay archivos{% if search_q %} para "<strong>{{ search_q }}</strong>"{% endif %}.</p>
+    <a href="{% url 'madga_studio:media_list' %}" class="madga-btn madga-btn--sm madga-btn--primary">{% studio_icon "upload" size=12 stroke=2 %} Subir archivo</a>
+  </div>
+{% endif %}

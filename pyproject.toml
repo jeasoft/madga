@@ -1,8 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "madga"
 version = "0.1.1"
 description = "Make Django Great Again — headless-ready CMS as a Django app."
+readme = "README.md"
+license = {file = "LICENSE"}
 requires-python = ">=3.12"
+authors = [
+    {name = "Jearel Alcantara", email = "jeasoft@gmail.com"},
+]
+keywords = ["django", "cms", "headless", "blog", "studio"]
+classifiers = [
+    "Framework :: Django",
+    "Framework :: Django :: 5.0",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: Apache Software License",
+    "Topic :: Internet :: WWW/HTTP :: Site Management",
+]
 dependencies = [
     "django>=5.0,<6",
     "django-allauth[headless]>=65.16.1",
@@ -15,6 +33,35 @@ dependencies = [
 test = [
     "pytest>=8",
     "pytest-django>=4.8",
+]
+
+[project.urls]
+Repository = "https://github.com/jeasoft/madga"
+Changelog = "https://github.com/jeasoft/madga/blob/main/CHANGELOG.md"
+
+# Setuptools: include the `madga` package and ALL of its sub-resources
+# (templates, static, migrations, emails). Without include-package-data
+# Django's app loader can't find templates/static when MADGA is pip-installed.
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["madga*"]
+exclude = ["tests*", "testproject*", "miscoreblog*", "prototype*"]
+
+[tool.setuptools.package-data]
+"madga" = [
+    "templates/**/*.html",
+    "templates/**/*.txt",
+    "static/**/*",
+    "migrations/*.py",
+    "blocks/*.py",
+    "studio/**/*.py",
+    "api/**/*.py",
+    "blog/**/*.py",
+    "models/*.py",
+    "templatetags/*.py",
+    "management/**/*.py",
 ]
 
 [tool.pytest.ini_options]

@@ -1,0 +1,156 @@
+{% extends "madga/studio/base.html" %}
+{% load madga_studio_tags %}
+
+{% block title %}Dashboard · {{ site.name|default:"MADGA" }}{% endblock %}
+{% block breadcrumbs %}<span class="crumb is-current">Dashboard</span>{% endblock %}
+
+{% block content %}
+<div class="madga-page">
+  <div style="margin-bottom: 28px;">
+    <h1 class="madga-page-title">{{ greeting|default:"Hola" }}, {{ request.user.first_name|default:request.user.username }}</h1>
+    <p class="madga-page-subtitle" style="margin-top:8px;">
+      <span style="color:var(--fg-3);">{% now "l, j F Y" %}</span>
+      {% if stats.draft or stats.scheduled %}
+        · Tienes
+        {% if stats.draft %}<strong style="color:var(--fg-0); font-weight:500;">{{ stats.draft }} borrador{{ stats.draft|pluralize:"es" }}</strong>{% endif %}
+        {% if stats.draft and stats.scheduled %} y {% endif %}
+        {% if stats.scheduled %}<strong style="color:var(--fg-0); font-weight:500;">{{ stats.scheduled }} programado{{ stats.scheduled|pluralize:"s" }}</strong>{% endif %}.
+      {% endif %}
+    </p>
+  </div>
+
+  <div class="madga-stat-grid">
+    {# Total #}
+    <div class="madga-stat-card">
+      <div class="madga-stat-label">{% studio_icon "post" size=13 %} Total posts</div>
+      <div class="madga-stat-value">{{ stats.total|default:0 }}</div>
+      {% if stats.created_last_30d %}
+        <div class="madga-stat-delta up">{% studio_icon "chevron-up" size=11 stroke=2.5 %} +{{ stats.created_last_30d }} en 30 días</div>
+      {% else %}
+        <div class="madga-stat-meta">Aún sin actividad</div>
+      {% endif %}
+      {% if stats.spark_total %}
+        <svg class="madga-stat-spark" width="90" height="28" viewBox="0 0 90 28" preserveAspectRatio="none">
+          <path class="line" d="{{ stats.spark_total }}"></path>
+        </svg>
+      {% endif %}
+    </div>
+
+    {# Published #}
+    <div class="madga-stat-card">
+      <div class="madga-stat-label">{% studio_icon "check" size=13 %} Publicados</div>
+      <div class="madga-stat-value">{{ stats.published|default:0 }}</div>
+      {% if stats.published_last_7d %}
+        <div class="madga-stat-delta up">{% studio_icon "chevron-up" size=11 stroke=2.5 %} +{{ stats.published_last_7d }} esta semana</div>
+      {% else %}
+        <div class="madga-stat-meta">Sin publicaciones recientes</div>
+      {% endif %}
+      {% if stats.spark_published %}
+        <svg class="madga-stat-spark" width="90" height="28" viewBox="0 0 90 28" preserveAspectRatio="none">
+          <path class="line" d="{{ stats.spark_published }}"></path>
+        </svg>
+      {% endif %}
+    </div>
+
+    {# Drafts #}
+    <div class="madga-stat-card">
+      <div class="madga-stat-label">{% studio_icon "edit" size=13 %} Borradores</div>
+      <div class="madga-stat-value">{{ stats.draft|default:0 }}</div>
+      <div class="madga-stat-meta">{{ stats.scheduled|default:0 }} programado{{ stats.scheduled|default:0|pluralize:"s" }}</div>
+      {% if stats.spark_drafts %}
+        <svg class="madga-stat-spark" width="90" height="28" viewBox="0 0 90 28" preserveAspectRatio="none">
+          <path class="line" d="{{ stats.spark_drafts }}"></path>
+        </svg>
+      {% endif %}
+    </div>
+
+    {# Views #}
+    <div class="madga-stat-card">
+      <div class="madga-stat-label">{% studio_icon "eye" size=13 %} Vistas totales</div>
+      <div class="madga-stat-value">{{ stats.views_total|default:0 }}</div>
+      {% if stats.views_delta_pct is not None %}
+        {% if stats.views_delta_pct >= 0 %}
+          <div class="madga-stat-delta up">{% studio_icon "chevron-up" size=11 stroke=2.5 %} +{{ stats.views_delta_pct }}% vs mes pasado</div>
+        {% else %}
+          <div class="madga-stat-delta down">{% studio_icon "chevron-down" size=11 stroke=2.5 %} {{ stats.views_delta_pct }}% vs mes pasado</div>
+        {% endif %}
+      {% else %}
+        <div class="madga-stat-meta">Aún sin histórico</div>
+      {% endif %}
+      {% if stats.spark_views %}
+        <svg class="madga-stat-spark" width="90" height="28" viewBox="0 0 90 28" preserveAspectRatio="none">
+          <path class="line" d="{{ stats.spark_views }}"></path>
+        </svg>
+      {% endif %}
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns: 1.6fr 1fr; gap:20px;">
+    <div class="madga-card" style="padding:0;">
+      <div style="padding:18px 22px; display:flex; align-items:flex-start; gap:12px; border-bottom:1px solid var(--border);">
+        <div>
+          <h2 class="madga-card-title">Posts recientes</h2>
+          <p class="madga-card-subtitle">Lo último en el sitio</p>
+        </div>
+        <div class="madga-card-spacer"></div>
+        {% studio_btn label="Ver todos" href="/studio/posts/" variant="ghost" size="sm" icon="chevron-right" %}
+      </div>
+      <div>
+        {% for post in recent_posts %}
+        <a href="{% url 'madga_studio:post_edit' pk=post.pk %}" style="display:flex; align-items:center; gap:14px; padding:14px 22px; border-bottom:1px solid var(--border); text-decoration:none; color:inherit;">
+          <div style="width:42px; height:42px; border-radius:8px; background: {{ post.id|thumb_gradient }}; flex-shrink:0;"></div>
+          <div style="flex:1; min-width:0;">
+            <div style="font-size:13.5px; font-weight:500; color:var(--fg-0); margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ post.title|default:"Sin título" }}</div>
+            <div style="display:flex; align-items:center; gap:8px; font-size:11.5px; color:var(--fg-2);">
+              {% studio_badge post.status post.get_status_display %}
+              <span>{{ post.author.username|default:"—" }}</span>
+              <span style="width:2px; height:2px; background:var(--fg-3); border-radius:50%;"></span>
+              <span>{{ post.updated_at|date:"M j" }}</span>
+            </div>
+          </div>
+          {% if post.status == 'published' %}
+            <div style="display:flex; align-items:center; gap:5px; color:var(--fg-2); font-size:12px; font-variant-numeric:tabular-nums;">
+              {% studio_icon "eye" size=13 stroke=2 %}{{ post.views }}
+            </div>
+          {% endif %}
+        </a>
+        {% empty %}
+          {% studio_empty title="Aún no hay posts" message="Crea el primero y aparecerá aquí." action_label="Nuevo post" action_href="/studio/posts/new/" %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="madga-card" style="padding:0;">
+      <div style="padding:18px 22px; border-bottom:1px solid var(--border);">
+        <h2 class="madga-card-title">Actividad</h2>
+        <p class="madga-card-subtitle">Últimos cambios en este sitio</p>
+      </div>
+      {% if recent_activity %}
+        {% for ev in recent_activity %}
+          <a href="{{ ev.url }}" style="display:flex; gap:12px; padding:14px 22px; border-bottom:1px solid var(--border); text-decoration:none; color:inherit; align-items:flex-start;">
+            <div style="width:28px; height:28px; border-radius:50%; background: {{ ev.title|thumb_gradient }}; flex-shrink:0; display:grid; place-items:center; color:#fff; font-size:11px; font-weight:600;">
+              {{ ev.title|first|upper|default:"·" }}
+            </div>
+            <div style="min-width:0; flex:1;">
+              <div style="font-size:13px; color:var(--fg-0); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                <strong style="font-weight:500;">{{ ev.label }}</strong>: {{ ev.title }}
+              </div>
+              <div style="font-size:11.5px; color:var(--fg-3); margin-top:3px;">hace {{ ev.when|timesince }}</div>
+            </div>
+          </a>
+        {% endfor %}
+      {% else %}
+        <div style="padding:24px 22px; font-size:12.5px; color:var(--fg-2); text-align:center;">
+          Cuando publiques o subas algo, aparecerá aquí.
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+  @media (max-width: 900px) {
+    .madga-page > div[style*="grid-template-columns: 1.6fr 1fr"] { grid-template-columns: 1fr !important; }
+  }
+</style>
+{% endblock %}

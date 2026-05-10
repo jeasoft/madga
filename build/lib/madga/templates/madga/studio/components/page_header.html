@@ -1,0 +1,9 @@
+<div class="madga-page-header">
+  <div class="madga-page-title-block">
+    <h1 class="madga-page-title">{{ title }}</h1>
+    {% if subtitle %}<p class="madga-page-subtitle">{{ subtitle }}</p>{% endif %}
+  </div>
+  <div class="madga-page-actions">
+    {% block page_actions %}{% endblock %}
+  </div>
+</div>

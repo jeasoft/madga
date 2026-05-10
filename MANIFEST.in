@@ -1,0 +1,21 @@
+include README.md
+include CHANGELOG.md
+include LICENSE
+include pyproject.toml
+
+# Belt-and-suspenders for setuptools include_package_data: explicitly
+# globbing every sub-resource so pip install actually ships them.
+recursive-include madga *.py
+recursive-include madga/templates *.html *.txt
+recursive-include madga/static *
+recursive-include madga/migrations *.py
+
+# Don't ship dev-only stuff.
+prune tests
+prune testproject
+prune miscoreblog
+prune prototype
+prune .git
+prune .venv
+global-exclude *.pyc __pycache__
+global-exclude .DS_Store

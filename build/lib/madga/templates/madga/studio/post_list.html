@@ -1,0 +1,66 @@
+{% extends "madga/studio/base.html" %}
+{% load madga_studio_tags %}
+
+{% block title %}Posts · {{ site.name|default:"MADGA" }}{% endblock %}
+{% block breadcrumbs %}<span class="crumb is-current">Posts</span>{% endblock %}
+
+{% block content %}
+<div class="madga-page">
+  <div class="madga-page-header">
+    <div class="madga-page-title-block">
+      <h1 class="madga-page-title">Posts</h1>
+      <p class="madga-page-subtitle">Todo lo que has publicado, programado o tienes en borrador.</p>
+    </div>
+    <div class="madga-page-actions">
+      {% studio_btn label="Nuevo post" href="/studio/posts/new/" variant="primary" icon="plus" %}
+    </div>
+  </div>
+
+  <div class="madga-tabs">
+    {% for tab in tabs %}
+      <a href="?tab={{ tab.key }}" class="madga-tab {% if current_tab == tab.key %}is-active{% endif %}">
+        {{ tab.label }}<span class="madga-tab-count">{{ tab.count }}</span>
+      </a>
+    {% endfor %}
+  </div>
+
+  <div class="madga-toolbar">
+    <form class="madga-search" style="min-width:280px;" method="get"
+          hx-get="{% url 'madga_studio:post_list' %}" hx-trigger="input from:input delay:300ms"
+          hx-target="#post-list-rows" hx-include="this" hx-push-url="true">
+      {% studio_icon "search" size=14 stroke=2 %}
+      <input type="text" name="q" value="{{ search_q }}" placeholder="Filtrar por título o slug…">
+      <input type="hidden" name="tab" value="{{ current_tab }}">
+    </form>
+    <div style="flex:1"></div>
+    <span style="font-size:12px; color:var(--fg-2);">{{ paginator.count }} resultado{{ paginator.count|pluralize }}</span>
+  </div>
+
+  <form id="post-bulk-form" method="post" action="{% url 'madga_studio:post_bulk' %}">
+    {% csrf_token %}
+    <div class="madga-bulk-bar" data-madga-bulk-bar="post-bulk-form" hidden>
+      <span class="madga-bulk-count" data-madga-bulk-count>0 seleccionados</span>
+      <button class="madga-btn madga-btn--sm" type="submit" name="action" value="publish">{% studio_icon "check" size=12 stroke=2.5 %} Publicar</button>
+      <button class="madga-btn madga-btn--sm" type="submit" name="action" value="draft">{% studio_icon "edit" size=12 stroke=2 %} Borrador</button>
+      {% if current_tab == 'trash' %}
+        <button class="madga-btn madga-btn--sm" type="submit" name="action" value="restore">Restaurar</button>
+        <div style="flex:1"></div>
+        <button class="madga-btn madga-btn--sm madga-btn--danger" type="submit" name="action" value="delete">Borrar definitivamente</button>
+      {% else %}
+        <div style="flex:1"></div>
+        <button class="madga-btn madga-btn--sm madga-btn--danger" type="submit" name="action" value="trash">{% studio_icon "trash" size=12 stroke=2 %} Mover a papelera</button>
+      {% endif %}
+    </div>
+
+    <div class="madga-table-wrap">
+      <div id="post-list-rows">
+        {% include "madga/studio/components/post_list_rows.html" %}
+      </div>
+    </div>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+      {% include "madga/studio/components/pagination.html" with page_obj=page_obj %}
+    {% endif %}
+  </form>
+</div>
+{% endblock %}

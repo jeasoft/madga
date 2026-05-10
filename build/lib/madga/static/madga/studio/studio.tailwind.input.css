@@ -1,0 +1,454 @@
+@import "tailwindcss";
+
+/* Tell Tailwind v4 where to find class usage */
+@source "../../../templates/madga/studio/**/*.html";
+@source "../../../templatetags/*.py";
+
+/* ==========================================================================
+   THEME — Dark mode by default. data-theme="light" flips the palette.
+   We intentionally use CSS custom properties (not Tailwind palette tokens)
+   so the prototype's tokens map 1:1 and so per-Site overrides work.
+   ========================================================================== */
+
+@theme {
+  --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, monospace;
+
+  /* Generated dynamically from --accent via the inline <style> in base.html.
+     We expose them here so Tailwind makes utilities like `bg-accent`. */
+  --color-accent: #6C63FF;
+  --color-accent-soft: rgb(108 99 255 / 0.14);
+}
+
+/* Studio uses [data-theme="dark"] / [data-theme="light"] on <html>. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+
+/* ==========================================================================
+   TOKENS — Dark (default) and Light. Map prototype CSS vars 1:1.
+   ========================================================================== */
+:root,
+[data-theme="dark"] {
+  --bg-0: #0F1117;
+  --bg-1: #15171F;
+  --bg-2: #1B1E27;
+  --bg-3: #232631;
+  --bg-elev: #1F222C;
+  --bg-hover: rgb(255 255 255 / 0.04);
+  --bg-active: rgb(255 255 255 / 0.06);
+  --bg-input: rgb(255 255 255 / 0.03);
+  --border: rgb(255 255 255 / 0.07);
+  --border-strong: rgb(255 255 255 / 0.13);
+  --fg-0: #ECEDF0;
+  --fg-1: #B4B8C2;
+  --fg-2: #7A7F8C;
+  --fg-3: #565A65;
+  --fg-on-accent: #ffffff;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 16px rgb(0 0 0 / 0.32), 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 12px 40px rgb(0 0 0 / 0.48), 0 2px 8px rgb(0 0 0 / 0.32);
+  --status-published-bg: rgb(68 183 139 / 0.14);
+  --status-published-fg: #66d8a3;
+  --status-published-dot: #44b78b;
+  --status-draft-bg: rgb(180 184 194 / 0.10);
+  --status-draft-fg: #B4B8C2;
+  --status-draft-dot: #7A7F8C;
+  --status-scheduled-bg: rgb(240 180 75 / 0.12);
+  --status-scheduled-fg: #f0b44b;
+  --status-scheduled-dot: #f0b44b;
+  --status-archived-bg: rgb(255 122 122 / 0.10);
+  --status-archived-fg: #ff7a7a;
+  --status-archived-dot: #ff7a7a;
+  --selection: rgb(108 99 255 / 0.30);
+
+  /* Defaults; per-Site accent overrides via inline <style> in base.html */
+  --accent: #6C63FF;
+  --accent-hover: #5e54f5;
+  --accent-soft: rgb(108 99 255 / 0.14);
+  --accent-softer: rgb(108 99 255 / 0.08);
+  --accent-fg: #ffffff;
+}
+
+[data-theme="light"] {
+  --bg-0: #F6F7F9;
+  --bg-1: #FFFFFF;
+  --bg-2: #FAFAFB;
+  --bg-3: #F0F1F4;
+  --bg-elev: #FFFFFF;
+  --bg-hover: rgb(15 17 23 / 0.04);
+  --bg-active: rgb(15 17 23 / 0.06);
+  --bg-input: #FFFFFF;
+  --border: rgb(15 17 23 / 0.08);
+  --border-strong: rgb(15 17 23 / 0.16);
+  --fg-0: #15171F;
+  --fg-1: #4A4E5A;
+  --fg-2: #767B86;
+  --fg-3: #A2A6B0;
+  --fg-on-accent: #ffffff;
+  --shadow-sm: 0 1px 2px rgb(15 17 23 / 0.06);
+  --shadow-md: 0 4px 16px rgb(15 17 23 / 0.08), 0 1px 2px rgb(15 17 23 / 0.04);
+  --shadow-lg: 0 12px 40px rgb(15 17 23 / 0.12), 0 2px 8px rgb(15 17 23 / 0.06);
+  --status-published-bg: rgb(34 150 98 / 0.12);
+  --status-published-fg: #1f7a4d;
+  --status-published-dot: #229662;
+  --status-draft-bg: rgb(15 17 23 / 0.06);
+  --status-draft-fg: #4A4E5A;
+  --status-draft-dot: #767B86;
+  --status-scheduled-bg: rgb(193 135 40 / 0.14);
+  --status-scheduled-fg: #b07522;
+  --status-scheduled-dot: #c18728;
+  --status-archived-bg: rgb(204 51 51 / 0.10);
+  --status-archived-fg: #cc3333;
+  --status-archived-dot: #cc3333;
+  --selection: rgb(108 99 255 / 0.22);
+}
+
+/* ==========================================================================
+   BASE — Reset (scoped, NOT universal `* { margin:0; padding:0 }`)
+   ========================================================================== */
+@layer base {
+  html { font-family: var(--font-sans); color: var(--fg-0); background: var(--bg-0); }
+  body { margin: 0; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+  ::selection { background: var(--selection); color: var(--fg-0); }
+  [hidden] { display: none !important; }
+  button { cursor: pointer; font: inherit; }
+  input, select, textarea { font: inherit; }
+  /* Editor.js needs default block spacing; do NOT zero it out globally */
+}
+
+/* ==========================================================================
+   COMPONENT PRIMITIVES — Reusable, semantic CSS classes.
+   These pair with the Django component templates in /studio/components/.
+   ========================================================================== */
+@layer components {
+
+  /* App shell ------------------------------------------------------------ */
+  .madga-app { display: grid; grid-template-columns: 248px 1fr; min-height: 100vh; background: var(--bg-0); color: var(--fg-0); }
+  .madga-sidebar { background: var(--bg-1); border-right: 1px solid var(--border); padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+  .madga-main { display: flex; flex-direction: column; min-width: 0; min-height: 100vh; }
+  .madga-main-scroll { flex: 1; min-height: 0; overflow-y: auto; }
+  .madga-sidebar-toggle { display: none; }
+  .madga-sidebar-scrim { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); border: 0; padding: 0; z-index: 40; cursor: pointer; }
+
+  /* Mobile / tablet — sidebar becomes an off-canvas drawer ---------------- */
+  @media (max-width: 900px) {
+    .madga-app { grid-template-columns: 1fr; }
+    .madga-sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: min(280px, 80vw); height: 100vh; z-index: 50;
+      transform: translateX(-100%); transition: transform .2s ease;
+      box-shadow: 4px 0 24px rgba(0,0,0,.25);
+    }
+    .madga-app[data-sidebar-state="open"] .madga-sidebar { transform: translateX(0); }
+    .madga-app[data-sidebar-state="open"] .madga-sidebar-scrim { display: block; }
+    .madga-sidebar-toggle { display: grid; }
+    .madga-topbar { padding: 10px 14px; gap: 8px; }
+    .madga-search { display: none; }
+    .madga-editor-grid { grid-template-columns: 1fr !important; padding: 14px !important; }
+    .madga-editor-main { padding: 18px !important; }
+    .madga-editor-actions { flex-wrap: wrap; }
+    .madga-table { font-size: 12px; }
+  }
+  @media (max-width: 600px) {
+    .madga-table thead { display: none; }
+    .madga-table tbody tr { display: grid; grid-template-columns: 1fr; gap: 4px; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+    .madga-table tbody td { display: block; padding: 0; }
+  }
+
+  /* Featured image rail card -------------------------------------------- */
+  .madga-fi-empty { display: grid; place-items: center; min-height: 140px; border: 1px dashed var(--border); border-radius: 8px; background: var(--bg-2); color: var(--fg-2); cursor: pointer; transition: background .12s, border-color .12s; }
+  .madga-fi-empty:hover { background: var(--bg-hover); border-color: var(--border-strong); color: var(--fg-1); }
+  .madga-fi-empty span { font-size: 12.5px; }
+  .madga-fi-preview { position: relative; border-radius: 8px; overflow: hidden; background: var(--bg-2); border: 1px solid var(--border); }
+  .madga-fi-preview img { display: block; width: 100%; height: 130px; object-fit: cover; }
+  .madga-fi-actions { display: flex; gap: 6px; margin-top: 8px; }
+  .madga-fi-actions button { flex: 1; }
+
+  /* Media picker modal -------------------------------------------------- */
+  .madga-mp-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .madga-mp-backdrop[hidden] { display: none; }
+  .madga-mp-modal { background: var(--bg-1); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-lg); width: min(880px, 100%); max-height: calc(100vh - 48px); display: flex; flex-direction: column; overflow: hidden; }
+  .madga-mp-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--border); }
+  .madga-mp-toolbar { display: flex; gap: 10px; padding: 12px 18px; border-bottom: 1px solid var(--border); }
+  .madga-mp-toolbar .madga-input { flex: 1; }
+  .madga-mp-toolbar .madga-select { min-width: 150px; }
+  .madga-mp-results { flex: 1; min-height: 240px; overflow-y: auto; padding: 14px 18px; }
+  .madga-mp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+  .madga-mp-tile { position: relative; aspect-ratio: 1 / 1; border-radius: 8px; overflow: hidden; border: 2px solid transparent; background: var(--bg-2); cursor: pointer; padding: 0; transition: border-color .12s, transform .04s; }
+  .madga-mp-tile:hover { border-color: var(--accent); }
+  .madga-mp-tile:active { transform: scale(.98); }
+  .madga-mp-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .madga-mp-tile-icon { display: grid; place-items: center; width: 100%; height: 100%; color: var(--fg-2); }
+  .madga-mp-tile-meta { position: absolute; left: 0; right: 0; bottom: 0; padding: 6px 8px; font-size: 10.5px; color: #fff; background: linear-gradient(180deg, transparent, rgba(0,0,0,.75)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: left; }
+  .madga-mp-empty { display: grid; place-items: center; gap: 10px; padding: 36px 18px; color: var(--fg-2); text-align: center; }
+  .madga-mp-empty p { font-size: 13px; margin: 0; }
+  .madga-mp-footer { display: flex; align-items: center; justify-content: space-between; padding: 10px 18px; border-top: 1px solid var(--border); }
+  .madga-mp-hint { font-size: 12px; color: var(--fg-3); }
+
+  @media (max-width: 600px) {
+    .madga-mp-toolbar { flex-direction: column; }
+    .madga-mp-toolbar .madga-select { min-width: 0; width: 100%; }
+    .madga-mp-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+  }
+
+  /* Homepage builder ---------------------------------------------------- */
+  .madga-hb-add { background: var(--bg-1); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 18px; }
+  .madga-hb-add-title { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--fg-3); font-weight: 600; margin-bottom: 10px; }
+  .madga-hb-add-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
+  .madga-hb-add-tile-form { margin: 0; }
+  .madga-hb-add-tile { width: 100%; text-align: left; background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; cursor: pointer; transition: background .12s, border-color .12s, transform .04s; display: flex; flex-direction: column; gap: 3px; color: inherit; }
+  .madga-hb-add-tile:hover { background: var(--bg-3); border-color: var(--accent); }
+  .madga-hb-add-tile:active { transform: translateY(1px); }
+  .madga-hb-add-tile-name { font-size: 13px; font-weight: 600; color: var(--fg-0); }
+  .madga-hb-add-tile-desc { font-size: 11.5px; color: var(--fg-2); line-height: 1.35; }
+
+  .madga-hb-list { display: flex; flex-direction: column; gap: 10px; }
+  .madga-hb-block { background: var(--bg-1); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .madga-hb-block-head { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--border); background: var(--bg-2); }
+  .madga-hb-block-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-width: 0; flex: 1; }
+  .madga-hb-block-type { font-size: 13px; font-weight: 600; color: var(--fg-0); }
+  .madga-hb-block-hidden { font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--fg-2); padding: 2px 6px; background: var(--bg-3); border-radius: 4px; }
+  .madga-hb-block-desc { font-size: 12px; color: var(--fg-2); }
+  .madga-hb-block-actions { display: flex; gap: 4px; flex-shrink: 0; }
+  .madga-hb-block-actions form { margin: 0; }
+  .madga-hb-block-actions button:disabled { opacity: .35; cursor: not-allowed; }
+  .madga-hb-eye-off { opacity: .45; }
+  .madga-hb-block-body { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .madga-hb-visible { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--fg-1); padding: 6px 0; }
+  .madga-hb-block-foot { padding-top: 6px; border-top: 1px dashed var(--border); margin-top: 4px; }
+
+  /* Settings tabs ------------------------------------------------------- */
+  .madga-settings-tabs { display: flex; gap: 4px; margin-bottom: 16px; padding: 4px; background: var(--bg-1); border: 1px solid var(--border); border-radius: 10px; flex-wrap: wrap; }
+  .madga-settings-tab { padding: 8px 14px; font-size: 13px; font-weight: 500; color: var(--fg-2); border-radius: 7px; cursor: pointer; transition: background .12s, color .12s; text-decoration: none; }
+  .madga-settings-tab:hover { background: var(--bg-hover); color: var(--fg-0); }
+  .madga-settings-tab.is-active { background: var(--accent-soft); color: var(--accent); }
+  .madga-settings-pane { display: flex; flex-direction: column; gap: 12px; }
+
+  /* List field (block sub-items: profile cards, testimonios, FAQ items) - */
+  .madga-list-field { background: var(--bg-2); border: 1px solid var(--border); border-radius: 10px; padding: 10px; }
+  .madga-list-items { display: flex; flex-direction: column; gap: 8px; }
+  .madga-list-item { background: var(--bg-1); border: 1px solid var(--border); border-radius: 8px; }
+  .madga-list-item-head { display: flex; align-items: center; padding: 8px 10px; border-bottom: 1px solid var(--border); background: var(--bg-2); border-radius: 8px 8px 0 0; }
+  .madga-list-item-label { font-size: 11.5px; font-weight: 600; color: var(--fg-2); flex: 1; text-transform: uppercase; letter-spacing: .04em; }
+  .madga-list-item-body { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .madga-list-add { margin-top: 10px; }
+
+  /* Toasts -------------------------------------------------------------- */
+  .madga-toasts { position: fixed; right: 16px; bottom: 16px; z-index: 200; display: flex; flex-direction: column-reverse; gap: 8px; max-width: calc(100vw - 32px); pointer-events: none; }
+  .madga-toast { pointer-events: auto; min-width: 280px; max-width: 420px; padding: 10px 14px; border-radius: 10px; background: var(--bg-1); border: 1px solid var(--border); box-shadow: var(--shadow-md); display: flex; gap: 10px; align-items: center; font-size: 13px; color: var(--fg-0); animation: madga-toast-in .2s ease; }
+  .madga-toast.is-leaving { animation: madga-toast-out .25s ease forwards; }
+  .madga-toast--success { border-left: 3px solid var(--status-published-fg, #44b78b); }
+  .madga-toast--error { border-left: 3px solid #ef4444; }
+  .madga-toast--info { border-left: 3px solid var(--accent); }
+  .madga-toast-close { background: transparent; border: 0; color: var(--fg-3); font-size: 16px; cursor: pointer; padding: 0 2px; line-height: 1; }
+  .madga-toast-close:hover { color: var(--fg-0); }
+  @keyframes madga-toast-in { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  @keyframes madga-toast-out { from { transform: translateX(0); opacity: 1; } to { transform: translateX(20px); opacity: 0; } }
+
+  /* Confirm modal ------------------------------------------------------- */
+  .madga-confirm-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 150; display: flex; align-items: center; justify-content: center; padding: 24px; }
+  .madga-confirm-backdrop[hidden] { display: none; }
+  .madga-confirm-modal { background: var(--bg-1); border: 1px solid var(--border); border-radius: 14px; padding: 20px; width: min(380px, 100%); box-shadow: var(--shadow-lg); }
+  .madga-confirm-msg { color: var(--fg-0); font-size: 14px; line-height: 1.5; margin-bottom: 16px; }
+  .madga-confirm-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+  /* Pagination ---------------------------------------------------------- */
+  .madga-pagination { display: flex; gap: 10px; align-items: center; justify-content: center; padding: 16px 0 8px; flex-wrap: wrap; }
+  .madga-pagination-btn { display: inline-flex; gap: 4px; align-items: center; padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 12.5px; color: var(--fg-1); text-decoration: none; transition: background .12s; }
+  .madga-pagination-btn:hover { background: var(--bg-hover); color: var(--fg-0); }
+  .madga-pagination-btn.is-disabled { opacity: .35; cursor: not-allowed; pointer-events: none; }
+  .madga-pagination-info { font-size: 12.5px; color: var(--fg-2); }
+  .madga-pagination-info strong { color: var(--fg-0); }
+  .madga-pagination-sep { color: var(--fg-3); margin: 0 4px; }
+
+  /* SERP preview card --------------------------------------------------- */
+  .madga-serp { padding: 12px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; }
+  .madga-serp-url { font-size: 12px; color: var(--fg-2); margin-bottom: 4px; word-break: break-all; }
+  .madga-serp-title { font-size: 18px; line-height: 1.3; color: #1a0dab; font-weight: 400; margin-bottom: 4px; }
+  [data-theme="dark"] .madga-serp-title { color: #8ab4f8; }
+  .madga-serp-desc { font-size: 12.5px; line-height: 1.45; color: var(--fg-1); }
+  .madga-char-counter { display: inline-block; margin-left: 6px; font-size: 11px; color: var(--fg-3); font-variant-numeric: tabular-nums; }
+  .madga-char-counter.is-near { color: #f59e0b; }
+  .madga-char-counter.is-over { color: #ef4444; }
+
+  /* Brand --------------------------------------------------------------- */
+  .madga-brand { display: flex; align-items: center; gap: 10px; padding: 10px 8px; }
+  .madga-brand-mark { width: 26px; height: 26px; background: var(--accent); color: var(--accent-fg); display: grid; place-items: center; border-radius: 7px; flex-shrink: 0; }
+  .madga-brand-name { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; color: var(--fg-0); }
+  .madga-brand-name .accent { color: var(--accent); }
+
+  /* Workspace switcher --------------------------------------------------- */
+  .madga-workspace { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; background: var(--bg-2); border: 1px solid var(--border); cursor: pointer; transition: background .12s; margin: 6px 0 12px; }
+  .madga-workspace:hover { background: var(--bg-3); }
+  .madga-workspace-avatar { width: 22px; height: 22px; border-radius: 5px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-size: 11px; font-weight: 600; flex-shrink: 0; }
+  .madga-workspace-name { flex: 1; min-width: 0; font-size: 13px; font-weight: 500; color: var(--fg-0); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* New post button (sidebar primary CTA) -------------------------------- */
+  .madga-new-post-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 12px; background: var(--accent); color: var(--accent-fg); border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; margin-bottom: 14px; transition: background .12s, transform .04s; text-decoration: none; }
+  .madga-new-post-btn:hover { background: var(--accent-hover); }
+  .madga-new-post-btn:active { transform: translateY(1px); }
+
+  /* Sidebar nav ---------------------------------------------------------- */
+  .madga-nav { display: flex; flex-direction: column; gap: 1px; }
+  .madga-nav-section { font-size: 10.5px; text-transform: uppercase; letter-spacing: .07em; font-weight: 600; color: var(--fg-3); padding: 16px 10px 6px; }
+  .madga-nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 6px; font-size: 13px; font-weight: 500; color: var(--fg-1); cursor: pointer; transition: background .1s, color .1s; text-decoration: none; position: relative; }
+  .madga-nav-item:hover { background: var(--bg-hover); color: var(--fg-0); }
+  .madga-nav-item.is-active { background: var(--accent-soft); color: var(--accent); }
+  .madga-nav-item.is-active::before { content: ""; position: absolute; left: -12px; top: 50%; transform: translateY(-50%); width: 3px; height: 18px; background: var(--accent); border-radius: 0 2px 2px 0; }
+  .madga-nav-item svg { color: currentColor; opacity: .85; flex-shrink: 0; }
+  .madga-nav-item .madga-nav-count { margin-left: auto; font-size: 11px; font-weight: 500; color: var(--fg-3); padding: 1px 6px; background: var(--bg-3); border-radius: 4px; }
+
+  /* User card (sidebar bottom) ------------------------------------------ */
+  .madga-user-card { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; background: var(--bg-2); border: 1px solid var(--border); }
+  .madga-user-avatar { width: 26px; height: 26px; border-radius: 50%; background: var(--bg-3); color: var(--fg-1); display: grid; place-items: center; font-size: 11px; font-weight: 600; flex-shrink: 0; }
+  .madga-user-name { font-size: 12.5px; font-weight: 500; color: var(--fg-0); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .madga-user-role { font-size: 11px; color: var(--fg-2); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* Topbar --------------------------------------------------------------- */
+  .madga-topbar { display: flex; align-items: center; gap: 10px; padding: 10px 24px; border-bottom: 1px solid var(--border); background: var(--bg-1); position: sticky; top: 0; z-index: 10; min-height: 52px; }
+  .madga-breadcrumbs { display: flex; align-items: center; gap: 4px; font-size: 13px; color: var(--fg-2); }
+  .madga-breadcrumbs .crumb { padding: 4px 6px; border-radius: 4px; cursor: pointer; text-decoration: none; color: var(--fg-2); }
+  .madga-breadcrumbs .crumb:hover { background: var(--bg-hover); color: var(--fg-0); }
+  .madga-breadcrumbs .crumb.is-current { color: var(--fg-0); font-weight: 500; cursor: default; }
+  .madga-breadcrumbs .sep { color: var(--fg-3); }
+
+  .madga-search { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 7px; min-width: 320px; color: var(--fg-2); transition: border-color .1s; }
+  .madga-search:focus-within { border-color: var(--border-strong); }
+  .madga-search input { flex: 1; background: transparent; border: none; outline: none; color: var(--fg-0); font-size: 13px; min-width: 0; }
+  .madga-search input::placeholder { color: var(--fg-3); }
+  .madga-kbd { font-size: 10.5px; color: var(--fg-3); padding: 2px 5px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-1); font-family: var(--font-mono); }
+
+  .madga-icon-btn { width: 32px; height: 32px; display: grid; place-items: center; background: transparent; border: none; border-radius: 6px; color: var(--fg-2); cursor: pointer; transition: background .1s, color .1s; }
+  .madga-icon-btn:hover { background: var(--bg-hover); color: var(--fg-0); }
+
+  /* Page wrapper --------------------------------------------------------- */
+  .madga-page { padding: 36px 40px; max-width: 1240px; margin: 0 auto; }
+  .madga-page-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 30px; }
+  .madga-page-title-block { flex: 1; min-width: 0; }
+  .madga-page-title { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; color: var(--fg-0); margin: 0; line-height: 1.15; }
+  .madga-page-subtitle { font-size: 14px; color: var(--fg-2); margin: 8px 0 0; max-width: 600px; line-height: 1.5; }
+  .madga-page-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  @media (max-width: 700px) {
+    .madga-page { padding: 20px 16px; }
+    .madga-page-header { flex-direction: column; align-items: stretch; gap: 10px; margin-bottom: 22px; }
+  }
+
+  /* Buttons -------------------------------------------------------------- */
+  .madga-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; background: var(--bg-2); color: var(--fg-1); border: 1px solid var(--border); border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; transition: background .1s, border-color .1s, color .1s; text-decoration: none; }
+  .madga-btn:hover { background: var(--bg-3); border-color: var(--border-strong); color: var(--fg-0); }
+  .madga-btn--primary { background: var(--accent); color: var(--accent-fg); border-color: transparent; }
+  .madga-btn--primary:hover { background: var(--accent-hover); border-color: transparent; color: var(--accent-fg); }
+  .madga-btn--ghost { background: transparent; border-color: transparent; color: var(--fg-1); }
+  .madga-btn--ghost:hover { background: var(--bg-hover); border-color: transparent; color: var(--fg-0); }
+  .madga-btn--danger { color: #ff7a7a; }
+  .madga-btn--danger:hover { background: rgb(255 122 122 / 0.10); color: #ff7a7a; border-color: transparent; }
+  .madga-btn--sm { padding: 5px 10px; font-size: 12px; }
+  .madga-btn[disabled] { opacity: .5; cursor: not-allowed; pointer-events: none; }
+
+  /* Badges --------------------------------------------------------------- */
+  .madga-badge { display: inline-flex; align-items: center; gap: 6px; padding: 3px 9px; border-radius: 4px; font-size: 11.5px; font-weight: 500; line-height: 1; white-space: nowrap; }
+  .madga-badge-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+  .madga-badge--published { background: var(--status-published-bg); color: var(--status-published-fg); }
+  .madga-badge--draft { background: var(--status-draft-bg); color: var(--status-draft-fg); }
+  .madga-badge--scheduled { background: var(--status-scheduled-bg); color: var(--status-scheduled-fg); }
+  .madga-badge--archived { background: var(--status-archived-bg); color: var(--status-archived-fg); }
+
+  /* Cards ---------------------------------------------------------------- */
+  .madga-card { background: var(--bg-1); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
+  .madga-card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+  .madga-card-title { font-size: 14px; font-weight: 600; color: var(--fg-0); margin: 0; }
+  .madga-card-subtitle { font-size: 12.5px; color: var(--fg-2); margin: 2px 0 0; }
+  .madga-card-spacer { flex: 1; }
+
+  /* Stat cards ----------------------------------------------------------- */
+  .madga-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .madga-stat-card { background: var(--bg-1); border: 1px solid var(--border); border-radius: 14px; padding: 20px; position: relative; overflow: hidden; min-height: 120px; }
+  .madga-stat-label { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--fg-2); }
+  .madga-stat-value { font-size: 30px; font-weight: 600; color: var(--fg-0); line-height: 1.1; margin-top: 10px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .madga-stat-meta { font-size: 11.5px; color: var(--fg-3); margin-top: 6px; }
+  .madga-stat-delta { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 500; margin-top: 8px; }
+  .madga-stat-delta.up { color: var(--status-published-fg); }
+  .madga-stat-delta.down { color: #ff7a7a; }
+  .madga-stat-spark { position: absolute; right: 10px; bottom: 10px; pointer-events: none; opacity: .8; }
+  .madga-stat-spark path.line { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .madga-stat-spark path.area { fill: var(--accent); opacity: .14; }
+
+  /* Tabs ---------------------------------------------------------------- */
+  .madga-tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+  .madga-tab { padding: 10px 14px; font-size: 13px; font-weight: 500; color: var(--fg-2); cursor: pointer; border-bottom: 2px solid transparent; transition: color .1s, border-color .1s; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+  .madga-tab:hover { color: var(--fg-0); }
+  .madga-tab.is-active { color: var(--fg-0); border-bottom-color: var(--accent); }
+  .madga-tab-count { font-size: 11px; font-weight: 500; color: var(--fg-3); padding: 1px 6px; background: var(--bg-3); border-radius: 4px; }
+
+  /* Toolbar ------------------------------------------------------------- */
+  .madga-toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+
+  /* Bulk action bar ----------------------------------------------------- */
+  .madga-bulk-bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--accent-soft); border: 1px solid var(--accent-soft); border-radius: 8px; margin-bottom: 12px; }
+  .madga-bulk-count { font-size: 12.5px; font-weight: 600; color: var(--accent); padding-right: 8px; border-right: 1px solid var(--accent-soft); }
+
+  /* Tables --------------------------------------------------------------- */
+  .madga-table-wrap { background: var(--bg-1); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .madga-table { width: 100%; border-collapse: collapse; }
+  .madga-table th { text-align: left; padding: 12px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--fg-2); background: var(--bg-2); border-bottom: 1px solid var(--border); }
+  .madga-table td { padding: 12px 16px; font-size: 13px; color: var(--fg-1); border-bottom: 1px solid var(--border); }
+  .madga-table tbody tr:hover { background: var(--bg-hover); }
+  .madga-table tbody tr:last-child td { border-bottom: none; }
+  .madga-table .col-check { width: 32px; }
+  .madga-table .col-actions { width: 100px; text-align: right; }
+
+  /* Post cell (thumb + title + slug) ------------------------------------ */
+  .madga-post-cell { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .madga-post-thumb { width: 40px; height: 40px; border-radius: 6px; background: var(--bg-3); flex-shrink: 0; }
+  .madga-post-title-stack { min-width: 0; flex: 1; }
+  .madga-post-title { font-size: 13.5px; font-weight: 500; color: var(--fg-0); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .madga-post-slug { font-size: 11.5px; color: var(--fg-2); font-family: var(--font-mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* Form fields --------------------------------------------------------- */
+  .madga-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+  .madga-field-label { font-size: 12px; color: var(--fg-1); font-weight: 500; }
+  .madga-field-help { font-size: 11px; color: var(--fg-2); }
+  .madga-field-error { font-size: 11.5px; color: #ff7a7a; }
+  .madga-input, .madga-select, .madga-textarea { width: 100%; box-sizing: border-box; background: var(--bg-input); border: 1px solid var(--border-strong); color: var(--fg-0); border-radius: 6px; padding: 8px 10px; font-size: 13px; transition: border-color .1s, box-shadow .1s; }
+  .madga-input:focus, .madga-select:focus, .madga-textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+  .madga-input::placeholder, .madga-textarea::placeholder { color: var(--fg-3); }
+  .madga-color { width: 56px; height: 32px; padding: 0; border: 1px solid var(--border-strong); border-radius: 6px; background: var(--bg-input); cursor: pointer; }
+  .madga-range { width: 100%; accent-color: var(--accent); }
+
+  /* Empty state --------------------------------------------------------- */
+  .madga-empty { padding: 48px 16px; text-align: center; color: var(--fg-2); font-size: 13px; }
+  .madga-empty-title { color: var(--fg-0); font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+
+  /* Editor (Editor.js skin) --------------------------------------------- */
+  .madga-editor { min-height: 360px; color: var(--fg-0); font-size: 16px; line-height: 1.6; }
+  .madga-editor .codex-editor__redactor { padding-bottom: 100px !important; padding-top: 8px; }
+  .madga-editor .ce-block { padding: 4px 0; }
+  .madga-editor .ce-block__content,
+  .madga-editor .ce-toolbar__content { max-width: none !important; margin: 0 auto; position: relative; }
+  .madga-editor .ce-toolbar__plus,
+  .madga-editor .ce-toolbar__settings-btn { width: 26px; height: 26px; padding: 5px; border-radius: 5px; color: var(--fg-2); background: transparent; border: 1px solid transparent; }
+  .madga-editor .ce-toolbar__plus:hover,
+  .madga-editor .ce-toolbar__settings-btn:hover { background: var(--bg-2); color: var(--fg-0); border-color: var(--border); }
+  .madga-editor .ce-paragraph { padding: 6px 0; min-height: 1.5em; }
+  .madga-editor .ce-paragraph[data-placeholder]:empty::before,
+  .madga-editor [data-placeholder]:empty::before { content: attr(data-placeholder); color: var(--fg-3); }
+  .madga-editor .ce-header { padding: 8px 0; font-weight: 600; line-height: 1.3; }
+  .madga-editor h2.ce-header { font-size: 26px; }
+  .madga-editor h3.ce-header { font-size: 20px; }
+  .madga-editor .cdx-list { padding-left: 28px; }
+  .madga-editor .cdx-list__item { padding: 2px 0; }
+  .madga-editor .cdx-quote { padding: 12px 16px; border-left: 3px solid var(--accent); background: var(--bg-2); border-radius: 4px; }
+  .madga-editor .ce-code__textarea { background: var(--bg-2); color: var(--fg-0); border: 1px solid var(--border); border-radius: 6px; padding: 12px; font-family: var(--font-mono); font-size: 13px; min-height: 80px; width: 100%; }
+  .madga-editor .ce-delimiter { padding: 16px 0; text-align: center; }
+  .madga-editor .ce-delimiter::before { content: '∗ ∗ ∗'; color: var(--fg-2); letter-spacing: 8px; }
+
+  /* Editor.js popovers/toolbars are appended to <body>, scope globally */
+  .ce-popover { background: var(--bg-1) !important; border: 1px solid var(--border) !important; border-radius: 8px !important; box-shadow: var(--shadow-lg) !important; padding: 6px !important; }
+  .ce-popover-item { padding: 8px 10px !important; border-radius: 4px !important; color: var(--fg-1) !important; }
+  .ce-popover-item:hover,
+  .ce-popover-item--focused { background: var(--bg-2) !important; color: var(--fg-0) !important; }
+  .ce-inline-toolbar { background: var(--bg-1) !important; border: 1px solid var(--border) !important; border-radius: 6px !important; box-shadow: var(--shadow-md) !important; padding: 4px !important; }
+  .ce-inline-tool { color: var(--fg-1) !important; }
+  .ce-inline-tool:hover,
+  .ce-inline-tool--active { background: var(--bg-2) !important; color: var(--fg-0) !important; }
+}

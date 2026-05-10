@@ -1,0 +1,16 @@
+{% load madga_studio_tags %}
+<div class="madga-stat-card">
+  <div class="madga-stat-label">
+    {% if icon %}{% studio_icon icon size=13 %}{% endif %}
+    {{ label }}
+  </div>
+  <div class="madga-stat-value">{{ value }}</div>
+  {% if delta %}
+    <div class="madga-stat-delta {{ delta_dir }}">
+      {% if delta_dir == 'up' %}{% studio_icon "chevron-up" size=11 stroke=2.5 %}{% elif delta_dir == 'down' %}{% studio_icon "chevron-down" size=11 stroke=2.5 %}{% endif %}
+      {{ delta }}
+    </div>
+  {% elif meta %}
+    <div class="madga-stat-meta">{{ meta }}</div>
+  {% endif %}
+</div>

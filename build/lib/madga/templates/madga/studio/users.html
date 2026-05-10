@@ -1,0 +1,64 @@
+{% extends "madga/studio/base.html" %}
+{% load madga_studio_tags %}
+
+{% block breadcrumbs %}<span class="crumb is-current">Users</span>{% endblock %}
+
+{% block content %}
+<div class="madga-page">
+  <div class="madga-page-header">
+    <div class="madga-page-title-block">
+      <h1 class="madga-page-title">Usuarios</h1>
+      <p class="madga-page-subtitle">Quién tiene acceso al Studio.</p>
+    </div>
+  </div>
+
+  <form method="post" action="{% url 'madga_studio:user_invite' %}" style="display:flex; gap:8px; margin-bottom:18px;">
+    {% csrf_token %}
+    <input type="email" name="email" placeholder="email@dominio.com" required class="madga-input" style="flex:1;">
+    <select name="role" class="madga-select" style="width:160px;">
+      {% for v,l in roles %}<option value="{{ v }}">{{ l }}</option>{% endfor %}
+    </select>
+    <button class="madga-btn madga-btn--primary" type="submit">{% studio_icon "plus" size=14 stroke=2.5 %} Invitar</button>
+  </form>
+
+  <div class="madga-table-wrap">
+    <table class="madga-table">
+      <thead><tr><th>Usuario</th><th>Email</th><th>Rol</th><th>Desde</th><th class="col-actions"></th></tr></thead>
+      <tbody>
+        {% for m in memberships %}
+        <tr>
+          <td>
+            <div class="madga-post-cell">
+              <div class="madga-user-avatar">{{ m.user.username|first|upper }}</div>
+              <div class="madga-post-title-stack">
+                <div class="madga-post-title">{{ m.user.get_full_name|default:m.user.username }}</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="madga-post-slug">{{ m.user.email }}</span></td>
+          <td>
+            <form method="post" action="{% url 'madga_studio:user_role' pk=m.pk %}" style="display:inline;">{% csrf_token %}
+              <select class="madga-select" name="role" onchange="this.form.submit()" style="font-size:12px; padding:4px 8px;">
+                {% for v,l in roles %}<option value="{{ v }}" {% if m.role == v %}selected{% endif %}>{{ l }}</option>{% endfor %}
+              </select>
+            </form>
+          </td>
+          <td>{{ m.created_at|date:"M Y" }}</td>
+          <td></td>
+        </tr>
+        {% endfor %}
+        {% for inv in invitations %}
+        <tr style="opacity:.7;">
+          <td><em>Pendiente</em></td>
+          <td><span class="madga-post-slug">{{ inv.email }}</span></td>
+          <td>{{ inv.get_role_display }}</td>
+          <td>{{ inv.created_at|date:"M j" }}</td>
+          <td>{% studio_badge "draft" "Invitación" %}</td>
+        </tr>
+        {% empty %}{% if not memberships %}<tr><td colspan="5">{% studio_empty title="Sin usuarios todavía" %}</td></tr>{% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
