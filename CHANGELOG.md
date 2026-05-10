@@ -2,6 +2,44 @@
 
 All notable changes to MADGA. Format roughly follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.2.0] — 2026-05-10
+
+Focus: usable as a library in OTHER projects (not just miscore).
+
+### Added
+- **Real packaging.** `pyproject.toml` gains `[build-system]`,
+  `[tool.setuptools.packages.find]`, `[tool.setuptools.package-data]` so
+  templates, static, migrations, emails ship via pip. `MANIFEST.in` mirrors
+  the resource list as a safety net. Verified end-to-end: `pip install
+  madga` in a fresh venv + `migrate` + `runserver` → studio loads at 200.
+- **Single `madga` CLI** consolidating the previous management commands.
+  Subcommands: `create-site`, `seed-demo`, `build-css`, `blocks`, `version`.
+  The old standalone `madga_create_site`, `madga_seed`, `madga_tailwind`
+  files were removed.
+- **First-run welcome page** at `/` when no Site exists. Shows the
+  bootstrap commands (createsuperuser + `madga create-site`) instead of
+  crashing with a NoneType error on a clean install.
+- **Layouts page** functional. Selector per content-type (Homepage / Blog
+  index / Post detail / Static pages) with options persisted in
+  `Site.settings`. Public template chain prefers `<kind>-<layout>.html`
+  when set.
+- **Drag-and-drop reorder** for homepage blocks. Sortable.js loaded once
+  in `studio/base.html`; any `[data-madga-sortable]` container with a
+  `data-reorder-url` becomes draggable. Server-side: a single
+  `action=reorder` branch persists `sort_order=index+1` in a transaction.
+- **Role enforcement per action.** `MadgaStudioMixin.can_edit_post()` and
+  `can_delete_post()`. Author can edit/delete own posts; Editor + Owner
+  can edit/delete anyone. Publish silently downgrades to draft when the
+  user lacks `publish_post`. Bulk actions filter by permission and warn
+  if items were skipped.
+- 6 new role-matrix tests; integration suite at 22 tests, all passing.
+
+### Fixed
+- `post_edit.html` SERP preview accessed `post.meta_title` /
+  `post.title` / `post.excerpt` unguarded, crashing
+  `/studio/posts/new/` with `VariableDoesNotExist`. Wrapped in
+  `{% if post %}`.
+
 ## [0.1.1] — 2026-05-09
 
 ### Added
