@@ -40,6 +40,23 @@ class MadgaStudioMixin(LoginRequiredMixin):
             return False
         return perm in ROLE_PERMISSIONS.get(membership.role, set())
 
+    def can_edit_post(self, post) -> bool:
+        """A user can edit a post if they own the post OR have edit_any_post."""
+        if self.request.user.is_superuser:
+            return True
+        if self.has_perm("edit_any_post"):
+            return True
+        # Authors/Contributors with their own post
+        return post.author_id == self.request.user.id
+
+    def can_delete_post(self, post) -> bool:
+        """delete_post (Owner/Editor) or delete_own_post (Author on own post)."""
+        if self.request.user.is_superuser:
+            return True
+        if self.has_perm("delete_post"):
+            return True
+        return self.has_perm("delete_own_post") and post.author_id == self.request.user.id
+
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs) if hasattr(super(), "get_context_data") else {}
         ctx.update(

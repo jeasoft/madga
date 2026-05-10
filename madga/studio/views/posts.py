@@ -3,9 +3,10 @@
 import json
 
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import EmptyPage, Paginator
 from django.db.models import Q
-from django.http import JsonResponse
+from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views import View
@@ -96,6 +97,21 @@ class PostBulkActionView(MadgaStudioMixin, View):
         action = request.POST.get("action")
         ids = request.POST.getlist("ids")
         qs = Post.objects.filter(site=site, id__in=ids)
+
+        # Per-action permission checks.
+        if action == "publish" and not self.has_perm("publish_post"):
+            messages.error(request, "Tu rol no permite publicar.")
+            return redirect(request.META.get("HTTP_REFERER", "/studio/posts/"))
+        if action in ("trash", "delete"):
+            # Filter to posts the user can actually delete.
+            allowed_ids = [str(p.pk) for p in qs if self.can_delete_post(p)]
+            if len(allowed_ids) != len(ids):
+                messages.warning(
+                    request,
+                    f"Algunos posts no fueron procesados por permisos ({len(ids) - len(allowed_ids)} omitidos).",
+                )
+            qs = qs.filter(pk__in=allowed_ids)
+
         if action == "publish":
             qs.update(status=Post.STATUS_PUBLISHED, published_at=timezone.now())
         elif action == "draft":
@@ -123,6 +139,8 @@ class PostEditView(MadgaStudioMixin, View):
     def get(self, request, pk=None):
         post = self._get_post(pk)
         site = self.get_site()
+        if post is not None and not self.can_edit_post(post):
+            raise PermissionDenied("No podés editar este post.")
         form = PostForm(instance=post)
         return render(
             request,
@@ -141,6 +159,20 @@ class PostEditView(MadgaStudioMixin, View):
 
     def post(self, request, pk=None):
         post = self._get_post(pk)
+        # Edits to existing posts must pass the per-post check.
+        if post is not None and not self.can_edit_post(post):
+            raise PermissionDenied("No podés editar este post.")
+        # Creating new posts requires SOME role (Contributor minimum).
+        if post is None and self.get_membership() is None and not request.user.is_superuser:
+            raise PermissionDenied("Sin membership en este site.")
+        # Publishing requires publish_post; downgrade to draft if not allowed.
+        if post is None or post.status != Post.STATUS_PUBLISHED:
+            if request.POST.get("status") == Post.STATUS_PUBLISHED and not self.has_perm("publish_post"):
+                # Silent downgrade so a Contributor can still save as draft.
+                post_data = request.POST.copy()
+                post_data["status"] = Post.STATUS_DRAFT
+                request.POST = post_data
+                messages.warning(request, "Tu rol no permite publicar — guardado como borrador.")
         form = PostForm(request.POST, request.FILES, instance=post)
         if not form.is_valid():
             if request.headers.get("HX-Request") or request.headers.get(
@@ -192,6 +224,8 @@ class PostDeleteView(MadgaStudioMixin, View):
         post = get_object_or_404(
             Post.objects.alive().filter(site=self.get_site()), pk=pk
         )
+        if not self.can_delete_post(post):
+            raise PermissionDenied("No podés borrar este post.")
         post.soft_delete()
         messages.success(request, "Post enviado a la papelera.")
         return redirect("madga_studio:post_list")
