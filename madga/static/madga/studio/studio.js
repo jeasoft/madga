@@ -288,4 +288,37 @@
       }
     }
   });
+
+  // Drag-and-drop reorder via Sortable.js -----------------------------------
+  // [data-madga-sortable] becomes draggable. POSTs ids[] in DOM order to
+  // data-reorder-url.
+  function initSortable(el) {
+    if (!window.Sortable || el.dataset.madgaSortableInit === '1') return;
+    el.dataset.madgaSortableInit = '1';
+    const url = el.dataset.reorderUrl;
+    if (!url) return;
+    Sortable.create(el, {
+      animation: 150,
+      handle: '.madga-hb-drag-handle, .madga-nav-drag-handle',
+      ghostClass: 'is-dragging',
+      onEnd: function () {
+        const pks = Array.from(el.querySelectorAll('[data-pk]'))
+          .map(n => n.dataset.pk).filter(Boolean);
+        if (!pks.length) return;
+        const fd = new FormData();
+        fd.append('action', 'reorder');
+        pks.forEach(pk => fd.append('ids[]', pk));
+        const tok = document.querySelector('input[name="csrfmiddlewaretoken"]');
+        fetch(url, {
+          method: 'POST', body: fd, credentials: 'same-origin',
+          headers: {'X-CSRFToken': tok ? tok.value : ''},
+        }).catch(() => {});
+      },
+    });
+  }
+  function bootSortables() {
+    document.querySelectorAll('[data-madga-sortable]').forEach(initSortable);
+  }
+  document.addEventListener('DOMContentLoaded', bootSortables);
+  window.addEventListener('load', bootSortables);
 })();

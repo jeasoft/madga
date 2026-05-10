@@ -143,4 +143,22 @@ class HomepageBuilderView(MadgaStudioMixin, View):
                             a.save(update_fields=["sort_order"])
                             b.save(update_fields=["sort_order"])
 
+        elif action == "reorder":
+            # Drag-and-drop: ids[] is the new order. Persist sort_order = index+1.
+            from django.http import JsonResponse
+
+            ids = request.POST.getlist("ids[]") or request.POST.getlist("ids")
+            if ids:
+                blocks = {
+                    str(b.pk): b
+                    for b in HomepageBlock.objects.filter(site=site, pk__in=ids)
+                }
+                with transaction.atomic():
+                    for new_order, pk in enumerate(ids, start=1):
+                        b = blocks.get(str(pk))
+                        if b and b.sort_order != new_order:
+                            b.sort_order = new_order
+                            b.save(update_fields=["sort_order"])
+            return JsonResponse({"ok": True})
+
         return redirect("madga_studio:homepage_builder")

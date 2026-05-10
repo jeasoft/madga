@@ -36,11 +36,12 @@
   </div>
 
   {# Existing blocks ----------------------------------------------------- #}
-  <div class="madga-hb-list">
+  <div class="madga-hb-list" data-madga-sortable data-reorder-url="{% url 'madga_studio:homepage_builder' %}">
     {% for row in blocks %}
       {% with b=row.obj %}
-      <div class="madga-hb-block">
+      <div class="madga-hb-block" data-pk="{{ b.pk }}">
         <header class="madga-hb-block-head">
+          <span class="madga-hb-drag-handle" title="Arrastrá para reordenar">{% studio_icon "more-v" size=14 stroke=2 %}{% studio_icon "more-v" size=14 stroke=2 %}</span>
           <div class="madga-hb-block-meta">
             <span class="madga-hb-block-type">{{ row.label }}</span>
             {% if not b.is_visible %}<span class="madga-hb-block-hidden">Oculto</span>{% endif %}
