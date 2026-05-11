@@ -29,6 +29,7 @@
 {% endblock %}
 
 {% block content %}
+{% include "madga/studio/components/editor_toolbar_init.html" %}
 <form method="post" id="page-form" class="madga-editor-grid">
   {% csrf_token %}
   <div>
@@ -42,14 +43,15 @@
       <button type="submit" class="madga-btn madga-btn--sm madga-btn--primary">{% trans "Guardar" %}</button>
     </div>
     <div class="madga-editor-main">
-      <input class="madga-editor-title" type="text" name="title" value="{{ form.title.value|default:'' }}" placeholder="Título de la página" required>
-      <div class="madga-editor-help" style="display:flex; gap:8px; flex-wrap:wrap; padding:8px 0 14px; color:var(--fg-3); font-size:12px; border-bottom:1px dashed var(--border); margin-bottom:14px;">
-        <span style="display:inline-flex; gap:6px; align-items:center;">{% studio_icon "edit" size=12 stroke=2 %} Selecciona texto para <b>negritas</b>, <i>cursivas</i>, enlaces y resaltado</span>
-        <span style="opacity:.6">·</span>
-        <span>Presiona <kbd style="border:1px solid var(--border); padding:1px 6px; border-radius:4px; font-family:var(--font-mono); font-size:11px;">/</kbd> o usa el <b>+</b> para añadir bloques</span>
-      </div>
+      <input class="madga-editor-title" type="text" name="title" value="{{ form.title.value|default:'' }}" placeholder="{% trans 'Page title' %}" required>
+      {% include "madga/studio/components/editor_toolbar.html" %}
       <div id="editorjs-container" class="madga-editor"></div>
       <input type="hidden" name="body" id="id_body">
+      <div class="madga-editor-foot">
+        <span data-editor-wordcount>0 {% trans "words" %}</span>
+        <span style="color: var(--fg-3);">·</span>
+        <span data-editor-readtime>~1 {% trans "min read" %}</span>
+      </div>
     </div>
   </div>
   <aside style="display:flex; flex-direction:column; gap:14px;">
@@ -118,7 +120,9 @@
         hyperlink: { class: Hyperlink, config: { shortcut: 'CMD+K', target: '_blank', rel: 'nofollow' } },
         image: { class: ImageTool, config: { endpoints: { byFile: '{% url "madga_studio:media_upload" %}' }, additionalRequestHeaders: { 'X-CSRFToken': csrf }, field: 'image' } },
       },
+      onChange: () => { if (window.__madgaEditorOnChange) window.__madgaEditorOnChange(); },
     });
+    window.__madgaEditor = editor;
     document.getElementById('page-form').addEventListener('submit', async (e) => {
       e.preventDefault();
       const data = await editor.save();

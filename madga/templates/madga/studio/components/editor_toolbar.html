@@ -1,0 +1,48 @@
+{% load i18n madga_studio_tags %}
+{# Persistent block-insert toolbar. Buttons trigger editor.blocks.insert() via the JS in editor_toolbar_init.html. Inline formatting (bold/italic/etc.) keeps Editor.js's selection toolbar — hint shown on the right. #}
+<div class="madga-editor-toolbar" data-editor-toolbar role="toolbar" aria-label="{% trans 'Editor toolbar' %}">
+  <div class="madga-editor-toolbar-group" role="group" aria-label="{% trans 'Headings' %}">
+    <button type="button" class="madga-editor-tool" data-editor-insert="header" data-editor-data='{"level":2}' title="{% trans 'Heading 2' %} (## )">
+      <span class="madga-editor-tool-h">H2</span>
+    </button>
+    <button type="button" class="madga-editor-tool" data-editor-insert="header" data-editor-data='{"level":3}' title="{% trans 'Heading 3' %} (### )">
+      <span class="madga-editor-tool-h">H3</span>
+    </button>
+  </div>
+  <span class="madga-editor-toolbar-sep" aria-hidden="true"></span>
+  <div class="madga-editor-toolbar-group" role="group" aria-label="{% trans 'Blocks' %}">
+    <button type="button" class="madga-editor-tool" data-editor-insert="list" data-editor-data='{"style":"unordered","items":[""]}' title="{% trans 'Bullet list' %}">
+      {% studio_icon "menu" size=14 stroke=2 %}
+    </button>
+    <button type="button" class="madga-editor-tool" data-editor-insert="list" data-editor-data='{"style":"ordered","items":[""]}' title="{% trans 'Numbered list' %}">
+      <span class="madga-editor-tool-h" style="font-size:11px;">1.</span>
+    </button>
+    <button type="button" class="madga-editor-tool" data-editor-insert="quote" data-editor-data='{"text":"","caption":""}' title="{% trans 'Quote' %}">
+      <span class="madga-editor-tool-h" style="font-family: serif; font-size: 16px;">”</span>
+    </button>
+    <button type="button" class="madga-editor-tool" data-editor-insert="code" data-editor-data='{"code":""}' title="{% trans 'Code block' %}">
+      <span class="madga-editor-tool-h" style="font-family: var(--font-mono);">{}</span>
+    </button>
+    <button type="button" class="madga-editor-tool" data-editor-insert="delimiter" data-editor-data='{}' title="{% trans 'Divider' %}">
+      <span class="madga-editor-tool-h" style="letter-spacing:.2em;">—</span>
+    </button>
+  </div>
+  <span class="madga-editor-toolbar-sep" aria-hidden="true"></span>
+  <div class="madga-editor-toolbar-group" role="group" aria-label="{% trans 'Media' %}">
+    <button type="button" class="madga-editor-tool" data-editor-insert-image title="{% trans 'Image' %}">
+      {% studio_icon "image" size=14 stroke=2 %}
+    </button>
+    {% if include_embed %}
+      <button type="button" class="madga-editor-tool" data-editor-insert-embed title="{% trans 'Embed (YouTube, Twitter, …)' %}">
+        {% studio_icon "external" size=14 stroke=2 %}
+      </button>
+    {% endif %}
+  </div>
+
+  <div class="madga-editor-toolbar-spacer"></div>
+
+  <span class="madga-editor-toolbar-hint">
+    {% trans "Select text for" %} <b>{% trans "bold" %}</b>, <i>{% trans "italics" %}</i>, {% trans "links and highlight" %} ·
+    {% trans "Press" %} <kbd>/</kbd> {% trans "for more blocks" %}
+  </span>
+</div>

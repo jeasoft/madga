@@ -1,0 +1,85 @@
+{% load i18n %}
+{# Wires editor toolbar buttons to window.__madgaEditor + word count. #}
+<script>
+(function () {
+  function getEditor() { return window.__madgaEditor || null; }
+
+  async function insertBlock(type, data) {
+    const editor = getEditor();
+    if (!editor) return;
+    try {
+      // Prefer inserting at the current cursor position; fall back to end.
+      const idx = (editor.blocks.getCurrentBlockIndex
+                    ? editor.blocks.getCurrentBlockIndex()
+                    : -1);
+      const target = idx >= 0 ? idx + 1 : editor.blocks.getBlocksCount();
+      editor.blocks.insert(type, data || {}, undefined, target, true);
+    } catch (e) {
+      // Some Editor.js versions need the legacy signature.
+      try { editor.blocks.insert(type, data || {}); } catch (_) {}
+    }
+  }
+
+  document.addEventListener('click', function (e) {
+    // Generic block insert
+    const btn = e.target.closest('[data-editor-insert]');
+    if (btn) {
+      e.preventDefault();
+      const type = btn.dataset.editorInsert;
+      let data = {};
+      try { data = JSON.parse(btn.dataset.editorData || '{}'); } catch (_) {}
+      insertBlock(type, data);
+      return;
+    }
+    // Image insert via media picker
+    const img = e.target.closest('[data-editor-insert-image]');
+    if (img) {
+      e.preventDefault();
+      // Re-use the existing media picker if present, otherwise hit upload.
+      // For now: trigger the hidden file picker that Editor.js's image tool
+      // creates — easiest approach is to use editor.blocks.insert("image")
+      // which surfaces the upload UI.
+      insertBlock("image", {});
+      return;
+    }
+    const emb = e.target.closest('[data-editor-insert-embed]');
+    if (emb) {
+      e.preventDefault();
+      const url = window.prompt('{% trans "Paste a YouTube / Twitter / Vimeo URL" %}');
+      if (url) insertBlock("embed", { service: "youtube", source: url, embed: url });
+      return;
+    }
+  });
+
+  // Word count + reading time ----------------------------------------------
+  const wordEl = document.querySelector('[data-editor-wordcount]');
+  const timeEl = document.querySelector('[data-editor-readtime]');
+  function updateCounts() {
+    const editor = getEditor();
+    if (!editor || !editor.save) return;
+    editor.save().then(function (data) {
+      let text = '';
+      (data.blocks || []).forEach(function (b) {
+        const d = b.data || {};
+        text += ' ' + (d.text || d.code || d.body || '');
+        if (Array.isArray(d.items)) text += ' ' + d.items.join(' ');
+      });
+      const plain = text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+      const words = plain ? plain.split(' ').length : 0;
+      const minutes = Math.max(1, Math.round(words / 220));
+      if (wordEl) wordEl.textContent = words + ' {% trans "words" %}';
+      if (timeEl) timeEl.textContent = '~' + minutes + ' {% trans "min read" %}';
+    }).catch(function () {});
+  }
+  // Throttle: update at most every 800ms.
+  let pending = null;
+  window.__madgaEditorOnChange = function () {
+    if (pending) return;
+    pending = setTimeout(function () { pending = null; updateCounts(); }, 800);
+  };
+  // Initial pass once the editor is ready.
+  document.addEventListener('DOMContentLoaded', function () {
+    setTimeout(updateCounts, 1500);
+  });
+})();
+</script>

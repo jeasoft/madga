@@ -49,6 +49,7 @@
 {% endblock %}
 
 {% block content %}
+{% include "madga/studio/components/editor_toolbar_init.html" %}
 <form method="post" id="post-form" enctype="multipart/form-data" class="madga-editor-grid">
   {% csrf_token %}
 
@@ -70,16 +71,22 @@
 
     <div class="madga-editor-main">
       <input class="madga-editor-title" type="text" name="title" id="id_title"
-             value="{{ form.title.value|default:'' }}" placeholder="Título del post…" required
+             value="{{ form.title.value|default:'' }}" placeholder="{% trans 'Post title…' %}" required
              data-serp-source="title-fallback">
-      <div class="madga-editor-help" style="display:flex; gap:8px; flex-wrap:wrap; padding:8px 0 14px; color:var(--fg-3); font-size:12px; border-bottom:1px dashed var(--border); margin-bottom:14px;">
-        <span style="display:inline-flex; gap:6px; align-items:center;">{% studio_icon "edit" size=12 stroke=2 %} Selecciona texto para <b>negritas</b>, <i>cursivas</i>, enlaces y resaltado</span>
-        <span style="opacity:.6">·</span>
-        <span>Presiona <kbd style="border:1px solid var(--border); padding:1px 6px; border-radius:4px; font-family:var(--font-mono); font-size:11px;">/</kbd> o usa el <b>+</b> para añadir bloques (encabezado, lista, imagen, código, embed)</span>
-      </div>
+
+      {# Insert-block toolbar: persistent, WordPress-friendly. #}
+      {% include "madga/studio/components/editor_toolbar.html" with include_embed=True %}
+
       <div id="editorjs-container" class="madga-editor"></div>
       <input type="hidden" name="body" id="id_body">
       {% if form.body.errors %}<div class="madga-field-error">{{ form.body.errors }}</div>{% endif %}
+
+      {# Word count + reading time #}
+      <div class="madga-editor-foot">
+        <span data-editor-wordcount>0 {% trans "words" %}</span>
+        <span style="color: var(--fg-3);">·</span>
+        <span data-editor-readtime>~1 {% trans "min read" %}</span>
+      </div>
     </div>
   </div>
 
@@ -213,8 +220,13 @@
           config: { services: { youtube: true, twitter: true, vimeo: true, instagram: true } },
         },
       },
-      onChange: () => { setDirty(); scheduleAutosave(); },
+      onChange: () => {
+        setDirty();
+        scheduleAutosave();
+        if (window.__madgaEditorOnChange) window.__madgaEditorOnChange();
+      },
     });
+    window.__madgaEditor = editor;
 
     let dirty = false, autosaveTimer = null;
     const statusEl = document.getElementById('autosave-status');

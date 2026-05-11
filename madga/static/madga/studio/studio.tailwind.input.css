@@ -237,6 +237,22 @@
   .madga-list-item-body { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
   .madga-list-add { margin-top: 10px; }
 
+  /* Editor toolbar (persistent block-insert bar) ------------------------ */
+  .madga-editor-toolbar { display: flex; align-items: center; gap: 4px; padding: 6px 8px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; margin: 14px 0 12px; flex-wrap: wrap; }
+  .madga-editor-toolbar-group { display: inline-flex; gap: 2px; }
+  .madga-editor-toolbar-sep { display: inline-block; width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
+  .madga-editor-toolbar-spacer { flex: 1; min-width: 8px; }
+  .madga-editor-toolbar-hint { font-size: 11px; color: var(--fg-3); padding: 0 6px; }
+  .madga-editor-toolbar-hint kbd { font-family: var(--font-mono); font-size: 10.5px; padding: 1px 5px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-1); color: var(--fg-2); }
+  .madga-editor-tool { display: inline-grid; place-items: center; min-width: 30px; height: 30px; padding: 0 7px; background: transparent; border: 1px solid transparent; border-radius: 6px; color: var(--fg-1); cursor: pointer; transition: background .12s, border-color .12s; }
+  .madga-editor-tool:hover { background: var(--bg-1); border-color: var(--border); color: var(--fg-0); }
+  .madga-editor-tool:active { transform: translateY(1px); }
+  .madga-editor-tool-h { font-weight: 700; font-size: 12px; letter-spacing: -0.02em; }
+  .madga-editor-foot { display: flex; gap: 8px; align-items: center; padding: 14px 0 4px; font-size: 11.5px; color: var(--fg-3); border-top: 1px dashed var(--border); margin-top: 18px; }
+  @media (max-width: 700px) {
+    .madga-editor-toolbar-hint { display: none; }
+  }
+
   /* Theme gallery ------------------------------------------------------- */
   .madga-theme-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
   .madga-theme-card-item { background: var(--bg-1); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; transition: border-color .12s; display: flex; flex-direction: column; }

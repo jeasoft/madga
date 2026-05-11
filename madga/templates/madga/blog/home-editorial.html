@@ -3,8 +3,7 @@
 {% block title %}{{ site.name }}{% endblock %}
 
 {% block content %}
-{# Editorial: magazine-style hero post + 4-up grid. Bypasses HomepageBlocks
-   (it's an alternative). Uses real recent posts. #}
+{# Editorial: hero post + 4-up grid. Uses real recent posts (not HomepageBlocks). #}
 {% with posts=posts|default:'' %}
 <section class="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
   <header class="mb-12 sm:mb-16 text-center">
