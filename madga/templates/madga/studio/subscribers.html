@@ -1,0 +1,75 @@
+{% extends "madga/studio/base.html" %}
+{% load i18n humanize madga_studio_tags %}
+
+{% block breadcrumbs %}
+  <a href="{% url 'madga_studio:broadcast_list' %}" class="crumb">{% trans "Broadcasts" %}</a>
+  <span class="sep">/</span>
+  <span class="crumb is-current">{% trans "Subscribers" %}</span>
+{% endblock %}
+
+{% block content %}
+<div class="madga-page">
+  <div class="madga-page-header">
+    <div class="madga-page-title-block">
+      <h1 class="madga-page-title">{% trans "Subscribers" %}</h1>
+      <p class="madga-page-subtitle">{% trans "People who get this site's email broadcasts." %}</p>
+    </div>
+  </div>
+
+  <div class="madga-card" style="padding:16px; margin-bottom:18px;">
+    <form method="post" action="{% url 'madga_studio:subscriber_add' %}" style="display:flex; gap:8px;">
+      {% csrf_token %}
+      <input class="madga-input" type="email" name="email" placeholder="email@domain.com" required style="flex:1;">
+      <button type="submit" class="madga-btn madga-btn--sm madga-btn--primary">{% studio_icon "plus" size=12 stroke=2.5 %} {% trans "Add" %}</button>
+    </form>
+  </div>
+
+  <div class="madga-tabs">
+    <a href="?kind=active" class="madga-tab {% if current_kind == 'active' %}is-active{% endif %}">{% trans "Active" %}<span class="madga-tab-count">{{ active_count }}</span></a>
+    <a href="?kind=unsubscribed" class="madga-tab {% if current_kind == 'unsubscribed' %}is-active{% endif %}">{% trans "Unsubscribed" %}<span class="madga-tab-count">{{ unsubscribed_count }}</span></a>
+  </div>
+
+  <div class="madga-toolbar">
+    <form class="madga-search" method="get" style="min-width:280px;">
+      {% studio_icon "search" size=14 stroke=2 %}
+      <input type="text" name="q" value="{{ q }}" placeholder="{% trans 'Search by email…' %}">
+      <input type="hidden" name="kind" value="{{ current_kind }}">
+    </form>
+  </div>
+
+  <div class="madga-card" style="padding:0;">
+    <table class="madga-table">
+      <thead>
+        <tr>
+          <th>{% trans "Email" %}</th>
+          <th>{% trans "Source" %}</th>
+          <th>{% trans "Status" %}</th>
+          <th>{% trans "Joined" %}</th>
+          <th class="col-actions"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for sub in subscribers %}
+        <tr>
+          <td><strong>{{ sub.email }}</strong>{% if sub.name %} <span style="color:var(--fg-3);">· {{ sub.name }}</span>{% endif %}</td>
+          <td><span class="madga-post-slug">{{ sub.get_source_display }}</span></td>
+          <td>{% if sub.is_active %}{% studio_badge "published" _("Active") %}{% else %}{% studio_badge "archived" _("Unsubscribed") %}{% endif %}</td>
+          <td style="color:var(--fg-2); font-size:12px;">{{ sub.created_at|naturaltime }}</td>
+          <td class="col-actions">
+            <form method="post" action="{% url 'madga_studio:subscriber_delete' pk=sub.pk %}" style="margin:0;">{% csrf_token %}
+              <button type="submit" class="madga-btn madga-btn--ghost madga-btn--sm madga-btn--danger" data-madga-confirm="{% trans 'Permanently remove this subscriber?' %}" title="{% trans 'Delete' %}">{% studio_icon "trash" size=12 stroke=2 %}</button>
+            </form>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5">{% studio_empty title=_("No subscribers here yet") message=_("Add one above, or wait for someone to opt in.") %}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if page_obj.paginator.num_pages > 1 %}
+    {% include "madga/studio/components/pagination.html" with page_obj=page_obj %}
+  {% endif %}
+</div>
+{% endblock %}

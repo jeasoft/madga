@@ -138,6 +138,8 @@ class PostEditView(MadgaStudioMixin, View):
         )
 
     def get(self, request, pk=None):
+        from madga.publishers import all_publishers
+
         post = self._get_post(pk)
         site = self.get_site()
         if post is not None and not self.can_edit_post(post):
@@ -155,6 +157,7 @@ class PostEditView(MadgaStudioMixin, View):
                 "membership": self.get_membership(),
                 "post_body_json": json.dumps(post.body if post else {}),
                 "selected_tag_slugs": list(post.tags.values_list("slug", flat=True)) if post else [],
+                "broadcast_publishers": all_publishers(only_configured=True),
             },
         )
 

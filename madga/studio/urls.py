@@ -36,6 +36,15 @@ from .views.taxonomy import (
     TaxonomyListView,
 )
 from .views.api_keys import UserApiKeyListView
+from .views.broadcasts import (
+    BroadcastCancelView,
+    BroadcastCreateView,
+    BroadcastListView,
+    BroadcastRetryView,
+    SubscriberAddView,
+    SubscriberDeleteView,
+    SubscriberListView,
+)
 from .views.users import (
     AcceptInviteView,
     UserInviteView,
@@ -90,4 +99,12 @@ urlpatterns = [
     path("layouts/", LayoutsView.as_view(), name="layouts"),
     path("nav/", NavigationView.as_view(), name="navigation"),
     path("homepage/", HomepageBuilderView.as_view(), name="homepage_builder"),
+
+    path("broadcasts/", BroadcastListView.as_view(), name="broadcast_list"),
+    path("broadcasts/new/", BroadcastCreateView.as_view(), name="broadcast_create"),
+    path("broadcasts/<uuid:pk>/retry/", BroadcastRetryView.as_view(), name="broadcast_retry"),
+    path("broadcasts/<uuid:pk>/cancel/", BroadcastCancelView.as_view(), name="broadcast_cancel"),
+    path("subscribers/", SubscriberListView.as_view(), name="subscriber_list"),
+    path("subscribers/add/", SubscriberAddView.as_view(), name="subscriber_add"),
+    path("subscribers/<uuid:pk>/delete/", SubscriberDeleteView.as_view(), name="subscriber_delete"),
 ]

@@ -50,6 +50,14 @@
       {% studio_icon "homepage" %} {% trans "Homepage" %}
     </a>
 
+    <div class="madga-nav-section">{% trans "Broadcast" %}</div>
+    <a href="{% url 'madga_studio:broadcast_list' %}" class="madga-nav-item {% studio_active request 'broadcast_list' %}">
+      {% studio_icon "send" %} {% trans "Broadcasts" %}
+    </a>
+    <a href="{% url 'madga_studio:subscriber_list' %}" class="madga-nav-item {% studio_active request 'subscriber_list' %}">
+      {% studio_icon "users" %} {% trans "Subscribers" %}
+    </a>
+
     <div class="madga-nav-section">{% trans "Workspace" %}</div>
     <a href="{% url 'madga_studio:user_list' %}" class="madga-nav-item {% studio_active request 'user_list' %}">
       {% studio_icon "users" %} {% trans "Users" %}

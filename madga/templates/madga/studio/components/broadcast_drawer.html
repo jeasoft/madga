@@ -1,0 +1,95 @@
+{% load i18n madga_studio_tags %}
+{# Slide-out drawer to compose a broadcast for the current post.
+   Toggled by [data-madga-drawer-open="broadcast"] anywhere in the page. #}
+
+<div class="madga-drawer" data-madga-drawer="broadcast" hidden>
+  <div class="madga-drawer-backdrop" data-madga-drawer-close></div>
+  <aside class="madga-drawer-panel">
+    <header class="madga-drawer-head">
+      <div>
+        <h2 style="margin:0; font-size:16px; font-weight:600;">{% trans "Broadcast this post" %}</h2>
+        <p style="margin:4px 0 0; color:var(--fg-2); font-size:12.5px;">{% trans "Fan out to the channels you've configured." %}</p>
+      </div>
+      <button type="button" class="madga-icon-btn" data-madga-drawer-close aria-label="{% trans 'Close' %}">{% studio_icon "x" size=16 stroke=2 %}</button>
+    </header>
+
+    <form method="post" action="{% url 'madga_studio:broadcast_create' %}" class="madga-drawer-body">
+      {% csrf_token %}
+      <input type="hidden" name="post_id" value="{{ post.pk }}">
+
+      <div class="madga-field">
+        <label class="madga-field-label">{% trans "Subject" %}</label>
+        <input class="madga-input" type="text" name="subject" value="{{ post.title }}" required>
+      </div>
+
+      <div class="madga-field">
+        <label class="madga-field-label">{% trans "Publishers" %}</label>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          {% for p in publishers %}
+            <label style="display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border:1px solid var(--border); border-radius:8px; cursor:pointer;">
+              <input type="checkbox" name="publisher_keys" value="{{ p.key }}" {% if forloop.first %}checked{% endif %} style="margin-top:3px;">
+              <div style="flex:1; min-width:0;">
+                <div style="font-weight:500; color:var(--fg-0); font-size:13px;">
+                  {% if p.icon %}{% studio_icon p.icon size=12 stroke=2 %} {% endif %}{{ p.label }}
+                </div>
+                {% if p.description %}<div style="color:var(--fg-2); font-size:11.5px; margin-top:2px;">{{ p.description }}</div>{% endif %}
+              </div>
+            </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="madga-field">
+        <label class="madga-field-label">{% trans "Schedule (optional)" %}</label>
+        <input class="madga-input" type="datetime-local" name="scheduled_at">
+        <span class="madga-field-help">{% trans "Leave empty to send immediately." %}</span>
+      </div>
+
+      <div style="display:flex; gap:8px; margin-top:6px;">
+        <button type="submit" class="madga-btn madga-btn--primary" style="flex:1;">{% studio_icon "send" size=12 stroke=2 %} {% trans "Send broadcast" %}</button>
+        <button type="button" class="madga-btn" data-madga-drawer-close>{% trans "Cancel" %}</button>
+      </div>
+    </form>
+  </aside>
+</div>
+
+<style>
+  .madga-drawer { position: fixed; inset: 0; z-index: 80; }
+  .madga-drawer[hidden] { display: none; }
+  .madga-drawer-backdrop { position:absolute; inset:0; background: rgba(0,0,0,.32); }
+  .madga-drawer-panel {
+    position:absolute; top:0; right:0; bottom:0; width: min(420px, 100vw);
+    background: var(--bg-1); border-left: 1px solid var(--border);
+    box-shadow: var(--shadow-lg); display:flex; flex-direction:column;
+    overflow-y:auto;
+  }
+  .madga-drawer-head {
+    padding: 18px 22px; display:flex; align-items:flex-start; gap:12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .madga-drawer-body { padding: 18px 22px; display:flex; flex-direction:column; gap:14px; }
+</style>
+
+<script>
+(function () {
+  document.addEventListener('click', function (e) {
+    const opener = e.target.closest('[data-madga-drawer-open]');
+    if (opener) {
+      const name = opener.dataset.madgaDrawerOpen;
+      const el = document.querySelector('[data-madga-drawer="' + name + '"]');
+      if (el) el.hidden = false;
+      return;
+    }
+    const closer = e.target.closest('[data-madga-drawer-close]');
+    if (closer) {
+      const el = closer.closest('[data-madga-drawer]');
+      if (el) el.hidden = true;
+    }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('[data-madga-drawer]').forEach(el => el.hidden = true);
+    }
+  });
+})();
+</script>

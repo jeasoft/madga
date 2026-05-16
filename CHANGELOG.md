@@ -2,6 +2,66 @@
 
 All notable changes to MADGA. Format roughly follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.3.2] — 2026-05-16
+
+Focus: **publisher fan-out.** When you publish a post, MADGA can now
+broadcast it to multiple destinations — email subscribers out of the
+box, anything you register on top (LinkedIn, Twitter, Facebook, custom
+webhook) for host projects like aplica.do that need to publish to
+multiple networks in one shot.
+
+### Added
+- **`Subscriber` + `BroadcastJob` models** with migrations.
+  Subscribers are per-site with unsubscribe tokens; BroadcastJobs are
+  frozen-snapshot fan-out records (one job per `publisher × content`
+  combination, so retrying or auditing per network works).
+- **Publisher registry** under `madga.publishers`. Host projects
+  register their own via `@register_publisher`:
+  ```python
+  @register_publisher
+  class LinkedInPublisher(Publisher):
+      key = "linkedin"
+      label = "LinkedIn"
+      def is_configured(self): return bool(settings.LI_TOKEN)
+      def publish(self, job): ...  # call LinkedIn API, return PublishResult
+  ```
+- **Built-in `email_subscribers` publisher** that fans out via Django's
+  `EmailMultiAlternatives` (uses `DEFAULT_FROM_EMAIL`). Includes
+  RFC 8058 `List-Unsubscribe` one-click headers, HTML + text bodies,
+  branded email template that picks up `Site.accent_color`.
+- **Studio drawer** on `/studio/posts/<pk>/edit/`. When the post is
+  published, a "Broadcast" button slides a drawer with publisher
+  checkboxes, subject override, and optional schedule. Sync send for
+  immediate jobs; scheduled jobs wait for the worker.
+- **`/studio/broadcasts/`** lists all jobs with status, sent/failed
+  counts, retry + cancel actions, paginated.
+- **`/studio/subscribers/`** manages the audience: add manually,
+  search, see active vs. unsubscribed, delete.
+- **`/madga/unsubscribe/<token>/`** public one-click endpoint with a
+  branded confirmation page that extends `madga/site_base.html`.
+- **`madga broadcast-worker`** management subcommand: `--loop` mode
+  for production deployments, single-pass by default. Drains pending
+  jobs whose `scheduled_at` is past.
+- **`madga publishers`** subcommand: lists all registered publishers
+  and their `is_configured()` state — useful for debugging missing
+  credentials.
+- 10 new integration tests for the broadcast flow (email send,
+  unsubscribe view, status transitions, studio create endpoint).
+
+### Fixed
+- `Post.STATUS_CHOICES`, `Page.STATUS_CHOICES`, `SiteUser.ROLE_CHOICES`,
+  and `UserInvitation.STATUS_CHOICES` had display labels hardcoded in
+  Spanish. The badges and status dropdowns leaked Spanish into EN
+  mode. Wrapped in `gettext_lazy`. Migration `0007` updates the
+  choices on Post + Page.
+
+### Migration notes
+- Two new migrations: `0007_alter_page_status_alter_post_status` and
+  `0008_broadcastjob_subscriber`. Run `python manage.py migrate`.
+- If you mount MADGA via the older `include('madga.blog.urls_root')`
+  instead of `madga_public_urls()`, the `madga_unsubscribe` route is
+  appended automatically — no urls.py changes needed.
+
 ## [0.3.1] — 2026-05-16
 
 Bugfix and polish release. Mainly i18n correctness, README, and the publishing toolchain.

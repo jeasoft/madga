@@ -38,6 +38,7 @@ from madga.blog.views import (
     RssFeedView,
     SitemapView,
 )
+from madga.blog.views_broadcast import UnsubscribeView
 
 
 def madga_public_urls(*, include_homepage: bool = True) -> list:
@@ -52,5 +53,6 @@ def madga_public_urls(*, include_homepage: bool = True) -> list:
         path("robots.txt", RobotsTxtView.as_view(), name="madga_robots"),
         path("sitemap.xml", SitemapView.as_view(), name="madga_sitemap"),
         path("rss.xml", RssFeedView.as_view(), name="madga_rss"),
+        path("madga/unsubscribe/<str:token>/", UnsubscribeView.as_view(), name="madga_unsubscribe"),
     ]
     return patterns

@@ -1,0 +1,27 @@
+{% extends "madga/site_base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Unsubscribed" %} · {{ site.name|default:"MADGA" }}{% endblock %}
+
+{% block content %}
+<section class="max-w-md mx-auto px-4 sm:px-6 py-16 text-center">
+  <div class="inline-grid place-items-center w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-800 mb-6">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+      <polyline points="22 4 12 14.01 9 11.01"/>
+    </svg>
+  </div>
+  <h1 class="font-heading text-2xl sm:text-3xl font-semibold tracking-tight">
+    {% trans "You're unsubscribed" %}
+  </h1>
+  <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">
+    {% blocktrans with email=subscriber.email site_name=site.name %}<strong>{{ email }}</strong> won't receive any more broadcasts from {{ site_name }}.{% endblocktrans %}
+  </p>
+  <p class="mt-6 text-xs text-slate-400">
+    {% trans "Did this by mistake? Contact us and we'll re-add you." %}
+  </p>
+  <p class="mt-10">
+    <a href="/" class="text-accent hover:underline text-sm">{% trans "Back to the site" %}</a>
+  </p>
+</section>
+{% endblock %}

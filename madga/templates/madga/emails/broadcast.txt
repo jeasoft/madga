@@ -1,0 +1,9 @@
+{{ subject }}
+
+{{ body_text }}
+
+{% if related_url %}{{ related_url }}{% endif %}
+
+—
+{{ site.name }}
+To unsubscribe: {{ unsubscribe_url }}

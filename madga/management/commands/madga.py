@@ -18,6 +18,7 @@ from pathlib import Path
 
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand, CommandError
+from django.db import models
 from django.utils import timezone
 
 
@@ -84,6 +85,21 @@ class Command(BaseCommand):
             help="Re-fire user_post_signup for every User (useful after wiring a new profile receiver).",
         )
         bp.add_argument("--kind", default="", help="Pass as `kind` to the signal.")
+
+        # broadcast-worker --------------------------------------------------
+        bw = sub.add_parser(
+            "broadcast-worker",
+            help="Drain pending BroadcastJobs (one-shot by default; --loop to keep running).",
+        )
+        bw.add_argument("--loop", action="store_true",
+                        help="Keep running and poll every --interval seconds.")
+        bw.add_argument("--interval", type=int, default=30,
+                        help="Poll interval in seconds when --loop is set (default 30).")
+        bw.add_argument("--limit", type=int, default=50,
+                        help="Max jobs to process per pass (default 50).")
+
+        # publishers --------------------------------------------------------
+        sub.add_parser("publishers", help="List registered Publishers.")
 
     def handle(self, *args, **opts):
         cmd = opts.pop("cmd")
@@ -291,3 +307,52 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(
             f"Fired user_post_signup for {n} user(s) (kind={kind!r})."
         ))
+
+    def _cmd_publishers(self, opts):
+        from madga.publishers import all_publishers
+
+        items = all_publishers()
+        if not items:
+            self.stdout.write("No publishers registered.")
+            return
+        self.stdout.write(f"{len(items)} publisher(s) registered:\n")
+        for p in items:
+            ok = "✓" if p.is_configured() else "·"
+            label = str(p.label) if p.label else p.key
+            self.stdout.write(f"  {ok} {self.style.SUCCESS(p.key):28s}  {label}")
+            if p.description:
+                self.stdout.write(f"      {p.description}")
+
+    def _cmd_broadcast_worker(self, opts):
+        import time
+        from django.utils import timezone
+        from madga.models import BroadcastJob
+        from madga.studio.views.broadcasts import _worker_run
+
+        def pass_once() -> int:
+            now = timezone.now()
+            qs = BroadcastJob.objects.filter(
+                status=BroadcastJob.STATUS_PENDING,
+            ).filter(
+                models.Q(scheduled_at__isnull=True) | models.Q(scheduled_at__lte=now)
+            ).order_by("created_at")[: opts["limit"]]
+            n = 0
+            for job in qs:
+                self.stdout.write(f"→ {job.publisher_key} job {job.pk}…")
+                _worker_run(job)
+                self.stdout.write(self.style.SUCCESS(
+                    f"  done: sent={job.sent_count} failed={job.failed_count}"
+                ))
+                n += 1
+            return n
+
+        if opts["loop"]:
+            self.stdout.write(self.style.NOTICE(
+                f"broadcast-worker loop (interval={opts['interval']}s). Ctrl-C to stop."
+            ))
+            while True:
+                pass_once()
+                time.sleep(opts["interval"])
+        else:
+            n = pass_once()
+            self.stdout.write(self.style.SUCCESS(f"Processed {n} job(s)."))

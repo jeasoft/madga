@@ -9,6 +9,7 @@ from .views import (
     RssFeedView,
     SitemapView,
 )
+from .views_broadcast import UnsubscribeView
 
 urlpatterns = [
     path("", HomepageView.as_view(), name="madga_home"),
@@ -16,4 +17,5 @@ urlpatterns = [
     path("sitemap.xml", SitemapView.as_view(), name="madga_sitemap"),
     path("rss.xml", RssFeedView.as_view(), name="madga_rss"),
     path("p/<slug:slug>/", PageDetailView.as_view(), name="madga_page"),
+    path("madga/unsubscribe/<str:token>/", UnsubscribeView.as_view(), name="madga_unsubscribe"),
 ]

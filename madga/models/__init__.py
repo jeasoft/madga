@@ -1,6 +1,7 @@
 """MADGA models — flat re-export for convenience."""
 
 from .api_keys import UserApiKey
+from .broadcast import BroadcastJob, Subscriber
 from .content import Page, Post
 from .homepage import HomepageBlock
 from .media import MediaFile
@@ -21,4 +22,6 @@ __all__ = [
     "NavItem",
     "HomepageBlock",
     "UserApiKey",
+    "BroadcastJob",
+    "Subscriber",
 ]

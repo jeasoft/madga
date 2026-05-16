@@ -1,0 +1,89 @@
+{% extends "madga/studio/base.html" %}
+{% load i18n humanize madga_studio_tags %}
+
+{% block breadcrumbs %}<span class="crumb is-current">{% trans "Broadcasts" %}</span>{% endblock %}
+
+{% block content %}
+<div class="madga-page">
+  <div class="madga-page-header">
+    <div class="madga-page-title-block">
+      <h1 class="madga-page-title">{% trans "Broadcasts" %}</h1>
+      <p class="madga-page-subtitle">
+        {% blocktrans count n=subscriber_count %}{{ n }} active subscriber.{% plural %}{{ n }} active subscribers.{% endblocktrans %}
+        {% if publishers %}
+          {% blocktrans count n=publishers|length %}{{ n }} publisher configured.{% plural %}{{ n }} publishers configured.{% endblocktrans %}
+        {% endif %}
+      </p>
+    </div>
+    <div class="madga-page-actions">
+      <a href="{% url 'madga_studio:subscriber_list' %}" class="madga-btn madga-btn--sm madga-btn--ghost">{% studio_icon "users" size=12 stroke=2 %} {% trans "Subscribers" %}</a>
+    </div>
+  </div>
+
+  {% if not publishers %}
+    <div class="madga-card" style="padding:18px; margin-bottom:18px; border-left:3px solid var(--accent);">
+      <strong>{% trans "No publishers configured." %}</strong>
+      <p class="madga-field-help" style="margin-top:6px;">{% blocktrans %}Set <code>DEFAULT_FROM_EMAIL</code> for the built-in email publisher, or register custom publishers (LinkedIn, Twitter, …) from your host project via <code>@register_publisher</code>.{% endblocktrans %}</p>
+    </div>
+  {% endif %}
+
+  <div class="madga-card" style="padding:0;">
+    <table class="madga-table">
+      <thead>
+        <tr>
+          <th>{% trans "Subject" %}</th>
+          <th>{% trans "Publisher" %}</th>
+          <th>{% trans "Targets" %}</th>
+          <th>{% trans "Status" %}</th>
+          <th>{% trans "When" %}</th>
+          <th class="col-actions"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for job in jobs %}
+        <tr>
+          <td>
+            <div class="madga-post-cell">
+              <div class="madga-post-title-stack">
+                <div class="madga-post-title">{{ job.subject|truncatechars:60 }}</div>
+                {% if job.related_url %}<a class="madga-post-slug" href="{{ job.related_url }}" target="_blank" rel="noopener">{{ job.related_url }}</a>{% endif %}
+              </div>
+            </div>
+          </td>
+          <td>{{ job.publisher_key }}</td>
+          <td style="font-variant-numeric:tabular-nums;">
+            <strong>{{ job.sent_count }}</strong>
+            {% if job.failed_count %}<span style="color:#dc2626;"> + {{ job.failed_count }} {% trans "failed" %}</span>{% endif %}
+            <span style="color:var(--fg-3);">/ {{ job.targets_count }}</span>
+          </td>
+          <td>{% studio_badge job.status job.get_status_display %}</td>
+          <td style="color:var(--fg-2); font-size:12px;">
+            {% if job.finished_at %}{{ job.finished_at|naturaltime }}{% elif job.scheduled_at %}{% blocktrans with when=job.scheduled_at|naturaltime %}scheduled {{ when }}{% endblocktrans %}{% else %}{{ job.created_at|naturaltime }}{% endif %}
+          </td>
+          <td class="col-actions">
+            <div style="display:flex; gap:4px; justify-content:flex-end;">
+              {% if job.status == 'failed' or job.status == 'partial' %}
+                <form method="post" action="{% url 'madga_studio:broadcast_retry' pk=job.pk %}" style="margin:0;">{% csrf_token %}
+                  <button type="submit" class="madga-btn madga-btn--ghost madga-btn--sm" title="{% trans 'Retry' %}">{% studio_icon "refresh-cw" size=12 stroke=2 %} {% trans "Retry" %}</button>
+                </form>
+              {% endif %}
+              {% if job.status == 'pending' %}
+                <form method="post" action="{% url 'madga_studio:broadcast_cancel' pk=job.pk %}" style="margin:0;">{% csrf_token %}
+                  <button type="submit" class="madga-btn madga-btn--ghost madga-btn--sm madga-btn--danger" data-madga-confirm="{% trans 'Cancel this pending broadcast?' %}" title="{% trans 'Cancel' %}">{% studio_icon "x" size=12 stroke=2 %}</button>
+                </form>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6">{% studio_empty title=_("No broadcasts yet") message=_("When you publish a post and pick \"Broadcast\", it'll show up here.") %}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if page_obj.paginator.num_pages > 1 %}
+    {% include "madga/studio/components/pagination.html" with page_obj=page_obj %}
+  {% endif %}
+</div>
+{% endblock %}

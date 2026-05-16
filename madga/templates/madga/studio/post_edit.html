@@ -67,7 +67,14 @@
       {% endif %}
       <button type="submit" data-set-status="draft" class="madga-btn madga-btn--sm">{% trans "Save draft" %}</button>
       <button type="submit" data-set-status="published" class="madga-btn madga-btn--sm madga-btn--primary">{% trans "Publish" %}</button>
+      {% if post and post.status == 'published' and broadcast_publishers %}
+        <button type="button" class="madga-btn madga-btn--sm" data-madga-drawer-open="broadcast">{% studio_icon "send" size=12 stroke=2 %} {% trans "Broadcast" %}</button>
+      {% endif %}
     </div>
+
+    {% if post and post.status == 'published' and broadcast_publishers %}
+      {% include "madga/studio/components/broadcast_drawer.html" with post=post publishers=broadcast_publishers %}
+    {% endif %}
 
     <div class="madga-editor-main">
       <input class="madga-editor-title" type="text" name="title" id="id_title"

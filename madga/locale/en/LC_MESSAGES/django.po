@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-16 16:53-0400\n"
+"POT-Creation-Date: 2026-05-16 17:14-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -94,6 +94,64 @@ msgstr "Pages"
 msgid "File uploaded"
 msgstr ""
 
+#, fuzzy
+#| msgid "Sign out"
+msgid "Signup"
+msgstr "Sign out"
+
+msgid "Manual"
+msgstr ""
+
+msgid "Imported"
+msgstr ""
+
+msgid "Form"
+msgstr ""
+
+msgid "Set when the user confirms double opt-in. Empty means single opt-in."
+msgstr ""
+
+msgid "Subscriber"
+msgstr ""
+
+msgid "Subscribers"
+msgstr ""
+
+#, fuzzy
+#| msgid "Settings"
+msgid "Pending"
+msgstr "Settings"
+
+msgid "Running"
+msgstr ""
+
+msgid "Sent"
+msgstr ""
+
+msgid "Partial"
+msgstr ""
+
+msgid "Failed"
+msgstr ""
+
+#, fuzzy
+#| msgid "Cancelar"
+msgid "Cancelled"
+msgstr "Cancel"
+
+msgid "Key of a registered Publisher (e.g. email_subscribers, linkedin)."
+msgstr ""
+
+msgid ""
+"If set in the future, the worker won't pick the job up before this time."
+msgstr ""
+
+msgid "Broadcast"
+msgstr ""
+
+msgid "Broadcasts"
+msgstr ""
+
 msgid "Scheduled"
 msgstr ""
 
@@ -116,15 +174,18 @@ msgstr ""
 msgid "Contributor"
 msgstr ""
 
-#, fuzzy
-#| msgid "Settings"
-msgid "Pending"
-msgstr "Settings"
-
 msgid "Accepted"
 msgstr ""
 
 msgid "Expired"
+msgstr ""
+
+msgid "Email subscribers"
+msgstr ""
+
+msgid ""
+"Send the broadcast as an email to every active subscriber of this site. Uses "
+"your project's configured EMAIL_BACKEND."
 msgstr ""
 
 msgid "API key created. Copy it now — won't be shown again."
@@ -137,6 +198,54 @@ msgid "API key deleted."
 msgstr ""
 
 msgid "API key rotated. Copy the new value."
+msgstr ""
+
+#, fuzzy
+#| msgid "Recent activity"
+msgid "No active site."
+msgstr "Recent activity"
+
+msgid "Pick at least one publisher."
+msgstr ""
+
+msgid "Subject is required."
+msgstr ""
+
+#, python-format
+msgid "Broadcast queued (%(n)d recipient(s))."
+msgstr ""
+
+#, python-format
+msgid "%(n)d broadcasts queued."
+msgstr ""
+
+msgid "Only failed or partial broadcasts can be retried."
+msgstr ""
+
+msgid "Broadcast retried."
+msgstr ""
+
+msgid "Only pending broadcasts can be cancelled."
+msgstr ""
+
+msgid "Broadcast cancelled."
+msgstr ""
+
+#, fuzzy
+#| msgid "Email requerido."
+msgid "Email is required."
+msgstr "Email required."
+
+msgid "Subscriber re-activated."
+msgstr ""
+
+msgid "Subscriber added."
+msgstr ""
+
+msgid "Subscriber already exists."
+msgstr ""
+
+msgid "Subscriber removed."
 msgstr ""
 
 msgid "Good evening"
@@ -350,6 +459,24 @@ msgstr ""
 msgid "privacy policy"
 msgstr ""
 
+msgid "Unsubscribed"
+msgstr ""
+
+msgid "You're unsubscribed"
+msgstr ""
+
+#, python-format
+msgid ""
+"<strong>%(email)s</strong> won't receive any more broadcasts from "
+"%(site_name)s."
+msgstr ""
+
+msgid "Did this by mistake? Contact us and we'll re-add you."
+msgstr ""
+
+msgid "Back to the site"
+msgstr ""
+
 #, fuzzy
 #| msgid "Aceptar invitación"
 msgid "Accept invitation"
@@ -470,6 +597,90 @@ msgstr "Cancel"
 msgid "Confirmar"
 msgstr "Confirm"
 
+#, python-format
+msgid "%(n)s active subscriber."
+msgid_plural "%(n)s active subscribers."
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(n)s publisher configured."
+msgid_plural "%(n)s publishers configured."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "No publishers configured."
+msgstr ""
+
+msgid ""
+"Set <code>DEFAULT_FROM_EMAIL</code> for the built-in email publisher, or "
+"register custom publishers (LinkedIn, Twitter, …) from your host project via "
+"<code>@register_publisher</code>."
+msgstr ""
+
+msgid "Subject"
+msgstr ""
+
+#, fuzzy
+#| msgid "Publicar"
+msgid "Publisher"
+msgstr "Publish"
+
+msgid "Targets"
+msgstr ""
+
+msgid "When"
+msgstr ""
+
+msgid "failed"
+msgstr ""
+
+#, python-format
+msgid "scheduled %(when)s"
+msgstr ""
+
+msgid "Retry"
+msgstr ""
+
+msgid "Cancel this pending broadcast?"
+msgstr ""
+
+#, fuzzy
+#| msgid "Cancelar"
+msgid "Cancel"
+msgstr "Cancel"
+
+#, fuzzy
+#| msgid "New post"
+msgid "No broadcasts yet"
+msgstr "New post"
+
+msgid "When you publish a post and pick \"Broadcast\", it'll show up here."
+msgstr ""
+
+msgid "Broadcast this post"
+msgstr ""
+
+msgid "Fan out to the channels you've configured."
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+#, fuzzy
+#| msgid "Publicar"
+msgid "Publishers"
+msgstr "Publish"
+
+msgid "Schedule (optional)"
+msgstr ""
+
+msgid "Leave empty to send immediately."
+msgstr ""
+
+msgid "Send broadcast"
+msgstr ""
+
 #, fuzzy
 #| msgid "Editar"
 msgid "Editor toolbar"
@@ -555,9 +766,6 @@ msgid "Alt"
 msgstr ""
 
 msgid "Pick from the library"
-msgstr ""
-
-msgid "Close"
 msgstr ""
 
 msgid "Search by filename or alt text…"
@@ -1195,6 +1403,31 @@ msgstr ""
 msgid ""
 "Use this key in the <code>Authorization: Bearer …</code> header when calling "
 "the headless API."
+msgstr ""
+
+msgid "People who get this site's email broadcasts."
+msgstr ""
+
+#, fuzzy
+#| msgid "Search posts, pages…"
+msgid "Search by email…"
+msgstr "Search posts, pages…"
+
+msgid "Source"
+msgstr ""
+
+msgid "Joined"
+msgstr ""
+
+msgid "Permanently remove this subscriber?"
+msgstr ""
+
+#, fuzzy
+#| msgid "New post"
+msgid "No subscribers here yet"
+msgstr "New post"
+
+msgid "Add one above, or wait for someone to opt in."
 msgstr ""
 
 #, fuzzy

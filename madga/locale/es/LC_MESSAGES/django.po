@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-16 16:53-0400\n"
+"POT-Creation-Date: 2026-05-16 17:14-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -98,6 +98,64 @@ msgid "File uploaded"
 msgstr "Archivo subido"
 
 #, fuzzy
+#| msgid "Sign out"
+msgid "Signup"
+msgstr "Salir"
+
+msgid "Manual"
+msgstr "Manual"
+
+msgid "Imported"
+msgstr "Importado"
+
+msgid "Form"
+msgstr "Formulario"
+
+msgid "Set when the user confirms double opt-in. Empty means single opt-in."
+msgstr ""
+
+msgid "Subscriber"
+msgstr "Suscriptor"
+
+msgid "Subscribers"
+msgstr "Suscriptores"
+
+#, fuzzy
+#| msgid "Branding"
+msgid "Pending"
+msgstr "Marca"
+
+msgid "Running"
+msgstr "Ejecutando"
+
+msgid "Sent"
+msgstr "Enviada"
+
+msgid "Partial"
+msgstr "Parcial"
+
+msgid "Failed"
+msgstr "Fallida"
+
+#, fuzzy
+#| msgid "Cancelar"
+msgid "Cancelled"
+msgstr "Cancelar"
+
+msgid "Key of a registered Publisher (e.g. email_subscribers, linkedin)."
+msgstr ""
+
+msgid ""
+"If set in the future, the worker won't pick the job up before this time."
+msgstr ""
+
+msgid "Broadcast"
+msgstr "Difusión"
+
+msgid "Broadcasts"
+msgstr "Difusiones"
+
+#, fuzzy
 #| msgid "%(n)s scheduled"
 #| msgid_plural "%(n)s scheduled"
 msgid "Scheduled"
@@ -121,17 +179,20 @@ msgid "Contributor"
 msgstr "Colaborador"
 
 #, fuzzy
-#| msgid "Branding"
-msgid "Pending"
-msgstr "Marca"
-
-#, fuzzy
 #| msgid "Accent"
 msgid "Accepted"
 msgstr "Accent"
 
 msgid "Expired"
 msgstr "Vencida"
+
+msgid "Email subscribers"
+msgstr "Suscriptores por email"
+
+msgid ""
+"Send the broadcast as an email to every active subscriber of this site. Uses "
+"your project's configured EMAIL_BACKEND."
+msgstr ""
 
 msgid "API key created. Copy it now — won't be shown again."
 msgstr "Clave API creada. Cópiala ahora — no se mostrará de nuevo."
@@ -144,6 +205,52 @@ msgstr "Clave API eliminada."
 
 msgid "API key rotated. Copy the new value."
 msgstr "Clave API rotada. Copia el nuevo valor."
+
+#, fuzzy
+#| msgid "Recent activity"
+msgid "No active site."
+msgstr "Actividad reciente"
+
+msgid "Pick at least one publisher."
+msgstr "Selecciona al menos un publisher."
+
+msgid "Subject is required."
+msgstr "El asunto es obligatorio."
+
+#, python-format
+msgid "Broadcast queued (%(n)d recipient(s))."
+msgstr "Difusión encolada (%(n)d destinatario(s))."
+
+#, python-format
+msgid "%(n)d broadcasts queued."
+msgstr "%(n)d difusiones encoladas."
+
+msgid "Only failed or partial broadcasts can be retried."
+msgstr "Solo difusiones fallidas o parciales se pueden reintentar."
+
+msgid "Broadcast retried."
+msgstr "Difusión reintentada."
+
+msgid "Only pending broadcasts can be cancelled."
+msgstr "Solo difusiones pendientes se pueden cancelar."
+
+msgid "Broadcast cancelled."
+msgstr "Difusión cancelada."
+
+msgid "Email is required."
+msgstr "Email obligatorio."
+
+msgid "Subscriber re-activated."
+msgstr "Suscriptor re-activado."
+
+msgid "Subscriber added."
+msgstr "Suscriptor agregado."
+
+msgid "Subscriber already exists."
+msgstr "El suscriptor ya existe."
+
+msgid "Subscriber removed."
+msgstr "Suscriptor eliminado."
 
 msgid "Good evening"
 msgstr "Buenas noches"
@@ -356,6 +463,26 @@ msgstr "y"
 msgid "privacy policy"
 msgstr "política de privacidad"
 
+msgid "Unsubscribed"
+msgstr "Cancelado"
+
+msgid "You're unsubscribed"
+msgstr "Cancelaste tu suscripción"
+
+#, python-format
+msgid ""
+"<strong>%(email)s</strong> won't receive any more broadcasts from "
+"%(site_name)s."
+msgstr ""
+
+msgid "Did this by mistake? Contact us and we'll re-add you."
+msgstr "¿Lo hiciste por error? Contáctanos y te volvemos a agregar."
+
+#, fuzzy
+#| msgid "Back to editor"
+msgid "Back to the site"
+msgstr "Volver al editor"
+
 msgid "Accept invitation"
 msgstr "Aceptar invitación"
 
@@ -472,6 +599,96 @@ msgstr "Cancelar"
 msgid "Confirmar"
 msgstr "Confirmar"
 
+#, python-format
+msgid "%(n)s active subscriber."
+msgid_plural "%(n)s active subscribers."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, python-format
+msgid "%(n)s publisher configured."
+msgid_plural "%(n)s publishers configured."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "No publishers configured."
+msgstr "Sin publishers configurados."
+
+msgid ""
+"Set <code>DEFAULT_FROM_EMAIL</code> for the built-in email publisher, or "
+"register custom publishers (LinkedIn, Twitter, …) from your host project via "
+"<code>@register_publisher</code>."
+msgstr ""
+
+msgid "Subject"
+msgstr "Asunto"
+
+#, fuzzy
+#| msgid "Published"
+msgid "Publisher"
+msgstr "Publicado"
+
+msgid "Targets"
+msgstr "Destinos"
+
+msgid "When"
+msgstr "Cuándo"
+
+msgid "failed"
+msgstr "fallaron"
+
+#, python-format
+msgid "scheduled %(when)s"
+msgstr "programada %(when)s"
+
+msgid "Retry"
+msgstr "Reintentar"
+
+msgid "Cancel this pending broadcast?"
+msgstr "¿Cancelar esta difusión pendiente?"
+
+#, fuzzy
+#| msgid "Cancelar"
+msgid "Cancel"
+msgstr "Cancelar"
+
+#, fuzzy
+#| msgid "New post"
+msgid "No broadcasts yet"
+msgstr "Nuevo post"
+
+#, fuzzy
+#| msgid "When you publish or upload something, it'll show up here."
+msgid "When you publish a post and pick \"Broadcast\", it'll show up here."
+msgstr "Cuando publiques o subas algo, aparecerá aquí."
+
+msgid "Broadcast this post"
+msgstr "Difundir este post"
+
+msgid "Fan out to the channels you've configured."
+msgstr "Difunde a los canales que tienes configurados."
+
+msgid "Close"
+msgstr "Cerrar"
+
+#, fuzzy
+#| msgid "Published"
+msgid "Publishers"
+msgstr "Publicado"
+
+#, fuzzy
+#| msgid "Title (optional)"
+msgid "Schedule (optional)"
+msgstr "Título (opcional)"
+
+msgid "Leave empty to send immediately."
+msgstr "Vacío = enviar ahora."
+
+msgid "Send broadcast"
+msgstr "Enviar difusión"
+
 #, fuzzy
 #| msgid "Editorial"
 msgid "Editor toolbar"
@@ -556,9 +773,6 @@ msgstr "Alt"
 
 msgid "Pick from the library"
 msgstr "Elegir desde la biblioteca"
-
-msgid "Close"
-msgstr "Cerrar"
 
 msgid "Search by filename or alt text…"
 msgstr "Buscar por nombre o alt text…"
@@ -1221,6 +1435,33 @@ msgid ""
 "Use this key in the <code>Authorization: Bearer …</code> header when calling "
 "the headless API."
 msgstr ""
+
+msgid "People who get this site's email broadcasts."
+msgstr "Personas que reciben las difusiones por email de este sitio."
+
+#, fuzzy
+#| msgid "Search by filename or alt text…"
+msgid "Search by email…"
+msgstr "Buscar por nombre o alt text…"
+
+msgid "Source"
+msgstr "Origen"
+
+msgid "Joined"
+msgstr "Se unió"
+
+#, fuzzy
+#| msgid "Permanently delete this key?"
+msgid "Permanently remove this subscriber?"
+msgstr "¿Eliminar esta clave permanentemente?"
+
+#, fuzzy
+#| msgid "New post"
+msgid "No subscribers here yet"
+msgstr "Nuevo post"
+
+msgid "Add one above, or wait for someone to opt in."
+msgstr "Agrega uno arriba, o espera a que alguien se suscriba."
 
 #, fuzzy
 #| msgid "Categories & tags"

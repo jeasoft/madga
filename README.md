@@ -116,6 +116,11 @@ python manage.py madga backfill-profiles --kind=talent
 - **Navigation** — header + footer columns, drag-to-reorder, with sub-items.
 - **Settings** — 4 tabs (general, SEO, integrations, advanced).
 - **API keys** — per-user `madga_` tokens for the headless API, with rotate / revoke / delete.
+- **Broadcasts** — fan-out to email subscribers (built-in) or any
+  publisher you register (LinkedIn, Twitter, custom webhook). Studio
+  drawer on the post editor, jobs list with retry/cancel, subscriber
+  management, one-click unsubscribe, `madga broadcast-worker` for
+  scheduled sends.
 - **Bilingual** — ES / EN out of the box, picker in the topbar.
 - **Dark mode** — class-driven, persisted per user.
 
@@ -259,6 +264,55 @@ To populate profiles retroactively after wiring a new receiver:
 python manage.py madga backfill-profiles --kind=talent
 ```
 
+### Custom publishers (broadcast fan-out)
+
+Register a Publisher and it shows up in the broadcast drawer on every
+published post automatically. Publishers can target email subscribers
+(built-in), social networks, Slack, or any HTTP endpoint.
+
+```python
+# aplica_do/publishers.py
+from madga.publishers import Publisher, PublishResult, register_publisher
+from django.conf import settings
+
+@register_publisher
+class LinkedInPublisher(Publisher):
+    key = "linkedin"
+    label = "LinkedIn"
+    description = "Post to the organization's LinkedIn page."
+    icon = "send"
+
+    def is_configured(self) -> bool:
+        return bool(getattr(settings, "LINKEDIN_ACCESS_TOKEN", None))
+
+    def estimate_targets(self, job) -> int:
+        return 1  # one org page
+
+    def publish(self, job) -> PublishResult:
+        result = PublishResult()
+        try:
+            self._call_linkedin_api(job.subject, job.body_text, job.related_url)
+            result.sent = 1
+        except Exception as e:
+            result.failed = 1
+            result.errors.append({"target": "linkedin", "msg": str(e)})
+        return result
+```
+
+```python
+# aplica_do/apps.py
+class AplicaDoConfig(AppConfig):
+    name = "aplica_do"
+    def ready(self):
+        from . import publishers  # noqa
+```
+
+Drain scheduled jobs from a worker process:
+
+```bash
+python manage.py madga broadcast-worker --loop --interval 30
+```
+
 ---
 
 ## Configuration
@@ -308,6 +362,8 @@ ORM primitives (`JSONField`, `TextField`, `__icontains`) and ships no raw SQL.
 
 ## Releases
 
+- **0.3.2** — Publisher fan-out: BroadcastJob + Subscriber models, `@register_publisher` registry, built-in email publisher with one-click unsubscribe, studio drawer, broadcast-worker management command. Fixes hardcoded status labels.
+- **0.3.1** — Dashboard i18n + ~200-string studio audit, README polish with hero screenshot, GitHub Releases automated from CI.
 - **0.3.0** — Foundation for non-blog projects: per-user API keys, profile-extension signal, public signup wired, `site_base.html` for host project extension, Postgres-verified, trusted publishing.
 - **0.2.x** — Library-grade reuse: real packaging, single `madga` CLI, multi-language studio, drag-and-drop nav, theme gallery, WordPress-friendly editor toolbar.
 - **0.1.x** — Page featured/og images, public URL helper, real invite emails, integration suite.
