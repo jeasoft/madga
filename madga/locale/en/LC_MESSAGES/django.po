@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-16 17:54-0400\n"
+"POT-Creation-Date: 2026-05-16 18:02-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -367,6 +367,18 @@ msgid "Channel resumed."
 msgstr ""
 
 msgid "Channel disconnected."
+msgstr ""
+
+#, python-format
+msgid "Publisher '%(key)s' is not registered."
+msgstr ""
+
+#, python-format
+msgid "Test passed for %(handle)s: %(msg)s"
+msgstr ""
+
+#, python-format
+msgid "Test failed for %(handle)s: %(msg)s"
 msgstr ""
 
 msgid "Good evening"
@@ -959,14 +971,22 @@ msgstr ""
 msgid "followers"
 msgstr ""
 
+msgid "Try the credentials against the platform"
+msgstr ""
+
+msgid "Test"
+msgstr ""
+
 msgid "Pause"
 msgstr ""
 
 msgid "Resume"
 msgstr ""
 
-msgid "Edit credentials"
-msgstr ""
+#, fuzzy
+#| msgid "Editar"
+msgid "Edit"
+msgstr "Edit"
 
 msgid "Disconnect this account? You can reconnect it later."
 msgstr ""
@@ -1147,11 +1167,6 @@ msgstr "View site"
 
 msgid "Preview"
 msgstr "Preview"
-
-#, fuzzy
-#| msgid "Editar"
-msgid "Edit"
-msgstr "Edit"
 
 #, fuzzy
 #| msgid "New post"

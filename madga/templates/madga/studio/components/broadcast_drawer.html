@@ -1,8 +1,10 @@
 {% load i18n madga_studio_tags %}
-{# Slide-out drawer to compose a multi-channel broadcast for the current post.
-   Toggled by [data-madga-drawer-open="broadcast"] anywhere in the page.
-   Renders a tab per registered/configured publisher with per-channel copy
-   tuned to its character limit. #}
+{% comment %}
+Slide-out drawer to compose a multi-channel broadcast for the current post.
+Toggled by [data-madga-drawer-open="broadcast"] anywhere in the page.
+Renders a tab per registered/configured publisher with per-channel copy
+tuned to its character limit.
+{% endcomment %}
 
 <div class="madga-drawer" data-madga-drawer="broadcast" hidden>
   <div class="madga-drawer-backdrop" data-madga-drawer-close></div>

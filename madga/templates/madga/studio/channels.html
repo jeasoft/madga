@@ -67,13 +67,16 @@
               {% if a.last_error %}
                 <div style="font-size:11px; color:#dc2626; margin-top:6px;">⚠ {{ a.last_error|truncatechars:140 }}</div>
               {% endif %}
-              <div style="display:flex; gap:6px; margin-top:10px;">
+              <div style="display:flex; gap:6px; margin-top:10px; flex-wrap:wrap;">
+                <form method="post" action="{% url 'madga_studio:channel_test' pk=a.pk %}" style="margin:0;">{% csrf_token %}
+                  <button type="submit" class="madga-btn madga-btn--sm" title="{% trans 'Try the credentials against the platform' %}">{% studio_icon "check" size=12 stroke=2 %} {% trans "Test" %}</button>
+                </form>
                 <form method="post" action="{% url 'madga_studio:channel_toggle' pk=a.pk %}" style="margin:0;">{% csrf_token %}
                   <button type="submit" class="madga-btn madga-btn--sm">
                     {% if a.is_active %}{% trans "Pause" %}{% else %}{% trans "Resume" %}{% endif %}
                   </button>
                 </form>
-                <a href="{% url 'madga_studio:channel_connect' key=p.key %}?account_id={{ a.pk }}" class="madga-btn madga-btn--sm madga-btn--ghost">{% trans "Edit credentials" %}</a>
+                <a href="{% url 'madga_studio:channel_connect' key=p.key %}?account_id={{ a.pk }}" class="madga-btn madga-btn--sm madga-btn--ghost">{% trans "Edit" %}</a>
                 <form method="post" action="{% url 'madga_studio:channel_disconnect' pk=a.pk %}" style="margin:0; margin-left:auto;">{% csrf_token %}
                   <button type="submit" class="madga-btn madga-btn--sm madga-btn--ghost madga-btn--danger" data-madga-confirm="{% trans 'Disconnect this account? You can reconnect it later.' %}" title="{% trans 'Disconnect' %}">{% studio_icon "trash" size=12 stroke=2 %}</button>
                 </form>

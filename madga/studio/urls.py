@@ -40,6 +40,7 @@ from .views.channels import (
     ChannelConnectView,
     ChannelDisconnectView,
     ChannelListView,
+    ChannelTestView,
     ChannelToggleView,
 )
 from .views.broadcasts import (
@@ -121,5 +122,6 @@ urlpatterns = [
     path("channels/", ChannelListView.as_view(), name="channel_list"),
     path("channels/<str:key>/connect/", ChannelConnectView.as_view(), name="channel_connect"),
     path("channels/<uuid:pk>/toggle/", ChannelToggleView.as_view(), name="channel_toggle"),
+    path("channels/<uuid:pk>/test/", ChannelTestView.as_view(), name="channel_test"),
     path("channels/<uuid:pk>/disconnect/", ChannelDisconnectView.as_view(), name="channel_disconnect"),
 ]

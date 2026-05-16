@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-16 17:54-0400\n"
+"POT-Creation-Date: 2026-05-16 18:02-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -391,6 +391,18 @@ msgstr "Canal reanudado."
 
 msgid "Channel disconnected."
 msgstr "Canal desconectado."
+
+#, python-format
+msgid "Publisher '%(key)s' is not registered."
+msgstr "Publisher '%(key)s' no está registrado."
+
+#, python-format
+msgid "Test passed for %(handle)s: %(msg)s"
+msgstr "Test exitoso para %(handle)s: %(msg)s"
+
+#, python-format
+msgid "Test failed for %(handle)s: %(msg)s"
+msgstr "Test falló para %(handle)s: %(msg)s"
 
 msgid "Good evening"
 msgstr "Buenas noches"
@@ -1007,6 +1019,12 @@ msgstr "Nunca usado"
 msgid "followers"
 msgstr "seguidores"
 
+msgid "Try the credentials against the platform"
+msgstr "Verificar las credenciales contra la plataforma"
+
+msgid "Test"
+msgstr "Probar"
+
 msgid "Pause"
 msgstr "Pausar"
 
@@ -1015,7 +1033,7 @@ msgstr "Reanudar"
 
 #, fuzzy
 #| msgid "Editorial"
-msgid "Edit credentials"
+msgid "Edit"
 msgstr "Editorial"
 
 msgid "Disconnect this account? You can reconnect it later."
@@ -1205,11 +1223,6 @@ msgstr "Ver site"
 
 msgid "Preview"
 msgstr "Preview"
-
-#, fuzzy
-#| msgid "Editorial"
-msgid "Edit"
-msgstr "Editorial"
 
 #, fuzzy
 #| msgid "New post"
@@ -2030,6 +2043,11 @@ msgid ""
 "Editorial home with hero post + 4-up grid. Pairs with home-editorial + list-"
 "grid."
 msgstr ""
+
+#, fuzzy
+#~| msgid "Editorial"
+#~ msgid "Edit credentials"
+#~ msgstr "Editorial"
 
 #~ msgid "Fan out to the channels you've configured."
 #~ msgstr "Difunde a los canales que tienes configurados."

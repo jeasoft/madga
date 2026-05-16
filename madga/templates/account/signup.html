@@ -18,8 +18,10 @@
   <form method="post" action="{% url 'account_signup' %}" class="space-y-4">
     {% csrf_token %}
 
-    {# Allauth renders a Django Form here. We style its fields with our
-       madga-* primitives so it matches the studio look. #}
+    {% comment %}
+    Allauth renders a Django Form here. We style its fields with our
+    madga-* primitives so it matches the studio look.
+    {% endcomment %}
     {% for field in form %}
       <div>
         <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">

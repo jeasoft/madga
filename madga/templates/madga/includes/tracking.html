@@ -1,6 +1,8 @@
-{# GA4 + Meta Pixel — only fires if the visitor has accepted cookies.
-   madga_consent="accepted" is set by madga_cookie_banner. If you don't
-   have any trackers configured on the Site, this renders nothing. #}
+{% comment %}
+GA4 + Meta Pixel — only fires if the visitor has accepted cookies.
+madga_consent="accepted" is set by madga_cookie_banner. If you don't
+have any trackers configured on the Site, this renders nothing.
+{% endcomment %}
 {% if consent == "accepted" %}
   {% if site.google_analytics_id %}
   <!-- Google Analytics 4 -->

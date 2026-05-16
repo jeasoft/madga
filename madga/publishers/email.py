@@ -25,6 +25,23 @@ class EmailSubscribersPublisher(Publisher):
         # rendered emails in the console.
         return True
 
+    def test_connection(self, account=None) -> tuple[bool, str]:
+        """Verify the email backend is reachable.
+
+        Opens the backend (real SMTP connection for smtp backends,
+        no-op for console/locmem), then closes. Surfaces a clear
+        message either way.
+        """
+        from django.core.mail import get_connection
+        try:
+            conn = get_connection()
+            conn.open()
+            conn.close()
+            backend = type(conn).__module__
+            return True, f"Email backend reachable ({backend})."
+        except Exception as e:  # noqa: BLE001
+            return False, f"Email backend failed: {e}"
+
     def estimate_targets(self, job) -> int:
         from madga.models import Subscriber
         return Subscriber.objects.filter(site=job.site, is_active=True).count()

@@ -2,6 +2,31 @@
 
 All notable changes to MADGA. Format roughly follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.3.4.1] — 2026-05-16
+
+Hot-fix on top of 0.3.4.
+
+### Fixed
+- **Raw template comment leaking into the public homepage.**
+  ``tracking.html`` had a multi-line ``{# ... #}`` Django comment;
+  Django comments are single-line only, so the whole comment block
+  rendered as visible text above the site header. Same issue was
+  hiding in the broadcast drawer and signup templates. Fixed by
+  switching to ``{% comment %}…{% endcomment %}`` everywhere.
+
+### Added
+- **Test connection button** on every connected channel card. Calls
+  ``Publisher.test_connection(account)``:
+  - For account-driven stubs (X, Mastodon, Bluesky, LinkedIn,
+    Instagram): verifies the credential fields are populated. Real
+    API verification lands in 0.3.5.
+  - For the email publisher: actually opens the configured
+    ``EMAIL_BACKEND`` (real SMTP for smtp backends, no-op for
+    console). Surfaces the error otherwise.
+  Result is flashed back, and the account row keeps the failure
+  message in ``last_error`` so it's visible on the page.
+- 4 new tests for ``test_connection`` paths.
+
 ## [0.3.4] — 2026-05-16
 
 Focus: **Channels + SaaS foundations.** MADGA can now host multiple

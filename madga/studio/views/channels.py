@@ -126,3 +126,37 @@ class ChannelDisconnectView(MadgaStudioMixin, View):
         account.delete()
         messages.success(request, _("Channel disconnected."))
         return HttpResponseRedirect(reverse("madga_studio:channel_list"))
+
+
+class ChannelTestView(MadgaStudioMixin, View):
+    """Run :meth:`Publisher.test_connection` for a connected account.
+
+    Stores the result on the account row (``last_error`` if it fails,
+    cleared on success), and flashes a message back. Same redirect
+    target as the other channel actions so the page shows the new
+    state inline.
+    """
+
+    def post(self, request, pk):
+        site = self.get_site()
+        account = get_object_or_404(PublisherAccount, pk=pk, site=site)
+        publisher = get_publisher(account.publisher_key)
+        if publisher is None:
+            messages.error(request, _("Publisher '%(key)s' is not registered.") % {"key": account.publisher_key})
+            return HttpResponseRedirect(reverse("madga_studio:channel_list"))
+
+        ok, msg = publisher.test_connection(account)
+        if ok:
+            account.last_error = ""
+            account.save(update_fields=["last_error"])
+            messages.success(request, _("Test passed for %(handle)s: %(msg)s") % {
+                "handle": account.handle or account.display_name or account.publisher_key,
+                "msg": msg,
+            })
+        else:
+            account.record_error(msg)
+            messages.error(request, _("Test failed for %(handle)s: %(msg)s") % {
+                "handle": account.handle or account.display_name or account.publisher_key,
+                "msg": msg,
+            })
+        return HttpResponseRedirect(reverse("madga_studio:channel_list"))

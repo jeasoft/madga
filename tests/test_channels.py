@@ -212,6 +212,56 @@ def test_channel_disconnect_deletes_account(site, superuser, auth_client):
     assert not PublisherAccount.objects.filter(pk=acct.pk).exists()
 
 
+@pytest.mark.django_db
+def test_test_connection_passes_when_creds_complete(site):
+    acct = PublisherAccount.objects.create(
+        site=site, publisher_key="twitter", handle="@me", is_active=True,
+    )
+    acct.set_credentials({
+        "api_key": "k", "api_secret": "s",
+        "access_token": "t", "access_secret": "ts",
+    })
+    acct.save()
+    pub = get_publisher("twitter")
+    ok, msg = pub.test_connection(acct)
+    assert ok is True
+    assert "stored" in msg.lower() or "credentials" in msg.lower()
+
+
+@pytest.mark.django_db
+def test_test_connection_fails_when_creds_missing(site):
+    acct = PublisherAccount.objects.create(
+        site=site, publisher_key="twitter", handle="@me", is_active=True,
+    )
+    acct.set_credentials({"api_key": "k"})  # missing 3 of 4 fields
+    acct.save()
+    pub = get_publisher("twitter")
+    ok, msg = pub.test_connection(acct)
+    assert ok is False
+    assert "missing" in msg.lower()
+
+
+@pytest.mark.django_db
+def test_email_publisher_test_connection_succeeds_with_console_backend():
+    pub = get_publisher("email_subscribers")
+    ok, msg = pub.test_connection()
+    assert ok is True
+    assert "reachable" in msg.lower()
+
+
+@pytest.mark.django_db
+def test_channel_test_view_records_failure_on_error(site, superuser, auth_client):
+    SiteUser.objects.create(site=site, user=superuser, role=SiteUser.ROLE_OWNER)
+    acct = PublisherAccount.objects.create(
+        site=site, publisher_key="instagram", handle="@aplica", is_active=True,
+    )
+    # No credentials saved — should fail
+    response = auth_client.post(f"/studio/channels/{acct.pk}/test/")
+    assert response.status_code == 302
+    acct.refresh_from_db()
+    assert acct.last_error  # error was recorded
+
+
 # ---------------------------------------------------------------------------
 # Workspace switcher + create
 # ---------------------------------------------------------------------------

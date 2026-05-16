@@ -123,6 +123,26 @@ class Publisher:
         """Actually send the broadcast. Must be implemented by subclasses."""
         raise NotImplementedError
 
+    def test_connection(self, account: "PublisherAccount") -> tuple[bool, str]:
+        """Verify a connected account's credentials work.
+
+        Return ``(ok, message)`` — ``ok=True`` on a happy round-trip,
+        ``ok=False`` with an actionable error message otherwise. Used
+        by the studio's "Test connection" button on each channel card.
+
+        Default for stub publishers: ensure required credential fields
+        are present in the stored blob. Real publishers should override
+        to hit the platform's "verify token" / "get account" endpoint.
+        """
+        creds = account.get_credentials()
+        missing = [f.name for f in self.credential_fields if not creds.get(f.name)]
+        if missing:
+            return False, f"Missing credential fields: {', '.join(missing)}"
+        return True, (
+            f"Credentials look complete ({len(creds)} fields stored). "
+            f"Real API verification lands in 0.3.5."
+        )
+
 
 _REGISTRY: dict[str, Publisher] = {}
 
