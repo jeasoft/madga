@@ -2,6 +2,51 @@
 
 All notable changes to MADGA. Format roughly follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.3.1] — 2026-05-16
+
+Bugfix and polish release. Mainly i18n correctness, README, and the publishing toolchain.
+
+### Fixed
+- **Dashboard rendered Spanglish.** The `/studio/dashboard/` view had ~20
+  hardcoded strings (mixed Spanish/English) and the activity feed
+  concatenated `"hace " + timesince` to produce strings like
+  `hace 1 week`. Wrapped everything in `{% trans %}` / `{% blocktrans %}`,
+  switched relative-time to `humanize`'s `naturaltime`, and added
+  `django.contrib.humanize` to `INSTALLED_APPS`. The greeting
+  (`_("Good morning")` etc.) now picks up the active language.
+- **Studio i18n audit.** Roughly 200 hardcoded user-facing strings
+  across post list/edit, page list/edit, media library, theme +
+  theme gallery, layouts, navigation, homepage builder, taxonomy,
+  users, settings, api keys, login, accept_invite, preview, and
+  the topbar were wrapped in translation tags. Source language is
+  English; ES translations populated. Legacy Spanish-source view
+  messages got English translations in `madga/locale/en/` so EN
+  mode no longer leaks Spanish snippets.
+- The public `site` template variable is now also available as
+  `madga_site` (allauth and other 3rd-party views overwrite `site`).
+
+### Added
+- **`madga/locale/` ships with the wheel.** Moved from project-level
+  `./locale/` so translations travel with `pip install madga`.
+  `pyproject.toml` `package-data` includes `.po` and `.mo` files.
+- **GitHub Releases workflow.** `publish.yml` extended with
+  `softprops/action-gh-release@v2`: on `v*` tag push, after PyPI
+  publish, automatically creates a GitHub Release whose body is
+  the matching `CHANGELOG.md` section and whose assets are the
+  built sdist + wheel.
+- **README polish.** Lead with a hook, screenshot slot, badges,
+  reorganized sections. New "Why MADGA" header, condensed quick
+  start, and a "Custom signup profiles" section documenting the
+  `user_post_signup` signal flow.
+- **`docs/screenshots/`** placeholder directory for marketing assets
+  referenced from README and the future docs site.
+
+### Migration notes
+- If you were importing translations from a project-level
+  `./locale/`, MADGA's strings now live in `madga/locale/`. Django
+  auto-discovers app locale directories — no settings change needed
+  unless you had `LOCALE_PATHS` pinned to the old layout.
+
 ## [0.3.0] — 2026-05-16
 
 Focus: **foundation for non-blog projects.** MADGA stops being just a blog CMS and becomes a usable base layer for marketplaces, job boards, and other multi-role products.
