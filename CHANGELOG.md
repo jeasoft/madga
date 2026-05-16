@@ -2,6 +2,15 @@
 
 All notable changes to MADGA. Format roughly follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.3.6.1] — 2026-05-16
+
+### Added
+- Channels page shows a **"Needs setup"** hint card on OAuth
+  publishers whose ``MADGA_OAUTH['<key>']`` config isn't set,
+  with the exact settings dict path. Previously the user had to
+  click Connect and read the error toast — now the gap is visible
+  upfront.
+
 ## [0.3.6] — 2026-05-16
 
 Focus: **real OAuth for X (Twitter) + LinkedIn.** Click Connect →

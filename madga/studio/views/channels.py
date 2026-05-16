@@ -34,6 +34,13 @@ class ChannelListView(MadgaStudioMixin, View):
             p for p in all_publishers()
             if p.credential_fields or p.oauth_supported
         ]
+        # Surface OAuth publishers that still need MADGA_OAUTH config so
+        # the card can show a "Needs setup" badge instead of failing
+        # after the user clicks Connect.
+        needs_oauth_config: set[str] = set()
+        for p in publishers:
+            if p.oauth_supported and p.oauth_client_credentials() is None:
+                needs_oauth_config.add(p.key)
         accounts = (
             list(PublisherAccount.objects.filter(site=site)) if site else []
         )
@@ -68,6 +75,7 @@ class ChannelListView(MadgaStudioMixin, View):
                 "broadcasts_7d": broadcasts_7d,
                 "in_queue": in_queue,
                 "total_reach": total_reach,
+                "needs_oauth_config": needs_oauth_config,
             },
         )
 

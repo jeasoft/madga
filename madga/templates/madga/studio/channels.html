@@ -87,9 +87,16 @@
             {% studio_icon "plus" size=12 stroke=2.5 %} {% trans "Add another account" %}
           </a>
         {% else %}
-          <a href="{% url 'madga_studio:channel_connect' key=p.key %}" class="madga-btn madga-btn--sm madga-btn--primary" style="width:100%; justify-content:center;">
-            {% studio_icon "plus" size=12 stroke=2.5 %} {% trans "Connect" %}
-          </a>
+          {% if p.key in needs_oauth_config %}
+            <div style="padding:10px 12px; background:var(--bg-2); border:1px dashed var(--border); border-radius:8px; font-size:12px; color:var(--fg-2); text-align:center; line-height:1.4;">
+              <strong style="color:var(--fg-1); display:block; margin-bottom:4px;">{% trans "Needs setup" %}</strong>
+              {% blocktrans with key=p.key %}Add <code>MADGA_OAUTH['{{ key }}']</code> client_id/client_secret to your project settings.{% endblocktrans %}
+            </div>
+          {% else %}
+            <a href="{% url 'madga_studio:channel_connect' key=p.key %}" class="madga-btn madga-btn--sm madga-btn--primary" style="width:100%; justify-content:center;">
+              {% studio_icon "plus" size=12 stroke=2.5 %} {% trans "Connect" %}
+            </a>
+          {% endif %}
           {% if p.char_limit %}
             <div style="font-size:11px; color:var(--fg-3); text-align:center; margin-top:6px;">{% blocktrans with n=p.char_limit %}{{ n }} char limit per post{% endblocktrans %}</div>
           {% endif %}
