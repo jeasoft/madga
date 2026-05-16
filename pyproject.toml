@@ -62,6 +62,8 @@ exclude = ["tests*", "testproject*", "miscoreblog*", "prototype*"]
     "models/*.py",
     "templatetags/*.py",
     "management/**/*.py",
+    "locale/**/*.po",
+    "locale/**/*.mo",
 ]
 
 [tool.pytest.ini_options]

@@ -45,11 +45,35 @@ jobs:
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
-      id-token: write  # required for trusted publishing
+      id-token: write   # required for trusted publishing
+      contents: write   # required for creating the GitHub Release
     steps:
+      - uses: actions/checkout@v4
+
       - uses: actions/download-artifact@v4
         with:
           name: dist
           path: dist/
 
       - uses: pypa/gh-action-pypi-publish@release/v1
+
+      - name: Extract release notes from CHANGELOG
+        id: notes
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          # Pull the section between this version's header and the next "## [" header.
+          awk -v ver="$version" '
+            $0 ~ "^## \\[" ver "\\]" { p=1; next }
+            p && /^## \[/ { exit }
+            p { print }
+          ' CHANGELOG.md > release_notes.md
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "v${{ steps.notes.outputs.version }}"
+          body_path: release_notes.md
+          files: dist/*
+          draft: false
+          prerelease: false

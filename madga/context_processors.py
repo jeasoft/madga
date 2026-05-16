@@ -1,5 +1,7 @@
 """Template context processors for MADGA."""
 
+from django.utils.translation import gettext as _
+
 from madga.models import MediaFile, Page, Post, Site
 
 
@@ -42,7 +44,7 @@ def studio_topbar(request):
     )
     for p in posts:
         kind = "published" if p["status"] == "published" else "draft"
-        label = "Publicado" if kind == "published" else "Borrador"
+        label = _("Published") if kind == "published" else _("Draft")
         events.append(
             {
                 "title": p["title"] or "Sin título",
@@ -60,9 +62,9 @@ def studio_topbar(request):
     for pg in pages:
         events.append(
             {
-                "title": pg["title"] or "Sin título",
+                "title": pg["title"] or _("Untitled"),
                 "kind": "draft",
-                "label": "Página",
+                "label": _("Page"),
                 "when": pg["updated_at"],
                 "url": f"/studio/pages/{pg['id']}/edit/",
             }
@@ -77,7 +79,7 @@ def studio_topbar(request):
             {
                 "title": m["filename"],
                 "kind": "media",
-                "label": "Archivo subido",
+                "label": _("File uploaded"),
                 "when": m["created_at"],
                 "url": "/studio/media/",
             }

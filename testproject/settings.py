@@ -16,6 +16,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'django.contrib.humanize',
 
     # MADGA must come before allauth so its template overrides for
     # account/signup.html and account/login.html win the resolve order.
@@ -92,7 +93,9 @@ LANGUAGES = [
     ('es', 'Español'),
     ('en', 'English'),
 ]
-LOCALE_PATHS = [BASE_DIR / 'locale']
+# Django auto-discovers madga/locale/ (translations ship with the wheel).
+# Add a project-level dir here if testproject grows its own strings.
+LOCALE_PATHS: list = []
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'

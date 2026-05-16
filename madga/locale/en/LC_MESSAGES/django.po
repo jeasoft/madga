@@ -1,0 +1,760 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-16 12:39-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Hero"
+msgstr ""
+
+msgid "Large welcome block with title, subtitle and a CTA."
+msgstr ""
+
+msgid "Title"
+msgstr ""
+
+msgid "Subtitle"
+msgstr ""
+
+msgid "Button label"
+msgstr ""
+
+msgid "Button destination"
+msgstr ""
+
+msgid "Recent posts"
+msgstr ""
+
+msgid "List of the latest N published posts."
+msgstr ""
+
+msgid "Section title"
+msgstr ""
+
+msgid "How many posts to show"
+msgstr ""
+
+msgid "Featured post"
+msgstr ""
+
+msgid "One featured post shown at full size."
+msgstr ""
+
+msgid "Slug of the post to feature"
+msgstr ""
+
+msgid "Newsletter"
+msgstr ""
+
+msgid "Newsletter signup band."
+msgstr ""
+
+msgid "Text"
+msgstr ""
+
+msgid "Free-form text block with optional title."
+msgstr ""
+
+msgid "Title (optional)"
+msgstr ""
+
+msgid "Call to action"
+msgstr ""
+
+msgid "Simple call-to-action with a button."
+msgstr ""
+
+msgid "Published"
+msgstr ""
+
+msgid "Draft"
+msgstr ""
+
+msgid "Untitled"
+msgstr ""
+
+#, fuzzy
+#| msgid "Pages"
+msgid "Page"
+msgstr "Pages"
+
+msgid "File uploaded"
+msgstr ""
+
+msgid "API key created. Copy it now — won't be shown again."
+msgstr ""
+
+msgid "API key revoked."
+msgstr ""
+
+msgid "API key deleted."
+msgstr ""
+
+msgid "API key rotated. Copy the new value."
+msgstr ""
+
+msgid "Good evening"
+msgstr ""
+
+msgid "Good morning"
+msgstr ""
+
+msgid "Good afternoon"
+msgstr ""
+
+msgid "Permiso denegado."
+msgstr "Permission denied."
+
+msgid "No hay site activo."
+msgstr "No active site."
+
+msgid "Tipo de bloque inválido."
+msgstr "Invalid block type."
+
+msgid "Este tipo de bloque ya no existe."
+msgstr "This block type no longer exists."
+
+msgid "Bloque actualizado."
+msgstr "Block updated."
+
+msgid "Bloque eliminado."
+msgstr "Block deleted."
+
+msgid "Archivo eliminado."
+msgstr ""
+
+msgid "Label y URL son obligatorios."
+msgstr "Label and URL are required."
+
+msgid "Item creado."
+msgstr "Item created."
+
+msgid "Item actualizado."
+msgstr "Item updated."
+
+msgid "Item eliminado."
+msgstr "Item deleted."
+
+msgid "Página eliminada."
+msgstr ""
+
+msgid "Tu rol no permite publicar."
+msgstr ""
+
+msgid "Tu rol no permite publicar — guardado como borrador."
+msgstr ""
+
+msgid "Post enviado a la papelera."
+msgstr ""
+
+msgid "General"
+msgstr ""
+
+msgid "Branding"
+msgstr ""
+
+msgid "SEO"
+msgstr "SEO"
+
+msgid "Integrations"
+msgstr ""
+
+msgid "Settings actualizados."
+msgstr "Settings updated."
+
+msgid "Theme actualizado."
+msgstr "Theme updated."
+
+msgid "Default"
+msgstr ""
+
+msgid "HomepageBlocks-driven home (recommended)."
+msgstr ""
+
+msgid "Editorial"
+msgstr ""
+
+msgid "Hero + curated articles in a magazine grid."
+msgstr ""
+
+msgid "Minimal"
+msgstr ""
+
+msgid "Just the most-recent posts in a clean list."
+msgstr ""
+
+msgid "Chronological list with category filters."
+msgstr ""
+
+msgid "Grid"
+msgstr ""
+
+msgid "Cards with thumbnails, 2 columns."
+msgstr ""
+
+msgid "Compact"
+msgstr ""
+
+msgid "Title + date, no excerpt, dense."
+msgstr ""
+
+msgid "Centered article column with featured image hero."
+msgstr ""
+
+msgid "Longform"
+msgstr ""
+
+msgid "Wider column, drop caps, larger type."
+msgstr ""
+
+msgid "Docs"
+msgstr ""
+
+msgid "Sidebar TOC + content."
+msgstr ""
+
+msgid "Simple"
+msgstr ""
+
+msgid "Centered prose. Good for legal pages."
+msgstr ""
+
+msgid "Sidebar"
+msgstr ""
+
+msgid "Right sidebar with table of contents."
+msgstr ""
+
+msgid "Left sidebar with sibling pages."
+msgstr ""
+
+msgid "Layouts actualizados."
+msgstr "Layouts updated."
+
+msgid "Categoría creada."
+msgstr ""
+
+msgid "No se pudo crear la categoría."
+msgstr ""
+
+msgid "Categoría eliminada."
+msgstr ""
+
+msgid "Tag creado."
+msgstr ""
+
+msgid "No se pudo crear el tag."
+msgstr ""
+
+msgid "Tag eliminado."
+msgstr ""
+
+msgid "Theme no encontrado."
+msgstr "Theme not found."
+
+msgid "No tienes permiso para invitar usuarios."
+msgstr "You don't have permission to invite users."
+
+msgid "Email requerido."
+msgstr "Email required."
+
+msgid "Esta invitación ya no es válida."
+msgstr "This invitation is no longer valid."
+
+msgid "Rol actualizado."
+msgstr "Role updated."
+
+#, fuzzy
+#| msgid "Sign out"
+msgid "Sign in"
+msgstr "Sign out"
+
+msgid "Welcome back"
+msgstr ""
+
+msgid "No account yet?"
+msgstr ""
+
+#, fuzzy
+#| msgid "Sign out"
+msgid "Sign up"
+msgstr "Sign out"
+
+msgid "Forgot your password?"
+msgstr ""
+
+msgid "Create your account"
+msgstr ""
+
+msgid "Already have one?"
+msgstr ""
+
+msgid "Create account"
+msgstr ""
+
+msgid "By signing up you accept our"
+msgstr ""
+
+msgid "terms"
+msgstr ""
+
+msgid "and"
+msgstr ""
+
+msgid "privacy policy"
+msgstr ""
+
+msgid "Ir al login"
+msgstr "Go to login"
+
+msgid "Aceptar invitación"
+msgstr "Accept invitation"
+
+msgid "API keys"
+msgstr ""
+
+msgid "Your API keys"
+msgstr ""
+
+msgid ""
+"Personal tokens for the headless API. Each key is bound to your user — "
+"revoking it doesn't affect others. Bearer auth: "
+msgstr ""
+
+msgid "New key"
+msgstr ""
+
+msgid "Copy this now — for security, we won't show it again."
+msgstr ""
+
+msgid "Create a new key"
+msgstr ""
+
+msgid "Label"
+msgstr ""
+
+msgid "Generate"
+msgstr ""
+
+msgid "Key"
+msgstr ""
+
+msgid "Last used"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "ago"
+msgstr ""
+
+#, fuzzy
+#| msgid "Activar"
+msgid "Active"
+msgstr "Activate"
+
+msgid "Revoked"
+msgstr ""
+
+msgid "Rotate"
+msgstr ""
+
+msgid "Rotate this key? The current value will stop working immediately."
+msgstr ""
+
+msgid "Revoke"
+msgstr ""
+
+msgid "Revoke this key? It can be re-enabled later."
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Permanently delete this key?"
+msgstr ""
+
+msgid "No API keys yet"
+msgstr ""
+
+msgid "Generate one above to authenticate apps against the headless API."
+msgstr ""
+
+msgid "Cancelar"
+msgstr "Cancel"
+
+msgid "Confirmar"
+msgstr "Confirm"
+
+#, fuzzy
+#| msgid "Editar"
+msgid "Editor toolbar"
+msgstr "Edit"
+
+#, fuzzy
+#| msgid "Settings"
+msgid "Headings"
+msgstr "Settings"
+
+msgid "Heading 2"
+msgstr ""
+
+msgid "Heading 3"
+msgstr ""
+
+msgid "Blocks"
+msgstr ""
+
+msgid "Bullet list"
+msgstr ""
+
+msgid "Numbered list"
+msgstr ""
+
+msgid "Quote"
+msgstr ""
+
+msgid "Code block"
+msgstr ""
+
+msgid "Divider"
+msgstr ""
+
+msgid "Media"
+msgstr ""
+
+msgid "Image"
+msgstr ""
+
+msgid "Embed (YouTube, Twitter, …)"
+msgstr ""
+
+msgid "Select text for"
+msgstr ""
+
+msgid "bold"
+msgstr ""
+
+msgid "italics"
+msgstr ""
+
+msgid "links and highlight"
+msgstr ""
+
+msgid "Press"
+msgstr ""
+
+msgid "for more blocks"
+msgstr ""
+
+msgid "Paste a YouTube / Twitter / Vimeo URL"
+msgstr ""
+
+msgid "words"
+msgstr ""
+
+#, fuzzy
+#| msgid "Item creado."
+msgid "min read"
+msgstr "Item created."
+
+msgid "Elegir imagen"
+msgstr "Choose image"
+
+msgid "Elegir desde la biblioteca"
+msgstr "Choose from library"
+
+msgid "Estado"
+msgstr "Status"
+
+msgid "Categoría"
+msgstr "Category"
+
+msgid "Editar"
+msgstr "Edit"
+
+msgid "New post"
+msgstr "New post"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Posts"
+msgstr "Posts"
+
+msgid "Pages"
+msgstr "Pages"
+
+msgid "Media library"
+msgstr "Media library"
+
+msgid "Categories & tags"
+msgstr "Categories & tags"
+
+msgid "Site"
+msgstr "Site"
+
+msgid "Theme"
+msgstr "Theme"
+
+msgid "Theme gallery"
+msgstr "Theme gallery"
+
+msgid "Layouts"
+msgstr "Layouts"
+
+msgid "Navigation"
+msgstr "Navigation"
+
+msgid "Homepage"
+msgstr "Homepage"
+
+msgid "Workspace"
+msgstr "Workspace"
+
+msgid "Users"
+msgstr "Users"
+
+msgid "Settings"
+msgstr "Settings"
+
+msgid "View site"
+msgstr "View site"
+
+msgid "Superuser"
+msgstr "Superuser"
+
+msgid "Sign out"
+msgstr "Sign out"
+
+msgid "Open menu"
+msgstr "Open menu"
+
+msgid "Studio"
+msgstr ""
+
+msgid "Search posts, pages…"
+msgstr "Search posts, pages…"
+
+msgid "Search"
+msgstr "Search"
+
+msgid "Toggle theme"
+msgstr "Toggle theme"
+
+msgid "Language"
+msgstr ""
+
+msgid "Recent activity"
+msgstr "Recent activity"
+
+msgid "Notifications"
+msgstr "Notifications"
+
+msgid "Help and shortcuts"
+msgstr "Help and shortcuts"
+
+msgid "Help"
+msgstr "Help"
+
+msgid "Publicar"
+msgstr "Publish"
+
+msgid "Hello"
+msgstr ""
+
+#, python-format
+msgid ""
+"You have <strong style=\"color:var(--fg-0); font-weight:500;\">%(drafts)s "
+"draft</strong>"
+msgid_plural ""
+"You have <strong style=\"color:var(--fg-0); font-weight:500;\">%(drafts)s "
+"drafts</strong>"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid ""
+"<strong style=\"color:var(--fg-0); font-weight:500;\">%(n)s scheduled</"
+"strong>"
+msgid_plural ""
+"<strong style=\"color:var(--fg-0); font-weight:500;\">%(n)s scheduled</"
+"strong>"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Total posts"
+msgstr ""
+
+#, python-format
+msgid "+%(n)s in 30 days"
+msgstr ""
+
+#, fuzzy
+#| msgid "Recent activity"
+msgid "No activity yet"
+msgstr "Recent activity"
+
+#, python-format
+msgid "+%(n)s this week"
+msgstr ""
+
+msgid "Nothing published recently"
+msgstr ""
+
+msgid "Drafts"
+msgstr ""
+
+#, python-format
+msgid "%(n)s scheduled"
+msgid_plural "%(n)s scheduled"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Total views"
+msgstr ""
+
+#, python-format
+msgid "+%(pct)s%% vs last month"
+msgstr ""
+
+#, python-format
+msgid "%(pct)s%% vs last month"
+msgstr ""
+
+msgid "No history yet"
+msgstr ""
+
+msgid "Latest on this site"
+msgstr ""
+
+msgid "View all"
+msgstr ""
+
+#, fuzzy
+#| msgid "New post"
+msgid "No posts yet"
+msgstr "New post"
+
+msgid "Create the first one and it'll show up here."
+msgstr ""
+
+#, fuzzy
+#| msgid "Activar"
+msgid "Activity"
+msgstr "Activate"
+
+msgid "Latest changes on this site"
+msgstr ""
+
+msgid "When you publish or upload something, it'll show up here."
+msgstr ""
+
+msgid "Guardar cambios"
+msgstr "Save changes"
+
+msgid "Header"
+msgstr "Header"
+
+msgid "Footer"
+msgstr "Footer"
+
+msgid "Preview"
+msgstr "Preview"
+
+msgid "Guardar"
+msgstr "Save"
+
+#, fuzzy
+#| msgid "Meta title"
+msgid "Page title"
+msgstr "Meta title"
+
+msgid "Slug"
+msgstr "Slug"
+
+msgid "Layout"
+msgstr "Layout"
+
+msgid "Sort order"
+msgstr "Sort order"
+
+msgid "Imagen destacada"
+msgstr "Featured image"
+
+msgid "Meta title"
+msgstr "Meta title"
+
+msgid "Meta description"
+msgstr "Meta description"
+
+msgid "Peligro"
+msgstr "Danger zone"
+
+msgid "Guardar borrador"
+msgstr "Save draft"
+
+#, fuzzy
+#| msgid "Meta title"
+msgid "Post title…"
+msgstr "Meta title"
+
+msgid "Organización"
+msgstr "Organization"
+
+msgid "Tags"
+msgstr "Tags"
+
+msgid "Excerpt"
+msgstr "Excerpt"
+
+msgid "Focus keyword"
+msgstr "Focus keyword"
+
+msgid "Canonical URL"
+msgstr "Canonical URL"
+
+msgid "Live"
+msgstr "Live"
+
+msgid "Activar"
+msgstr "Activate"
+
+msgid ""
+"MADGA's stock theme. Tailwind-driven, generous whitespace, sans-serif "
+"throughout."
+msgstr ""
+
+msgid "Essay"
+msgstr ""
+
+msgid ""
+"Personal-blog feel. Wider type, longform-friendly. Best with detail-longform "
+"layout."
+msgstr ""
+
+msgid ""
+"Stripped-down everything. Tiny date column + post titles. Pairs with home-"
+"minimal + list-compact."
+msgstr ""
+
+msgid "Magazine"
+msgstr ""
+
+msgid ""
+"Editorial home with hero post + 4-up grid. Pairs with home-editorial + list-"
+"grid."
+msgstr ""

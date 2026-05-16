@@ -5,6 +5,7 @@ from datetime import timedelta
 from django.db.models import Count, Sum
 from django.db.models.functions import TruncDate
 from django.utils import timezone
+from django.utils.translation import gettext as _
 from django.views.generic import TemplateView
 
 from madga.models import Post
@@ -47,12 +48,12 @@ def _spark_path(values, w: int = 90, h: int = 28) -> str:
 def _greeting(now) -> str:
     h = now.hour
     if h < 6:
-        return "Buenas noches"
+        return _("Good evening")
     if h < 13:
-        return "Buenos días"
+        return _("Good morning")
     if h < 19:
-        return "Buenas tardes"
-    return "Buenas noches"
+        return _("Good afternoon")
+    return _("Good evening")
 
 
 class DashboardView(MadgaStudioMixin, TemplateView):
