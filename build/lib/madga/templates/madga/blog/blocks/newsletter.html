@@ -1,8 +1,0 @@
-<section class="max-w-3xl mx-auto px-4 sm:px-6 py-16 text-center">
-  <h2 class="font-heading text-3xl font-semibold tracking-tight">{{ config.title|default:"Suscríbete" }}</h2>
-  {% if config.subtitle %}<p class="mt-3 text-slate-600 dark:text-slate-400">{{ config.subtitle }}</p>{% endif %}
-  <form class="mt-6 flex gap-2 max-w-md mx-auto">
-    <input type="email" placeholder="tu@email.com" class="flex-1 px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
-    <button class="px-5 py-3 rounded-lg bg-accent text-white font-medium">{{ config.button_label|default:"Suscribirme" }}</button>
-  </form>
-</section>

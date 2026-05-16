@@ -43,6 +43,11 @@ Thumbs.db
 # Build artefacts (Tailwind output IS committed — runtime needs it)
 node_modules/
 
+# Python build/dist output (publish workflow rebuilds these)
+build/
+dist/
+*.egg-info/
+
 # Test / coverage
 .pytest_cache/
 .coverage
