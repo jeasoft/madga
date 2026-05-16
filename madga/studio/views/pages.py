@@ -68,7 +68,7 @@ class PageEditView(MadgaStudioMixin, View):
         instance = form.save(commit=False)
         instance.site = self.get_site()
         instance.save()
-        messages.success(request, f"Página «{instance.title}» guardada.")
+        messages.success(request, _("Page «%(title)s» saved.") % {"title": instance.title})
         return redirect("madga_studio:page_edit", pk=instance.pk)
 
 

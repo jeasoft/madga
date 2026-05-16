@@ -2,6 +2,59 @@
 
 All notable changes to MADGA. Format roughly follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.3.5] — 2026-05-16
+
+Focus: **real publishers for the easy platforms + auto-broadcast.**
+Mastodon and Bluesky now actually post when the broadcast worker
+fires; X / LinkedIn / Instagram remain stubs (their OAuth flows land
+in 0.3.6). Posts can now schedule broadcasts that fire automatically
+when the post transitions to published.
+
+### Added
+- **Real `MastodonPublisher.publish()`** — POSTs to
+  `{instance_url}/api/v1/statuses` with the stored access token,
+  visibility=public. Also a real `test_connection()` that hits
+  `/api/v1/accounts/verify_credentials` and returns the verified
+  username. Works against any Mastodon instance (hachyderm.io,
+  mastodon.social, self-hosted, …).
+- **Real `BlueskyPublisher.publish()`** — `createSession` with
+  handle + app_password to get an `accessJwt`, then `createRecord`
+  to post an `app.bsky.feed.post`. No OAuth dance needed; the app
+  password the user generates under Bluesky → Settings → App Passwords
+  is the only secret. Includes real `test_connection()` that
+  authenticates and returns the resolved DID.
+- **`BroadcastJob.STATUS_QUEUED_ON_PUBLISH`** state + signal
+  handler. The drawer now offers "When this post publishes" as a
+  schedule mode for draft posts; the rows sit in
+  `queued_on_publish` until `Post.status` transitions to `published`,
+  at which point the post-save signal flips them to `pending` and
+  runs them through the same `_worker_run` pipeline as immediate
+  broadcasts.
+- **Broadcast button works on drafts.** Previously the studio post
+  editor only showed the Broadcast button after publishing. Now it
+  shows on drafts too — the drawer defaults to "When this post
+  publishes" so editors can set up their fan-out before hitting
+  Publish.
+- **`_AccountPublisher` base class** that handles per-account
+  fan-out, error capture, and `last_used_at` / `last_error` updates.
+  Subclasses just override `_publish_one(job, account)`. Old name
+  `_AccountStubPublisher` kept as an alias for back-compat with
+  any host project that subclassed it.
+- 7 new tests (78 total). The Mastodon and Bluesky tests patch the
+  HTTP helper so they don't need real network access in CI.
+
+### Fixed (audit pass)
+- 3 hardcoded Spanish ``PermissionDenied`` messages in `posts.py`
+  (``"No podés editar este post."`` etc.) wrapped in `_()`.
+- 6 hardcoded Spanish ``messages.success``/``warning`` calls
+  across `users.py`, `pages.py`, `homepage.py`.
+- ``NavItem.LOCATION_CHOICES`` labels (`"Header"`/`"Footer"`)
+  wrapped in `gettext_lazy`.
+- ``"Sin título"`` fallback in `context_processors.py` + `preview.py`
+  switched to `_("Untitled")`.
+- Spanish placeholder text in `blocks/fields.py` (UrlField widget)
+  translated to English.
+
 ## [0.3.4.2] — 2026-05-16
 
 ### Fixed

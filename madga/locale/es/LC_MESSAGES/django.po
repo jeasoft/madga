@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-16 18:05-0400\n"
+"POT-Creation-Date: 2026-05-16 18:16-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -120,6 +120,9 @@ msgstr "Suscriptor"
 msgid "Subscribers"
 msgstr "Suscriptores"
 
+msgid "Queued on publish"
+msgstr "En cola al publicar"
+
 #, fuzzy
 #| msgid "Branding"
 msgid "Pending"
@@ -198,6 +201,12 @@ msgstr "Documentos"
 
 msgid "Other"
 msgstr "Otro"
+
+msgid "Header"
+msgstr "Header"
+
+msgid "Footer"
+msgstr "Footer"
 
 msgid "Owner"
 msgstr "Propietario"
@@ -342,6 +351,10 @@ msgid "Subject is required."
 msgstr "El asunto es obligatorio."
 
 #, python-format
+msgid "%(n)d broadcast(s) will fire when this post is published."
+msgstr "%(n)d difusión(es) se enviarán cuando este post sea publicado."
+
+#, python-format
 msgid "Broadcast queued (%(n)d recipient(s))."
 msgstr "Difusión encolada (%(n)d destinatario(s))."
 
@@ -422,6 +435,11 @@ msgstr ""
 msgid "Tipo de bloque inválido."
 msgstr ""
 
+#, fuzzy, python-format
+#| msgid "Workspace '%(name)s' created."
+msgid "Block '%(label)s' added."
+msgstr "Workspace '%(name)s' creado."
+
 msgid "Este tipo de bloque ya no existe."
 msgstr ""
 
@@ -446,14 +464,33 @@ msgstr ""
 msgid "Item eliminado."
 msgstr ""
 
+#, python-format
+msgid "Page «%(title)s» saved."
+msgstr "Página «%(title)s» guardada."
+
 msgid "Página eliminada."
 msgstr ""
 
 msgid "Tu rol no permite publicar."
 msgstr ""
 
+#, fuzzy
+#| msgid "You can't open that."
+msgid "You can't edit this post."
+msgstr "No puedes abrir eso."
+
+#, fuzzy
+#| msgid "New post"
+msgid "No membership in this site."
+msgstr "Nuevo post"
+
 msgid "Tu rol no permite publicar — guardado como borrador."
 msgstr ""
+
+#, fuzzy
+#| msgid "You can't open that."
+msgid "You can't delete this post."
+msgstr "No puedes abrir eso."
 
 msgid "Post enviado a la papelera."
 msgstr ""
@@ -567,6 +604,17 @@ msgid "No tienes permiso para invitar usuarios."
 msgstr ""
 
 msgid "Email requerido."
+msgstr ""
+
+#, fuzzy, python-format
+#| msgid "Invitation not found"
+msgid "Invitation sent to %(email)s."
+msgstr "Invitación no encontrada"
+
+#, python-format
+msgid ""
+"Invitation created for %(email)s, but the email failed to send. Share the "
+"link manually from the list."
 msgstr ""
 
 msgid "Esta invitación ya no es válida."
@@ -1107,6 +1155,9 @@ msgstr "%(n)s programado"
 msgid "Post immediately"
 msgstr "Título de la sección"
 
+msgid "When this post publishes"
+msgstr "Cuando se publique este post"
+
 msgid "At a specific time"
 msgstr "En un momento específico"
 
@@ -1578,9 +1629,6 @@ msgstr "Sube tu primer archivo."
 msgid "Header menu items. Drag the handle to reorder."
 msgstr "Items del menú del header. Arrastra del handle para reordenar."
 
-msgid "Header"
-msgstr "Header"
-
 msgid "/path or https://..."
 msgstr "/ruta o https://..."
 
@@ -1603,9 +1651,6 @@ msgstr "/blog o https://..."
 
 msgid "Add"
 msgstr "Añadir"
-
-msgid "Footer"
-msgstr "Footer"
 
 msgid ""
 "Each footer column is an item with sub-items. Create the column first; then "

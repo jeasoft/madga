@@ -61,6 +61,54 @@ def page_pre_save(sender, instance: Page, **kwargs):
     instance.body_html = render_blocks(instance.body)
 
 
+@receiver(pre_save, sender=Post)
+def post_pre_save_broadcast_trigger(sender, instance: Post, **kwargs):
+    """Detect status transitions for the broadcast-on-publish flow.
+
+    Stores the previous status on the instance so the post_save handler
+    can compare. We can't read it AFTER save without an extra query, so
+    we cache it here in a non-persistent attribute.
+    """
+    if not instance.pk:
+        instance._madga_prev_status = None
+        return
+    try:
+        prev = Post.objects.only("status").get(pk=instance.pk)
+        instance._madga_prev_status = prev.status
+    except Post.DoesNotExist:
+        instance._madga_prev_status = None
+
+
+@receiver(post_save, sender=Post)
+def post_save_fire_queued_broadcasts(sender, instance: Post, created: bool, **kwargs):
+    """When a Post transitions to published, fire any queued broadcasts.
+
+    The drawer creates BroadcastJob rows with status=queued_on_publish
+    while the post is still a draft. As soon as the user hits Publish,
+    these rows flip to pending and run through the same _worker_run
+    pipeline as immediate broadcasts.
+    """
+    if instance.status != Post.STATUS_PUBLISHED:
+        return
+    prev = getattr(instance, "_madga_prev_status", None)
+    if prev == Post.STATUS_PUBLISHED:
+        return  # already published, this is just an edit
+    from madga.models import BroadcastJob
+    from madga.studio.views.broadcasts import _worker_run
+
+    queued = BroadcastJob.objects.filter(
+        related_post=instance,
+        status=BroadcastJob.STATUS_QUEUED_ON_PUBLISH,
+    )
+    for job in queued:
+        job.status = BroadcastJob.STATUS_PENDING
+        job.save(update_fields=["status"])
+        try:
+            _worker_run(job)
+        except Exception:  # noqa: BLE001 — never block the publish itself
+            pass
+
+
 @receiver(post_save, sender=MediaFile)
 def mediafile_optimize_image(sender, instance: MediaFile, created: bool, **kwargs):
     """Generate responsive WebP variants when a new image is uploaded.

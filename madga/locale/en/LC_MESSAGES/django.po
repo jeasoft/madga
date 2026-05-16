@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-16 18:05-0400\n"
+"POT-Creation-Date: 2026-05-16 18:16-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -117,6 +117,9 @@ msgstr ""
 msgid "Subscribers"
 msgstr ""
 
+msgid "Queued on publish"
+msgstr ""
+
 #, fuzzy
 #| msgid "Settings"
 msgid "Pending"
@@ -186,6 +189,12 @@ msgstr ""
 
 msgid "Other"
 msgstr ""
+
+msgid "Header"
+msgstr "Header"
+
+msgid "Footer"
+msgstr "Footer"
 
 msgid "Owner"
 msgstr ""
@@ -317,6 +326,10 @@ msgid "Subject is required."
 msgstr ""
 
 #, python-format
+msgid "%(n)d broadcast(s) will fire when this post is published."
+msgstr ""
+
+#, python-format
 msgid "Broadcast queued (%(n)d recipient(s))."
 msgstr ""
 
@@ -399,6 +412,10 @@ msgstr "No active site."
 msgid "Tipo de bloque inválido."
 msgstr "Invalid block type."
 
+#, python-format
+msgid "Block '%(label)s' added."
+msgstr ""
+
 msgid "Este tipo de bloque ya no existe."
 msgstr "This block type no longer exists."
 
@@ -423,14 +440,29 @@ msgstr "Item updated."
 msgid "Item eliminado."
 msgstr "Item deleted."
 
+#, python-format
+msgid "Page «%(title)s» saved."
+msgstr ""
+
 msgid "Página eliminada."
 msgstr "Page deleted."
 
 msgid "Tu rol no permite publicar."
 msgstr "Your role can't publish."
 
+msgid "You can't edit this post."
+msgstr ""
+
+#, fuzzy
+#| msgid "New post"
+msgid "No membership in this site."
+msgstr "New post"
+
 msgid "Tu rol no permite publicar — guardado como borrador."
 msgstr "Your role can't publish — saved as draft."
+
+msgid "You can't delete this post."
+msgstr ""
 
 msgid "Post enviado a la papelera."
 msgstr "Post moved to trash."
@@ -545,6 +577,16 @@ msgstr "You don't have permission to invite users."
 
 msgid "Email requerido."
 msgstr "Email required."
+
+#, python-format
+msgid "Invitation sent to %(email)s."
+msgstr ""
+
+#, python-format
+msgid ""
+"Invitation created for %(email)s, but the email failed to send. Share the "
+"link manually from the list."
+msgstr ""
 
 msgid "Esta invitación ya no es válida."
 msgstr "This invitation is no longer valid."
@@ -1045,6 +1087,9 @@ msgstr ""
 msgid "Post immediately"
 msgstr "Meta title"
 
+msgid "When this post publishes"
+msgstr ""
+
 msgid "At a specific time"
 msgstr ""
 
@@ -1511,9 +1556,6 @@ msgstr ""
 msgid "Header menu items. Drag the handle to reorder."
 msgstr ""
 
-msgid "Header"
-msgstr "Header"
-
 msgid "/path or https://..."
 msgstr ""
 
@@ -1534,9 +1576,6 @@ msgstr ""
 
 msgid "Add"
 msgstr ""
-
-msgid "Footer"
-msgstr "Footer"
 
 msgid ""
 "Each footer column is an item with sub-items. Create the column first; then "

@@ -92,6 +92,7 @@ class BroadcastJob(UUIDMixin, TimestampMixin, models.Model):
     the broadcast doesn't change what was sent.
     """
 
+    STATUS_QUEUED_ON_PUBLISH = "queued_on_publish"
     STATUS_PENDING = "pending"
     STATUS_RUNNING = "running"
     STATUS_SENT = "sent"
@@ -99,6 +100,7 @@ class BroadcastJob(UUIDMixin, TimestampMixin, models.Model):
     STATUS_FAILED = "failed"
     STATUS_CANCELLED = "cancelled"
     STATUS_CHOICES = [
+        (STATUS_QUEUED_ON_PUBLISH, _("Queued on publish")),
         (STATUS_PENDING, _("Pending")),
         (STATUS_RUNNING, _("Running")),
         (STATUS_SENT, _("Sent")),

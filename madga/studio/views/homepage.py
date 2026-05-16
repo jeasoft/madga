@@ -96,7 +96,7 @@ class HomepageBuilderView(MadgaStudioMixin, View):
                 config=bt.default_config(),
                 sort_order=next_order,
             )
-            messages.success(request, f"Bloque '{bt.label}' añadido.")
+            messages.success(request, _("Block '%(label)s' added.") % {"label": bt.label})
 
         elif action == "update":
             pk = request.POST.get("pk")

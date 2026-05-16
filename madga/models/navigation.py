@@ -1,6 +1,7 @@
 """Navigation: site-level nav menu items (v0.2)."""
 
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from .base import TimestampMixin
 
@@ -16,8 +17,8 @@ class NavItem(TimestampMixin, models.Model):
     LOCATION_HEADER = "header"
     LOCATION_FOOTER = "footer"
     LOCATION_CHOICES = [
-        (LOCATION_HEADER, "Header"),
-        (LOCATION_FOOTER, "Footer"),
+        (LOCATION_HEADER, _("Header")),
+        (LOCATION_FOOTER, _("Footer")),
     ]
 
     site = models.ForeignKey(

@@ -143,7 +143,7 @@ class PostEditView(MadgaStudioMixin, View):
         post = self._get_post(pk)
         site = self.get_site()
         if post is not None and not self.can_edit_post(post):
-            raise PermissionDenied("No podés editar este post.")
+            raise PermissionDenied(_("You can't edit this post."))
         form = PostForm(instance=post)
         return render(
             request,
@@ -165,10 +165,10 @@ class PostEditView(MadgaStudioMixin, View):
         post = self._get_post(pk)
         # Edits to existing posts must pass the per-post check.
         if post is not None and not self.can_edit_post(post):
-            raise PermissionDenied("No podés editar este post.")
+            raise PermissionDenied(_("You can't edit this post."))
         # Creating new posts requires SOME role (Contributor minimum).
         if post is None and self.get_membership() is None and not request.user.is_superuser:
-            raise PermissionDenied("Sin membership en este site.")
+            raise PermissionDenied(_("No membership in this site."))
         # Publishing requires publish_post; downgrade to draft if not allowed.
         if post is None or post.status != Post.STATUS_PUBLISHED:
             if request.POST.get("status") == Post.STATUS_PUBLISHED and not self.has_perm("publish_post"):
@@ -229,7 +229,7 @@ class PostDeleteView(MadgaStudioMixin, View):
             Post.objects.alive().filter(site=self.get_site()), pk=pk
         )
         if not self.can_delete_post(post):
-            raise PermissionDenied("No podés borrar este post.")
+            raise PermissionDenied(_("You can't delete this post."))
         post.soft_delete()
         messages.success(request, _("Post enviado a la papelera."))
         return redirect("madga_studio:post_list")

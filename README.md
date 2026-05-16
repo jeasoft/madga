@@ -362,6 +362,7 @@ ORM primitives (`JSONField`, `TextField`, `__icontains`) and ships no raw SQL.
 
 ## Releases
 
+- **0.3.5** — Real Mastodon + Bluesky publishers (no OAuth needed — token / app password). Auto-broadcast on publish: queue broadcasts on a draft, they fire automatically when Publish is hit. Audit pass on remaining Spanish-source strings.
 - **0.3.4** — Channels + SaaS foundations: per-Site `PublisherAccount` with Fernet-encrypted credentials, Channels page with connect/disconnect/pause UI, stub publishers for X / Mastodon / Bluesky / LinkedIn, per-channel composer with character counters, functional workspace switcher, self-service "Create workspace".
 - **0.3.3** — Production hardening: branded 400/403/404/500 pages, `SecurityHeadersMiddleware`, GDPR cookie consent banner with consent-gated trackers, Pillow image optimization with WebP `srcset`, standalone "New broadcast" button.
 - **0.3.2** — Publisher fan-out: BroadcastJob + Subscriber models, `@register_publisher` registry, built-in email publisher with one-click unsubscribe, studio drawer, broadcast-worker management command. Fixes hardcoded status labels.

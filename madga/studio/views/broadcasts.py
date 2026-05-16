@@ -99,7 +99,16 @@ class BroadcastCreateView(MadgaStudioMixin, View):
                 scheme = "https" if domain != "localhost" else "http"
                 related_url = f"{scheme}://{domain}{related_url}"
 
+        schedule_mode = request.POST.get("schedule_mode", "now")
         scheduled = request.POST.get("scheduled_at") or None
+        # "on_publish" mode is only valid when there's a draft post we
+        # can hook into. The Post post_save signal flips these rows to
+        # pending and runs them as soon as Publish is hit.
+        queue_on_publish = (
+            schedule_mode == "on_publish"
+            and post is not None
+            and post.status != "published"
+        )
 
         created = []
         for key in publisher_keys:
@@ -113,6 +122,11 @@ class BroadcastCreateView(MadgaStudioMixin, View):
             per_channel_text = (request.POST.get(f"body_text_{key}") or "").strip()
             channel_body_text = per_channel_text or body_text
 
+            initial_status = (
+                BroadcastJob.STATUS_QUEUED_ON_PUBLISH
+                if queue_on_publish
+                else BroadcastJob.STATUS_PENDING
+            )
             job = BroadcastJob.objects.create(
                 site=site,
                 publisher_key=key,
@@ -123,19 +137,29 @@ class BroadcastCreateView(MadgaStudioMixin, View):
                 related_post=post,
                 targets_count=targets,
                 scheduled_at=scheduled or None,
+                status=initial_status,
                 created_by=request.user if request.user.is_authenticated else None,
             )
             created.append(job)
 
-        # Sync run for every job that's not scheduled in the future. The
-        # async worker (madga broadcast-worker) handles scheduled ones.
+        # Sync run for jobs that are due now AND aren't queued on publish.
+        # The async worker (`madga broadcast-worker`) handles scheduled
+        # ones; the post_save signal handles queue_on_publish ones.
         from django.utils import timezone
         now = timezone.now()
         for job in created:
+            if job.status != BroadcastJob.STATUS_PENDING:
+                continue
             if not job.scheduled_at or job.scheduled_at <= now:
                 _worker_run(job)
 
-        if len(created) == 1:
+        if queue_on_publish:
+            messages.success(
+                request,
+                _("%(n)d broadcast(s) will fire when this post is published.")
+                % {"n": len(created)},
+            )
+        elif len(created) == 1:
             messages.success(
                 request,
                 _("Broadcast queued (%(n)d recipient(s)).") % {"n": created[0].targets_count},

@@ -63,12 +63,12 @@ class UserInviteView(MadgaStudioMixin, View):
         # mail leaves dev). Errors are logged but don't break the flow.
         sent = send_invitation_email(invitation, request)
         if sent:
-            messages.success(request, f"Invitación enviada a {email}.")
+            messages.success(request, _("Invitation sent to %(email)s.") % {"email": email})
         else:
             messages.warning(
                 request,
-                f"Invitación creada para {email}, pero el envío de email falló. "
-                f"Compártele el enlace manualmente desde la lista.",
+                _("Invitation created for %(email)s, but the email failed to send. "
+                  "Share the link manually from the list.") % {"email": email},
             )
         return redirect("madga_studio:user_list")
 

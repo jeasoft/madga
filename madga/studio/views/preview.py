@@ -5,6 +5,7 @@ previewed in their real visual form.
 
 from django.shortcuts import get_object_or_404, render
 from django.utils.decorators import method_decorator
+from django.utils.translation import gettext as _
 from django.views import View
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.generic import TemplateView

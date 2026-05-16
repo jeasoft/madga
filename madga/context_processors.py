@@ -50,7 +50,7 @@ def studio_topbar(request):
         label = _("Published") if kind == "published" else _("Draft")
         events.append(
             {
-                "title": p["title"] or "Sin título",
+                "title": p["title"] or _("Untitled"),
                 "kind": kind,
                 "label": label,
                 "when": p["updated_at"],

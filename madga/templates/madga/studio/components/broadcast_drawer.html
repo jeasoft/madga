@@ -85,8 +85,13 @@ tuned to its character limit.
             <div style="display:flex; flex-direction:column; gap:8px;">
               <label class="madga-field-label" style="margin:0;">{% trans "Schedule" %}</label>
               <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--fg-1);">
-                <input type="radio" name="schedule_mode" value="now" checked> {% trans "Post immediately" %}
+                <input type="radio" name="schedule_mode" value="now" {% if post.status == 'published' %}checked{% endif %}> {% trans "Post immediately" %}
               </label>
+              {% if post.status != 'published' %}
+              <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--fg-1);">
+                <input type="radio" name="schedule_mode" value="on_publish" checked> {% trans "When this post publishes" %}
+              </label>
+              {% endif %}
               <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--fg-1);">
                 <input type="radio" name="schedule_mode" value="at"> {% trans "At a specific time" %}
               </label>
