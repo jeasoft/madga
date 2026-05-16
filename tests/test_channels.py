@@ -82,10 +82,14 @@ def test_publisher_account_pause_resume(site):
 
 @pytest.mark.django_db
 def test_account_driven_publishers_unconfigured_without_account(site):
+    """OAuth-supported publishers (no credential_fields) also need an account."""
     twitter = get_publisher("twitter")
     assert twitter is not None
     assert twitter.is_configured() is False     # no site
     assert twitter.is_configured(site) is False  # site but no account
+    # Also Mastodon (credential-fields-driven)
+    mastodon = get_publisher("mastodon")
+    assert mastodon.is_configured(site) is False
 
 
 @pytest.mark.django_db
@@ -169,23 +173,31 @@ def test_channel_list_renders(site, superuser, auth_client):
 
 @pytest.mark.django_db
 def test_channel_connect_stores_encrypted_credentials(site, superuser, auth_client):
+    """Manual connect flow stores credentials encrypted (Mastodon = manual)."""
     SiteUser.objects.create(site=site, user=superuser, role=SiteUser.ROLE_OWNER)
-    response = auth_client.post("/studio/channels/twitter/connect/", {
-        "handle": "@aitorruiz",
+    response = auth_client.post("/studio/channels/mastodon/connect/", {
+        "handle": "@aitorruiz@hachyderm.io",
         "display_name": "Aitor Ruiz",
-        "api_key": "key-1",
-        "api_secret": "secret-1",
-        "access_token": "tok-1",
-        "access_secret": "tok-secret-1",
+        "instance_url": "https://hachyderm.io",
+        "access_token": "T-secret-token",
     })
     assert response.status_code == 302
-    acct = PublisherAccount.objects.get(site=site, publisher_key="twitter", handle="@aitorruiz")
+    acct = PublisherAccount.objects.get(site=site, publisher_key="mastodon", handle="@aitorruiz@hachyderm.io")
     assert acct.is_active
     creds = acct.get_credentials()
-    assert creds["api_key"] == "key-1"
-    assert creds["access_secret"] == "tok-secret-1"
+    assert creds["instance_url"] == "https://hachyderm.io"
+    assert creds["access_token"] == "T-secret-token"
     # Ciphertext doesn't contain plaintext
-    assert "secret-1" not in acct._credentials_enc
+    assert "T-secret-token" not in acct._credentials_enc
+
+
+@pytest.mark.django_db
+def test_oauth_connect_for_twitter_redirects_to_oauth_start(site, superuser, auth_client):
+    """GET /channels/twitter/connect/ for OAuth-supported should redirect to /oauth/start/."""
+    SiteUser.objects.create(site=site, user=superuser, role=SiteUser.ROLE_OWNER)
+    response = auth_client.get("/studio/channels/twitter/connect/")
+    assert response.status_code == 302
+    assert "/oauth/start/" in response["Location"]
 
 
 @pytest.mark.django_db
@@ -213,32 +225,17 @@ def test_channel_disconnect_deletes_account(site, superuser, auth_client):
 
 
 @pytest.mark.django_db
-def test_test_connection_passes_when_creds_complete(site):
-    acct = PublisherAccount.objects.create(
-        site=site, publisher_key="twitter", handle="@me", is_active=True,
-    )
-    acct.set_credentials({
-        "api_key": "k", "api_secret": "s",
-        "access_token": "t", "access_secret": "ts",
-    })
-    acct.save()
-    pub = get_publisher("twitter")
-    ok, msg = pub.test_connection(acct)
-    assert ok is True
-    assert "stored" in msg.lower() or "credentials" in msg.lower()
-
-
-@pytest.mark.django_db
 def test_test_connection_fails_when_creds_missing(site):
+    """For OAuth-supported publishers, missing access_token = clear error."""
     acct = PublisherAccount.objects.create(
         site=site, publisher_key="twitter", handle="@me", is_active=True,
     )
-    acct.set_credentials({"api_key": "k"})  # missing 3 of 4 fields
+    acct.set_credentials({})
     acct.save()
     pub = get_publisher("twitter")
     ok, msg = pub.test_connection(acct)
     assert ok is False
-    assert "missing" in msg.lower()
+    assert "access_token" in msg.lower() or "reconnect" in msg.lower()
 
 
 @pytest.mark.django_db

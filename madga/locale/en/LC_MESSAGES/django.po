@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-16 18:16-0400\n"
+"POT-Creation-Date: 2026-05-16 18:28-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -224,22 +224,11 @@ msgid ""
 "your project's configured EMAIL_BACKEND."
 msgstr ""
 
-msgid "X (Twitter)"
+msgid "LinkedIn"
 msgstr ""
 
-msgid "Post to an X account using its API v2 credentials."
-msgstr ""
-
-msgid "API Key"
-msgstr ""
-
-msgid "API Key Secret"
-msgstr ""
-
-msgid "Access Token"
-msgstr ""
-
-msgid "Access Token Secret"
+msgid ""
+"Post to a LinkedIn personal profile with OAuth 2.0. Tokens last ~60 days."
 msgstr ""
 
 msgid "Mastodon"
@@ -252,6 +241,9 @@ msgid "Instance URL"
 msgstr ""
 
 msgid "The base URL of the Mastodon server you're posting to."
+msgstr ""
+
+msgid "Access Token"
 msgstr ""
 
 msgid "Bluesky"
@@ -268,18 +260,6 @@ msgstr ""
 
 msgid ""
 "Generate an app-specific password under Bluesky → Settings → App Passwords."
-msgstr ""
-
-msgid "LinkedIn"
-msgstr ""
-
-msgid "Post to a LinkedIn personal profile or company page."
-msgstr ""
-
-msgid "Owner URN"
-msgstr ""
-
-msgid "Whose page to post on. Find it in your LinkedIn developer console."
 msgstr ""
 
 msgid "Instagram"
@@ -300,6 +280,12 @@ msgid "Instagram Business Account ID"
 msgstr ""
 
 msgid "Numeric IG Business Account ID linked to the Page."
+msgstr ""
+
+msgid "X (Twitter)"
+msgstr ""
+
+msgid "Post to an X account with OAuth 2.0. Free tier: 100 writes/month."
 msgstr ""
 
 msgid "API key created. Copy it now — won't be shown again."
@@ -369,6 +355,9 @@ msgstr ""
 msgid "Unknown channel."
 msgstr ""
 
+msgid "This channel can't be connected from the UI."
+msgstr ""
+
 #, python-format
 msgid "Connected %(label)s as %(handle)s."
 msgstr ""
@@ -380,6 +369,24 @@ msgid "Channel resumed."
 msgstr ""
 
 msgid "Channel disconnected."
+msgstr ""
+
+msgid "Unknown OAuth channel."
+msgstr ""
+
+#, python-format
+msgid "This channel needs MADGA_OAUTH['%(key)s']['client_id'] in settings."
+msgstr ""
+
+#, python-format
+msgid "OAuth was cancelled: %(err)s"
+msgstr ""
+
+msgid "OAuth state mismatch — please try again."
+msgstr ""
+
+#, python-format
+msgid "OAuth exchange failed: %(err)s"
 msgstr ""
 
 #, python-format

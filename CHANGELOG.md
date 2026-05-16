@@ -2,6 +2,65 @@
 
 All notable changes to MADGA. Format roughly follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.3.6] — 2026-05-16
+
+Focus: **real OAuth for X (Twitter) + LinkedIn.** Click Connect →
+walk through the platform's consent UI → click Send broadcast and
+the post actually shows up in your feed.
+
+### Added
+- **OAuth abstraction in `Publisher` base.** New ``oauth_supported``
+  attribute, ``oauth_scopes`` list, ``oauth_client_credentials()``
+  reader, ``oauth_authorize_url(...)`` + ``oauth_exchange(...)`` hooks.
+- **`MADGA_OAUTH` settings dict.** Host projects register their
+  platform apps once::
+
+      MADGA_OAUTH = {
+          "twitter":  {"client_id": "...", "client_secret": "..."},
+          "linkedin": {"client_id": "...", "client_secret": "..."},
+      }
+
+  Per-Site user tokens are stored in `PublisherAccount` rows
+  (encrypted by 0.3.4's Fernet helper).
+- **`/studio/channels/<key>/oauth/start/`** — generates PKCE
+  verifier + state, stores them in session, redirects to the
+  platform's authorize URL.
+- **`/studio/channels/<key>/oauth/callback/`** — validates state,
+  exchanges code for tokens, looks up the user, creates the
+  PublisherAccount, flashes success.
+- **Real `TwitterOAuthPublisher`** (in `madga/publishers/twitter.py`)
+  — OAuth 2.0 PKCE flow, calls `/2/users/me` after token exchange
+  to grab the username for display, posts via `/2/tweets`. Replaces
+  the old stub.
+- **Real `LinkedInOAuthPublisher`** (in `madga/publishers/linkedin.py`)
+  — OAuth 2.0 standard flow, fetches `/v2/userinfo` to grab the
+  person URN needed to author posts, publishes via `/v2/ugcPosts`.
+  Replaces the old stub.
+- **Connect button dispatcher.** Existing `/connect/` URL now
+  redirects to the OAuth start view automatically for
+  `oauth_supported` publishers — manual flow stays for Mastodon,
+  Bluesky, Instagram.
+- 8 new tests for the OAuth flow + Twitter/LinkedIn publish
+  paths (HTTP calls mocked). 86 total.
+
+### Fixed
+- `Publisher.is_configured(site)` now also requires an active
+  ``PublisherAccount`` for OAuth-supported publishers (previously
+  it returned True for them because their `credential_fields` is
+  empty — they'd show as configured before being connected).
+
+### Migration notes
+- Already-connected Twitter accounts created against the 0.3.4
+  stub will not survive — the stored credentials no longer match
+  the publisher's expected shape. Disconnect + reconnect via OAuth.
+  LinkedIn stub accounts had the same shape change.
+
+### Pending for 0.3.7
+- Instagram via Facebook Graph (two-step container + publish flow,
+  much more complex than Twitter/LinkedIn).
+- Outbound webhooks for host projects to subscribe to MADGA events.
+- Form blocks (contact form / lead capture + studio inbox).
+
 ## [0.3.5] — 2026-05-16
 
 Focus: **real publishers for the easy platforms + auto-broadcast.**

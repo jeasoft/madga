@@ -264,6 +264,27 @@ To populate profiles retroactively after wiring a new receiver:
 python manage.py madga backfill-profiles --kind=talent
 ```
 
+### OAuth for X (Twitter) + LinkedIn
+
+Add platform app credentials to your project settings, then any studio
+user clicks Connect on the Channels page and walks through the
+platform's consent flow:
+
+```python
+# settings.py
+MADGA_OAUTH = {
+    "twitter":  {"client_id": "...", "client_secret": "..."},
+    "linkedin": {"client_id": "...", "client_secret": "..."},
+}
+```
+
+Redirect URI to register in the platform's developer console:
+`https://<your-site>/studio/channels/<key>/oauth/callback/`
+(`<key>` is `twitter` or `linkedin`).
+
+Mastodon and Bluesky don't use OAuth — they're token-based and use
+the manual Connect form. Instagram OAuth lands in 0.3.7.
+
 ### Custom publishers (broadcast fan-out)
 
 Register a Publisher and it shows up in the broadcast drawer on every
@@ -362,6 +383,7 @@ ORM primitives (`JSONField`, `TextField`, `__icontains`) and ships no raw SQL.
 
 ## Releases
 
+- **0.3.6** — Real OAuth 2.0 for X (Twitter) and LinkedIn. Click Connect → walk through the platform consent flow → broadcasts actually post. `MADGA_OAUTH` settings dict wires platform app credentials; per-user tokens stored encrypted per Site.
 - **0.3.5** — Real Mastodon + Bluesky publishers (no OAuth needed — token / app password). Auto-broadcast on publish: queue broadcasts on a draft, they fire automatically when Publish is hit. Audit pass on remaining Spanish-source strings.
 - **0.3.4** — Channels + SaaS foundations: per-Site `PublisherAccount` with Fernet-encrypted credentials, Channels page with connect/disconnect/pause UI, stub publishers for X / Mastodon / Bluesky / LinkedIn, per-channel composer with character counters, functional workspace switcher, self-service "Create workspace".
 - **0.3.3** — Production hardening: branded 400/403/404/500 pages, `SecurityHeadersMiddleware`, GDPR cookie consent banner with consent-gated trackers, Pillow image optimization with WebP `srcset`, standalone "New broadcast" button.

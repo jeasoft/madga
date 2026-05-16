@@ -1,5 +1,7 @@
 """Studio Channels page: connect/disconnect/pause publisher accounts."""
 
+import secrets
+
 from django.contrib import messages
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
@@ -14,6 +16,12 @@ from madga.publishers import all_publishers, get_publisher
 from ..mixins import MadgaStudioMixin
 
 
+def _oauth_redirect_uri(request, key: str) -> str:
+    """Absolute URL where the platform should send the user after consent."""
+    path = reverse("madga_studio:channel_oauth_callback", kwargs={"key": key})
+    return request.build_absolute_uri(path)
+
+
 class ChannelListView(MadgaStudioMixin, View):
     """Lists every account-driven publisher + its current connections."""
 
@@ -22,7 +30,10 @@ class ChannelListView(MadgaStudioMixin, View):
     def get(self, request):
         site = self.get_site()
 
-        publishers = [p for p in all_publishers() if p.credential_fields]
+        publishers = [
+            p for p in all_publishers()
+            if p.credential_fields or p.oauth_supported
+        ]
         accounts = (
             list(PublisherAccount.objects.filter(site=site)) if site else []
         )
@@ -62,14 +73,24 @@ class ChannelListView(MadgaStudioMixin, View):
 
 
 class ChannelConnectView(MadgaStudioMixin, View):
-    """Manual token-paste connect flow (no OAuth yet)."""
+    """Connect flow dispatcher.
+
+    OAuth-supported publishers redirect to the platform's consent
+    URL. Manual publishers render the token-paste form.
+    """
 
     template_name = "madga/studio/channel_connect.html"
 
     def get(self, request, key):
         publisher = get_publisher(key)
-        if publisher is None or not publisher.credential_fields:
+        if publisher is None:
             return HttpResponseBadRequest(_("Unknown channel."))
+        if publisher.oauth_supported:
+            return HttpResponseRedirect(
+                reverse("madga_studio:channel_oauth_start", kwargs={"key": key})
+            )
+        if not publisher.credential_fields:
+            return HttpResponseBadRequest(_("This channel can't be connected from the UI."))
         return render(request, self.template_name, {"publisher": publisher})
 
     def post(self, request, key):
@@ -77,7 +98,7 @@ class ChannelConnectView(MadgaStudioMixin, View):
         if site is None:
             return HttpResponseBadRequest(_("No active site."))
         publisher = get_publisher(key)
-        if publisher is None or not publisher.credential_fields:
+        if publisher is None or not publisher.credential_fields or publisher.oauth_supported:
             return HttpResponseBadRequest(_("Unknown channel."))
 
         creds = {}
@@ -131,6 +152,95 @@ class ChannelDisconnectView(MadgaStudioMixin, View):
         account = get_object_or_404(PublisherAccount, pk=pk, site=site)
         account.delete()
         messages.success(request, _("Channel disconnected."))
+        return HttpResponseRedirect(reverse("madga_studio:channel_list"))
+
+
+class ChannelOAuthStartView(MadgaStudioMixin, View):
+    """Kick off an OAuth flow.
+
+    Stores the PKCE verifier + state in session, then redirects to
+    the platform's consent URL. The callback view validates the
+    state and exchanges the code for tokens.
+    """
+
+    def get(self, request, key):
+        publisher = get_publisher(key)
+        if publisher is None or not publisher.oauth_supported:
+            return HttpResponseBadRequest(_("Unknown OAuth channel."))
+        if publisher.oauth_client_credentials() is None:
+            messages.error(
+                request,
+                _("This channel needs MADGA_OAUTH['%(key)s']['client_id'] in settings.")
+                % {"key": key},
+            )
+            return HttpResponseRedirect(reverse("madga_studio:channel_list"))
+
+        state = secrets.token_urlsafe(24)
+        pkce_verifier = secrets.token_urlsafe(48)
+        request.session[f"madga_oauth_state_{key}"] = state
+        request.session[f"madga_oauth_pkce_{key}"] = pkce_verifier
+
+        redirect_uri = _oauth_redirect_uri(request, key)
+        try:
+            url = publisher.oauth_authorize_url(redirect_uri, state, pkce_verifier)
+        except RuntimeError as e:
+            messages.error(request, str(e))
+            return HttpResponseRedirect(reverse("madga_studio:channel_list"))
+        return HttpResponseRedirect(url)
+
+
+class ChannelOAuthCallbackView(MadgaStudioMixin, View):
+    """OAuth redirect target. Validates state, exchanges code, stores account."""
+
+    def get(self, request, key):
+        publisher = get_publisher(key)
+        if publisher is None or not publisher.oauth_supported:
+            return HttpResponseBadRequest(_("Unknown OAuth channel."))
+
+        site = self.get_site()
+        if site is None:
+            return HttpResponseBadRequest(_("No active site."))
+
+        error = request.GET.get("error")
+        if error:
+            messages.error(request, _("OAuth was cancelled: %(err)s") % {"err": error})
+            return HttpResponseRedirect(reverse("madga_studio:channel_list"))
+
+        code = request.GET.get("code")
+        state = request.GET.get("state")
+        expected_state = request.session.pop(f"madga_oauth_state_{key}", None)
+        pkce_verifier = request.session.pop(f"madga_oauth_pkce_{key}", "")
+        if not code or not state or state != expected_state:
+            messages.error(request, _("OAuth state mismatch — please try again."))
+            return HttpResponseRedirect(reverse("madga_studio:channel_list"))
+
+        redirect_uri = _oauth_redirect_uri(request, key)
+        try:
+            result = publisher.oauth_exchange(code, redirect_uri, pkce_verifier)
+        except Exception as e:  # noqa: BLE001
+            messages.error(request, _("OAuth exchange failed: %(err)s") % {"err": str(e)[:200]})
+            return HttpResponseRedirect(reverse("madga_studio:channel_list"))
+
+        handle = (result.get("handle") or "").strip()
+        display_name = (result.get("display_name") or handle).strip()
+        creds = result.get("credentials") or {}
+
+        account, _created = PublisherAccount.objects.get_or_create(
+            site=site, publisher_key=key, handle=handle,
+            defaults={"display_name": display_name, "is_active": True},
+        )
+        account.display_name = display_name or account.display_name
+        account.is_active = True
+        account.last_error = ""
+        account.set_credentials(creds)
+        account.save()
+
+        messages.success(
+            request,
+            _("Connected %(label)s as %(handle)s.") % {
+                "label": publisher.label, "handle": handle or display_name,
+            },
+        )
         return HttpResponseRedirect(reverse("madga_studio:channel_list"))
 
 

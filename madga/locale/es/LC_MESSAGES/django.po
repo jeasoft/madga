@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-16 18:16-0400\n"
+"POT-Creation-Date: 2026-05-16 18:28-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -238,27 +238,14 @@ msgid ""
 "your project's configured EMAIL_BACKEND."
 msgstr ""
 
-msgid "X (Twitter)"
-msgstr "X (Twitter)"
-
-msgid "Post to an X account using its API v2 credentials."
-msgstr "Postear a una cuenta de X usando credenciales de API v2."
+msgid "LinkedIn"
+msgstr "LinkedIn"
 
 #, fuzzy
-#| msgid "API key"
-msgid "API Key"
-msgstr "Clave API"
-
-#, fuzzy
-#| msgid "API key deleted."
-msgid "API Key Secret"
-msgstr "Clave API eliminada."
-
-msgid "Access Token"
-msgstr "Access Token"
-
-msgid "Access Token Secret"
-msgstr "Access Token Secret"
+#| msgid "Post to a LinkedIn personal profile or company page."
+msgid ""
+"Post to a LinkedIn personal profile with OAuth 2.0. Tokens last ~60 days."
+msgstr "Postear a un perfil personal o página de empresa en LinkedIn."
 
 msgid "Mastodon"
 msgstr "Mastodon"
@@ -271,6 +258,9 @@ msgstr "URL de la instancia"
 
 msgid "The base URL of the Mastodon server you're posting to."
 msgstr "La URL base del servidor Mastodon al que estás posteando."
+
+msgid "Access Token"
+msgstr "Access Token"
 
 msgid "Bluesky"
 msgstr "Bluesky"
@@ -290,20 +280,6 @@ msgstr "Contraseña"
 msgid ""
 "Generate an app-specific password under Bluesky → Settings → App Passwords."
 msgstr ""
-
-msgid "LinkedIn"
-msgstr "LinkedIn"
-
-msgid "Post to a LinkedIn personal profile or company page."
-msgstr "Postear a un perfil personal o página de empresa en LinkedIn."
-
-#, fuzzy
-#| msgid "Owner"
-msgid "Owner URN"
-msgstr "Propietario"
-
-msgid "Whose page to post on. Find it in your LinkedIn developer console."
-msgstr "A qué página postear. Búscalo en tu consola de developer de LinkedIn."
 
 msgid "Instagram"
 msgstr "Instagram"
@@ -326,6 +302,14 @@ msgstr "ID de la cuenta Instagram Business"
 
 msgid "Numeric IG Business Account ID linked to the Page."
 msgstr "ID numérico de la cuenta IG Business asociada al Page."
+
+msgid "X (Twitter)"
+msgstr "X (Twitter)"
+
+#, fuzzy
+#| msgid "Post to an X account using its API v2 credentials."
+msgid "Post to an X account with OAuth 2.0. Free tier: 100 writes/month."
+msgstr "Postear a una cuenta de X usando credenciales de API v2."
 
 msgid "API key created. Copy it now — won't be shown again."
 msgstr "Clave API creada. Cópiala ahora — no se mostrará de nuevo."
@@ -392,6 +376,11 @@ msgstr "Suscriptor eliminado."
 msgid "Unknown channel."
 msgstr "Canal desconocido."
 
+#, fuzzy
+#| msgid "No channels connected yet."
+msgid "This channel can't be connected from the UI."
+msgstr "No hay canales conectados todavía."
+
 #, python-format
 msgid "Connected %(label)s as %(handle)s."
 msgstr "%(label)s conectado como %(handle)s."
@@ -404,6 +393,26 @@ msgstr "Canal reanudado."
 
 msgid "Channel disconnected."
 msgstr "Canal desconectado."
+
+#, fuzzy
+#| msgid "Unknown channel."
+msgid "Unknown OAuth channel."
+msgstr "Canal desconocido."
+
+#, python-format
+msgid "This channel needs MADGA_OAUTH['%(key)s']['client_id'] in settings."
+msgstr "Este canal necesita MADGA_OAUTH['%(key)s']['client_id'] en settings."
+
+#, python-format
+msgid "OAuth was cancelled: %(err)s"
+msgstr "OAuth cancelado: %(err)s"
+
+msgid "OAuth state mismatch — please try again."
+msgstr "OAuth state mismatch — intenta de nuevo."
+
+#, python-format
+msgid "OAuth exchange failed: %(err)s"
+msgstr "Intercambio OAuth falló: %(err)s"
 
 #, python-format
 msgid "Publisher '%(key)s' is not registered."
@@ -2090,6 +2099,28 @@ msgid ""
 "Editorial home with hero post + 4-up grid. Pairs with home-editorial + list-"
 "grid."
 msgstr ""
+
+#, fuzzy
+#~| msgid "API key"
+#~ msgid "API Key"
+#~ msgstr "Clave API"
+
+#, fuzzy
+#~| msgid "API key deleted."
+#~ msgid "API Key Secret"
+#~ msgstr "Clave API eliminada."
+
+#~ msgid "Access Token Secret"
+#~ msgstr "Access Token Secret"
+
+#, fuzzy
+#~| msgid "Owner"
+#~ msgid "Owner URN"
+#~ msgstr "Propietario"
+
+#~ msgid "Whose page to post on. Find it in your LinkedIn developer console."
+#~ msgstr ""
+#~ "A qué página postear. Búscalo en tu consola de developer de LinkedIn."
 
 #, fuzzy
 #~| msgid "Editorial"

@@ -32,7 +32,9 @@ from .base import (
 
 # Side-effects: register the built-in publishers.
 from . import email  # noqa: F401
-from . import social  # noqa: F401  Twitter / Mastodon / Bluesky / LinkedIn stubs
+from . import social  # noqa: F401   Mastodon + Bluesky + Instagram stub
+from . import twitter  # noqa: F401  X (Twitter) OAuth
+from . import linkedin  # noqa: F401 LinkedIn OAuth
 
 __all__ = [
     "CredField",

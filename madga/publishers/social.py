@@ -114,19 +114,7 @@ class _AccountPublisher(Publisher):
 _AccountStubPublisher = _AccountPublisher
 
 
-@register_publisher
-class TwitterPublisher(_AccountPublisher):
-    key = "twitter"
-    label = _("X (Twitter)")
-    description = _("Post to an X account using its API v2 credentials.")
-    icon = "send"
-    char_limit = 280
-    credential_fields = [
-        CredField("api_key", _("API Key"), placeholder="…"),
-        CredField("api_secret", _("API Key Secret"), secret=True),
-        CredField("access_token", _("Access Token"), secret=True),
-        CredField("access_secret", _("Access Token Secret"), secret=True),
-    ]
+# TwitterPublisher moved to madga/publishers/twitter.py with real OAuth.
 
 
 @register_publisher
@@ -263,21 +251,7 @@ class BlueskyPublisher(_AccountPublisher):
             return False, f"Bluesky auth failed: {e}"
 
 
-@register_publisher
-class LinkedInPublisher(_AccountPublisher):
-    key = "linkedin"
-    label = _("LinkedIn")
-    description = _("Post to a LinkedIn personal profile or company page.")
-    icon = "send"
-    char_limit = 3000
-    credential_fields = [
-        CredField("access_token", _("Access Token"), secret=True),
-        CredField(
-            "owner_urn", _("Owner URN"),
-            placeholder="urn:li:person:xxxxx or urn:li:organization:xxxxx",
-            help_text=_("Whose page to post on. Find it in your LinkedIn developer console."),
-        ),
-    ]
+# LinkedInPublisher moved to madga/publishers/linkedin.py with real OAuth.
 
 
 @register_publisher

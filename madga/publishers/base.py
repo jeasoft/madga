@@ -76,6 +76,14 @@ class Publisher:
     # publishes globally. Account-driven publishers default to True.
     multi_account: bool = False
 
+    # OAuth 2.0 support. When True, the studio Connect button on the
+    # Channels page redirects to ``oauth_authorize_url(...)`` instead
+    # of rendering the manual credential form. Subclasses must
+    # implement ``oauth_authorize_url`` and ``oauth_exchange`` and
+    # declare their scopes/credentials.
+    oauth_supported: bool = False
+    oauth_scopes: list[str] = []
+
     @property
     def has_handle_credential(self) -> bool:
         """True if 'handle' is part of ``credential_fields``.
@@ -87,14 +95,50 @@ class Publisher:
         """
         return any(f.name == "handle" for f in self.credential_fields)
 
+    # ---- OAuth contract (subclasses implement) -------------------------
+
+    def oauth_client_credentials(self) -> tuple[str, str] | None:
+        """Read ``(client_id, client_secret)`` from project settings.
+
+        Convention: settings.MADGA_OAUTH = {"twitter": {"client_id":..., "client_secret":...}, ...}
+        Returns None if not configured — caller renders a clear error.
+        """
+        from django.conf import settings
+        conf = getattr(settings, "MADGA_OAUTH", {}) or {}
+        creds = conf.get(self.key) or {}
+        cid = creds.get("client_id")
+        secret = creds.get("client_secret", "")
+        if not cid:
+            return None
+        return cid, secret
+
+    def oauth_authorize_url(self, redirect_uri: str, state: str, pkce_verifier: str) -> str:
+        """Build the platform's OAuth consent URL.
+
+        ``pkce_verifier`` is the high-entropy random string we'll send
+        in the token exchange step; the URL needs its SHA-256 challenge.
+        """
+        raise NotImplementedError
+
+    def oauth_exchange(self, code: str, redirect_uri: str, pkce_verifier: str) -> dict:
+        """Exchange auth code for tokens.
+
+        Return a dict with at minimum:
+          {"credentials": {...}, "handle": "...", "display_name": "..."}
+        The ``credentials`` dict is what gets stored via
+        ``PublisherAccount.set_credentials``.
+        """
+        raise NotImplementedError
+
     def is_configured(self, site: "Site | None" = None) -> bool:
         """Return True if this publisher can actually run.
 
-        Account-driven publishers require at least one active
-        ``PublisherAccount`` for the given Site. Settings-driven
-        publishers ignore the site argument and check globals.
+        Account-driven publishers (credential_fields OR oauth_supported)
+        require at least one active ``PublisherAccount`` for the given
+        Site. Settings-driven publishers ignore the site argument and
+        check globals.
         """
-        if self.credential_fields:
+        if self.credential_fields or self.oauth_supported:
             if site is None:
                 return False
             from madga.models import PublisherAccount
