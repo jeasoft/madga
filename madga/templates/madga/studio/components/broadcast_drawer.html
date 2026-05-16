@@ -1,14 +1,16 @@
 {% load i18n madga_studio_tags %}
-{# Slide-out drawer to compose a broadcast for the current post.
-   Toggled by [data-madga-drawer-open="broadcast"] anywhere in the page. #}
+{# Slide-out drawer to compose a multi-channel broadcast for the current post.
+   Toggled by [data-madga-drawer-open="broadcast"] anywhere in the page.
+   Renders a tab per registered/configured publisher with per-channel copy
+   tuned to its character limit. #}
 
 <div class="madga-drawer" data-madga-drawer="broadcast" hidden>
   <div class="madga-drawer-backdrop" data-madga-drawer-close></div>
-  <aside class="madga-drawer-panel">
+  <aside class="madga-drawer-panel madga-drawer-panel--wide">
     <header class="madga-drawer-head">
       <div>
-        <h2 style="margin:0; font-size:16px; font-weight:600;">{% trans "Broadcast this post" %}</h2>
-        <p style="margin:4px 0 0; color:var(--fg-2); font-size:12.5px;">{% trans "Fan out to the channels you've configured." %}</p>
+        <h2 style="margin:0; font-size:16px; font-weight:600;">{% blocktrans with title=post.title|truncatechars:60 %}Broadcast — {{ title }}{% endblocktrans %}</h2>
+        <p style="margin:4px 0 0; color:var(--fg-2); font-size:12.5px;">{% trans "Per-platform copy is auto-generated from the post. Edit each one to match the audience, then schedule or post immediately." %}</p>
       </div>
       <button type="button" class="madga-icon-btn" data-madga-drawer-close aria-label="{% trans 'Close' %}">{% studio_icon "x" size=16 stroke=2 %}</button>
     </header>
@@ -16,38 +18,84 @@
     <form method="post" action="{% url 'madga_studio:broadcast_create' %}" class="madga-drawer-body">
       {% csrf_token %}
       <input type="hidden" name="post_id" value="{{ post.pk }}">
+      <input type="hidden" name="subject" value="{{ post.title }}">
 
-      <div class="madga-field">
-        <label class="madga-field-label">{% trans "Subject" %}</label>
-        <input class="madga-input" type="text" name="subject" value="{{ post.title }}" required>
-      </div>
-
-      <div class="madga-field">
-        <label class="madga-field-label">{% trans "Publishers" %}</label>
-        <div style="display:flex; flex-direction:column; gap:8px;">
-          {% for p in publishers %}
-            <label style="display:flex; align-items:flex-start; gap:10px; padding:10px 12px; border:1px solid var(--border); border-radius:8px; cursor:pointer;">
-              <input type="checkbox" name="publisher_keys" value="{{ p.key }}" {% if forloop.first %}checked{% endif %} style="margin-top:3px;">
-              <div style="flex:1; min-width:0;">
-                <div style="font-weight:500; color:var(--fg-0); font-size:13px;">
+      <div style="display:grid; grid-template-columns: 200px 1fr; gap: 18px; min-height: 0;">
+        {# Left rail: channel pickers #}
+        <div>
+          <div style="font-size:10.5px; font-weight:600; text-transform:uppercase; letter-spacing:.07em; color:var(--fg-3); margin-bottom:8px;">{% trans "Broadcast to" %}</div>
+          <div style="display:flex; flex-direction:column; gap:4px;" data-madga-bc-rail>
+            {% for p in publishers %}
+              <label class="madga-bc-tab {% if forloop.first %}is-active{% endif %}" data-madga-bc-tab="{{ p.key }}">
+                <input type="checkbox" name="publisher_keys" value="{{ p.key }}" checked data-madga-bc-checkbox>
+                <span class="madga-bc-tab-name">
                   {% if p.icon %}{% studio_icon p.icon size=12 stroke=2 %} {% endif %}{{ p.label }}
-                </div>
-                {% if p.description %}<div style="color:var(--fg-2); font-size:11.5px; margin-top:2px;">{{ p.description }}</div>{% endif %}
-              </div>
-            </label>
-          {% endfor %}
+                </span>
+              </label>
+            {% empty %}
+              <p style="color:var(--fg-2); font-size:12.5px; padding: 10px 0;">{% trans "No channels connected yet." %} <a href="{% url 'madga_studio:channel_list' %}" class="text-accent" style="color:var(--accent);">{% trans "Connect one" %}</a>.</p>
+            {% endfor %}
+          </div>
         </div>
-      </div>
 
-      <div class="madga-field">
-        <label class="madga-field-label">{% trans "Schedule (optional)" %}</label>
-        <input class="madga-input" type="datetime-local" name="scheduled_at">
-        <span class="madga-field-help">{% trans "Leave empty to send immediately." %}</span>
-      </div>
+        {# Right: per-channel composer #}
+        <div data-madga-bc-panes>
+          {% for p in publishers %}
+            <div class="madga-bc-pane" data-madga-bc-pane="{{ p.key }}" {% if not forloop.first %}hidden{% endif %}>
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                {% if p.icon %}{% studio_icon p.icon size=14 stroke=2 %}{% endif %}
+                <strong>{{ p.label }}</strong>
+              </div>
 
-      <div style="display:flex; gap:8px; margin-top:6px;">
-        <button type="submit" class="madga-btn madga-btn--primary" style="flex:1;">{% studio_icon "send" size=12 stroke=2 %} {% trans "Send broadcast" %}</button>
-        <button type="button" class="madga-btn" data-madga-drawer-close>{% trans "Cancel" %}</button>
+              <div class="madga-field" style="margin-bottom:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px;">
+                  <label class="madga-field-label" style="margin:0;">{% trans "Post copy" %}</label>
+                  {% if p.char_limit %}
+                    <span class="madga-bc-counter" data-madga-bc-counter="{{ p.key }}" data-madga-bc-limit="{{ p.char_limit }}" style="font-size:11px; color:var(--fg-3); font-variant-numeric:tabular-nums;">0 / {{ p.char_limit }}</span>
+                  {% endif %}
+                </div>
+                <textarea
+                  class="madga-textarea"
+                  name="body_text_{{ p.key }}"
+                  rows="6"
+                  data-madga-bc-textarea="{{ p.key }}"
+                >{{ p.label }}{# placeholder — replaced by JS on open #}</textarea>
+              </div>
+
+              {% if post.featured_image %}
+                <div style="display:flex; align-items:center; gap:10px; padding:8px 12px; border:1px solid var(--border); border-radius:8px; margin-bottom:10px;">
+                  <img src="{{ post.featured_image.file.url }}" alt="" style="width:36px; height:36px; border-radius:6px; object-fit:cover;">
+                  <div style="flex:1; min-width:0;">
+                    <div style="font-size:11.5px; color:var(--fg-3);">{% trans "Featured image" %}</div>
+                    <div style="font-size:12px; color:var(--fg-1);">{{ post.featured_image.filename }}</div>
+                  </div>
+                </div>
+              {% endif %}
+
+              {% if post.slug %}
+                <div style="font-size:11.5px; color:var(--fg-3); margin-bottom:10px;">{% trans "Link card" %}: <code style="color:var(--fg-2);">{{ site.domain|default:"yourdomain" }}/blog/{{ post.slug }}/</code></div>
+              {% endif %}
+            </div>
+          {% endfor %}
+
+          {# Schedule + send — shared across channels #}
+          <div style="margin-top:6px; padding-top:14px; border-top:1px solid var(--border); display:flex; flex-direction:column; gap:10px;">
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <label class="madga-field-label" style="margin:0;">{% trans "Schedule" %}</label>
+              <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--fg-1);">
+                <input type="radio" name="schedule_mode" value="now" checked> {% trans "Post immediately" %}
+              </label>
+              <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--fg-1);">
+                <input type="radio" name="schedule_mode" value="at"> {% trans "At a specific time" %}
+              </label>
+              <input class="madga-input" type="datetime-local" name="scheduled_at" style="margin-left:24px;" disabled data-madga-bc-schedule-at>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button type="submit" class="madga-btn madga-btn--primary" style="flex:1;">{% studio_icon "send" size=12 stroke=2 %} {% trans "Send broadcast" %}</button>
+              <button type="button" class="madga-btn" data-madga-drawer-close>{% trans "Cancel" %}</button>
+            </div>
+          </div>
+        </div>
       </div>
     </form>
   </aside>
@@ -57,38 +105,89 @@
   .madga-drawer { position: fixed; inset: 0; z-index: 80; }
   .madga-drawer[hidden] { display: none; }
   .madga-drawer-backdrop { position:absolute; inset:0; background: rgba(0,0,0,.32); }
-  .madga-drawer-panel {
-    position:absolute; top:0; right:0; bottom:0; width: min(420px, 100vw);
-    background: var(--bg-1); border-left: 1px solid var(--border);
-    box-shadow: var(--shadow-lg); display:flex; flex-direction:column;
-    overflow-y:auto;
-  }
-  .madga-drawer-head {
-    padding: 18px 22px; display:flex; align-items:flex-start; gap:12px;
-    border-bottom: 1px solid var(--border);
-  }
-  .madga-drawer-body { padding: 18px 22px; display:flex; flex-direction:column; gap:14px; }
+  .madga-drawer-panel { position:absolute; top:0; right:0; bottom:0; width: min(420px, 100vw); background: var(--bg-1); border-left:1px solid var(--border); box-shadow: var(--shadow-lg); display:flex; flex-direction:column; overflow-y:auto; }
+  .madga-drawer-panel--wide { width: min(720px, 100vw); }
+  .madga-drawer-head { padding:18px 22px; display:flex; align-items:flex-start; gap:12px; border-bottom:1px solid var(--border); }
+  .madga-drawer-body { padding:18px 22px; display:flex; flex-direction:column; gap:14px; }
+  .madga-bc-tab { display:flex; align-items:center; gap:8px; padding:8px 10px; border:1px solid var(--border); border-radius:8px; cursor:pointer; font-size:13px; color:var(--fg-1); }
+  .madga-bc-tab:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+  .madga-bc-tab input { margin: 0; }
+  .madga-bc-tab-name { flex: 1; min-width: 0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .madga-bc-counter.is-over { color: #dc2626; font-weight: 500; }
 </style>
 
 <script>
 (function () {
-  document.addEventListener('click', function (e) {
-    const opener = e.target.closest('[data-madga-drawer-open]');
-    if (opener) {
-      const name = opener.dataset.madgaDrawerOpen;
-      const el = document.querySelector('[data-madga-drawer="' + name + '"]');
-      if (el) el.hidden = false;
-      return;
+  // Default copies — built from the post on the server. The script
+  // populates each textarea on first open so we don't have to render
+  // every channel's text twice (server + client).
+  const defaultCopy = {
+    subject: {{ post.title|escapejs|default:'""' }},
+    url: {% if post.slug %}{{ post.slug|escapejs|stringformat:'"https://%s/blog/%s/"'|escapejs }}{% else %}""{% endif %},
+    excerpt: {{ post.excerpt|default:""|escapejs|default:'""' }},
+  };
+
+  function buildCopy(charLimit) {
+    let body = (defaultCopy.subject || '');
+    if (defaultCopy.excerpt) body += '\n\n' + defaultCopy.excerpt;
+    let url = defaultCopy.url || '';
+    let text = url ? (body + '\n\n' + url) : body;
+    if (charLimit && text.length > charLimit) {
+      if (url && url.length + 4 < charLimit) {
+        let budget = charLimit - url.length - 4;
+        text = body.slice(0, budget).trim() + '…\n\n' + url;
+      } else {
+        text = text.slice(0, charLimit - 1).trim() + '…';
+      }
     }
-    const closer = e.target.closest('[data-madga-drawer-close]');
-    if (closer) {
-      const el = closer.closest('[data-madga-drawer]');
-      if (el) el.hidden = true;
+    return text;
+  }
+
+  document.addEventListener('click', function (e) {
+    const opener = e.target.closest('[data-madga-drawer-open="broadcast"]');
+    if (opener) {
+      // Populate each textarea with default copy when the drawer opens.
+      document.querySelectorAll('[data-madga-bc-textarea]').forEach(function (ta) {
+        if (ta.value && ta.dataset.populated === '1') return;
+        const counter = document.querySelector('[data-madga-bc-counter="' + ta.dataset.madgaBcTextarea + '"]');
+        const limit = counter ? parseInt(counter.dataset.madgaBcLimit || '0', 10) : 0;
+        ta.value = buildCopy(limit);
+        ta.dataset.populated = '1';
+        updateCounter(ta, counter, limit);
+      });
+    }
+
+    const tab = e.target.closest('[data-madga-bc-tab]');
+    if (tab) {
+      // Switch which pane is shown
+      const key = tab.dataset.madgaBcTab;
+      document.querySelectorAll('[data-madga-bc-tab]').forEach(t => t.classList.toggle('is-active', t === tab));
+      document.querySelectorAll('[data-madga-bc-pane]').forEach(p => p.hidden = (p.dataset.madgaBcPane !== key));
     }
   });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') {
-      document.querySelectorAll('[data-madga-drawer]').forEach(el => el.hidden = true);
+
+  function updateCounter(ta, counter, limit) {
+    if (!counter || !limit) return;
+    const n = (ta.value || '').length;
+    counter.textContent = n + ' / ' + limit;
+    counter.classList.toggle('is-over', n > limit);
+  }
+
+  document.addEventListener('input', function (e) {
+    const ta = e.target.closest('[data-madga-bc-textarea]');
+    if (ta) {
+      const counter = document.querySelector('[data-madga-bc-counter="' + ta.dataset.madgaBcTextarea + '"]');
+      const limit = counter ? parseInt(counter.dataset.madgaBcLimit || '0', 10) : 0;
+      updateCounter(ta, counter, limit);
+    }
+  });
+
+  // Schedule mode radios enable/disable the datetime field
+  document.addEventListener('change', function (e) {
+    const radio = e.target.closest('input[name="schedule_mode"]');
+    if (radio) {
+      const dt = document.querySelector('[data-madga-bc-schedule-at]');
+      if (dt) dt.disabled = radio.value !== 'at';
     }
   });
 })();

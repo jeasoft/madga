@@ -107,12 +107,18 @@ class BroadcastCreateView(MadgaStudioMixin, View):
             if publisher is None:
                 continue
             targets = publisher.estimate_targets(_FakeJobForEstimate(site=site))
+
+            # Per-channel copy override (sent as body_text_<key>) — if the
+            # composer's per-channel tab tweaked the text, use that.
+            per_channel_text = (request.POST.get(f"body_text_{key}") or "").strip()
+            channel_body_text = per_channel_text or body_text
+
             job = BroadcastJob.objects.create(
                 site=site,
                 publisher_key=key,
                 subject=subject,
                 body_html=body_html,
-                body_text=body_text,
+                body_text=channel_body_text,
                 related_url=related_url,
                 related_post=post,
                 targets_count=targets,

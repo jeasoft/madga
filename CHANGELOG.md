@@ -2,6 +2,77 @@
 
 All notable changes to MADGA. Format roughly follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.3.4] — 2026-05-16
+
+Focus: **Channels + SaaS foundations.** MADGA can now host multiple
+companies/tenants and broadcast to each one's own social channels.
+
+### Added — SaaS plumbing
+- **Multi-site middleware respects pre-set `request.madga_site`.**
+  Host projects can resolve the active Site from URL/path (e.g.
+  `aplica.do/company/<slug>/...`) before MADGA's middleware fires and
+  it won't overwrite the choice. Order: pre-set → session pin →
+  host-header → first active.
+- **Workspace switcher (functional).** Sidebar dropdown lists every
+  Site the user belongs to, POSTs to `/studio/workspaces/switch/`,
+  pins the choice in session, redirects. Superusers see every active
+  Site. Stale session pins (memberships revoked) are dropped
+  automatically.
+- **Self-service `/studio/workspaces/new/`.** Any authenticated user
+  can spin up a new Site, becomes its Owner, gets dropped into it.
+  No CLI admin required.
+
+### Added — Channels
+- **`PublisherAccount` model** (one row per `Site × publisher × handle`)
+  with Fernet-encrypted credentials. Pause/resume per account.
+- **`madga.encryption`** helper: Fernet key derived from
+  `MADGA_CREDENTIAL_KEY` (or list `MADGA_CREDENTIAL_KEYS` for rotation),
+  falls back to a `SECRET_KEY`-derived key in dev.
+- **Publisher base extended** with `credential_fields` (declarative
+  field spec for the Connect form), `char_limit` (drives the per-channel
+  composer's counter), and `default_copy(job)` (auto-generates
+  per-platform copy trimmed to char limit).
+- **Stub publishers shipped:** `TwitterPublisher`, `MastodonPublisher`,
+  `BlueskyPublisher`, `LinkedInPublisher`, `InstagramPublisher`. Each
+  has credentials schema, char limit, and a stub `publish()` that
+  records a clear "not implemented yet" error. Real OAuth + API
+  integration lands in 0.3.5.
+- **`/studio/channels/`** — stats cards (connected / broadcasts this
+  week / total reach / in queue) + grid of every account-driven
+  publisher with its connected accounts (pause, edit credentials,
+  disconnect).
+- **`/studio/channels/<key>/connect/`** — manual token-paste flow
+  rendering each publisher's `credential_fields` as inputs (secret
+  ones as password). Stores credentials encrypted, surfaces as
+  Active immediately.
+- **`is_configured(site=None)`** on Publisher: account-driven
+  publishers return `True` only when the Site has at least one active
+  `PublisherAccount`. The drawer and lists filter by this.
+
+### Added — Per-channel composer
+- **Broadcast drawer** rewritten with a two-pane layout: left rail of
+  channel pickers (checkbox per registered publisher), right pane with
+  per-channel textarea + character counter (turns red over limit).
+- **Auto-generated copy** built client-side from post title +
+  excerpt + URL, trimmed to each channel's limit (so X gets 280
+  chars + URL, LinkedIn gets the full thing, etc.).
+- **Schedule modes**: Post immediately / At a specific time. The
+  datetime input only enables when "specific time" is selected.
+- **Featured image preview** + link card preview render in each pane
+  when the post has them.
+
+### Added — Misc
+- `cryptography>=42` added as a runtime dependency.
+- 16 new tests for channels + encryption + workspace flows. 67 total.
+
+### Migration notes
+- New migration `0010_publisheraccount`. Run `python manage.py migrate`.
+- **Production:** set `MADGA_CREDENTIAL_KEY` to a dedicated 32-byte
+  url-safe base64 Fernet key. Generate with
+  `python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"`.
+  Do not rely on the SECRET_KEY fallback in production — if SECRET_KEY
+  ever rotates, every stored credential decrypts to garbage.
+
 ## [0.3.3] — 2026-05-16
 
 Focus: **production hardening.** What you'd want in place before pointing

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-16 17:27-0400\n"
+"POT-Creation-Date: 2026-05-16 17:54-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -155,6 +155,25 @@ msgstr "Difusión"
 msgid "Broadcasts"
 msgstr "Difusiones"
 
+msgid "Key of a registered Publisher (e.g. 'twitter', 'linkedin')."
+msgstr ""
+
+msgid "Public handle/username shown in the studio (e.g. '@aitorruiz')."
+msgstr ""
+
+msgid "Cached follower/subscriber count for display."
+msgstr ""
+
+#, fuzzy
+#| msgid "Change"
+msgid "Channel"
+msgstr "Cambiar"
+
+#, fuzzy
+#| msgid "Change"
+msgid "Channels"
+msgstr "Cambiar"
+
 #, fuzzy
 #| msgid "%(n)s scheduled"
 #| msgid_plural "%(n)s scheduled"
@@ -209,6 +228,95 @@ msgid ""
 "Send the broadcast as an email to every active subscriber of this site. Uses "
 "your project's configured EMAIL_BACKEND."
 msgstr ""
+
+msgid "X (Twitter)"
+msgstr "X (Twitter)"
+
+msgid "Post to an X account using its API v2 credentials."
+msgstr "Postear a una cuenta de X usando credenciales de API v2."
+
+#, fuzzy
+#| msgid "API key"
+msgid "API Key"
+msgstr "Clave API"
+
+#, fuzzy
+#| msgid "API key deleted."
+msgid "API Key Secret"
+msgstr "Clave API eliminada."
+
+msgid "Access Token"
+msgstr "Access Token"
+
+msgid "Access Token Secret"
+msgstr "Access Token Secret"
+
+msgid "Mastodon"
+msgstr "Mastodon"
+
+msgid "Post to a Mastodon instance with an account access token."
+msgstr "Postear a una instancia de Mastodon con access token de la cuenta."
+
+msgid "Instance URL"
+msgstr "URL de la instancia"
+
+msgid "The base URL of the Mastodon server you're posting to."
+msgstr "La URL base del servidor Mastodon al que estás posteando."
+
+msgid "Bluesky"
+msgstr "Bluesky"
+
+msgid "Post to a Bluesky account using its AT Protocol app password."
+msgstr ""
+"Postear a una cuenta de Bluesky usando su app password del AT Protocol."
+
+msgid "Handle"
+msgstr "Handle"
+
+#, fuzzy
+#| msgid "Password"
+msgid "App password"
+msgstr "Contraseña"
+
+msgid ""
+"Generate an app-specific password under Bluesky → Settings → App Passwords."
+msgstr ""
+
+msgid "LinkedIn"
+msgstr "LinkedIn"
+
+msgid "Post to a LinkedIn personal profile or company page."
+msgstr "Postear a un perfil personal o página de empresa en LinkedIn."
+
+#, fuzzy
+#| msgid "Owner"
+msgid "Owner URN"
+msgstr "Propietario"
+
+msgid "Whose page to post on. Find it in your LinkedIn developer console."
+msgstr "A qué página postear. Búscalo en tu consola de developer de LinkedIn."
+
+msgid "Instagram"
+msgstr "Instagram"
+
+msgid ""
+"Post to an Instagram Business or Creator account via Facebook's Graph API."
+msgstr ""
+
+#, fuzzy
+#| msgid "Access Token"
+msgid "Page Access Token"
+msgstr "Access Token"
+
+msgid ""
+"Long-lived Facebook Page access token with instagram_basic + pages_show_list."
+msgstr ""
+
+msgid "Instagram Business Account ID"
+msgstr "ID de la cuenta Instagram Business"
+
+msgid "Numeric IG Business Account ID linked to the Page."
+msgstr "ID numérico de la cuenta IG Business asociada al Page."
 
 msgid "API key created. Copy it now — won't be shown again."
 msgstr "Clave API creada. Cópiala ahora — no se mostrará de nuevo."
@@ -267,6 +375,22 @@ msgstr "El suscriptor ya existe."
 
 msgid "Subscriber removed."
 msgstr "Suscriptor eliminado."
+
+msgid "Unknown channel."
+msgstr "Canal desconocido."
+
+#, python-format
+msgid "Connected %(label)s as %(handle)s."
+msgstr "%(label)s conectado como %(handle)s."
+
+msgid "Channel paused."
+msgstr "Canal pausado."
+
+msgid "Channel resumed."
+msgstr "Canal reanudado."
+
+msgid "Channel disconnected."
+msgstr "Canal desconectado."
 
 msgid "Good evening"
 msgstr "Buenas noches"
@@ -438,6 +562,26 @@ msgstr ""
 
 msgid "Rol actualizado."
 msgstr ""
+
+msgid "You don't belong to that workspace."
+msgstr "No perteneces a ese workspace."
+
+#, python-format
+msgid "Switched to %(name)s."
+msgstr "Cambiado a %(name)s."
+
+#, fuzzy
+#| msgid "Email is required."
+msgid "Name is required."
+msgstr "Email obligatorio."
+
+#, python-format
+msgid "A workspace with domain '%(domain)s' already exists."
+msgstr "Ya existe un workspace con el dominio '%(domain)s'."
+
+#, python-format
+msgid "Workspace '%(name)s' created."
+msgstr "Workspace '%(name)s' creado."
 
 msgid "Bad request"
 msgstr "Solicitud inválida"
@@ -758,7 +902,8 @@ msgid "When you publish a post and pick \"Broadcast\", it'll show up here."
 msgstr "Cuando publiques o subas algo, aparecerá aquí."
 
 msgid "Send a standalone announcement to your audience — not tied to a post."
-msgstr "Envía un anuncio independiente a tu audiencia — sin estar atado a un post."
+msgstr ""
+"Envía un anuncio independiente a tu audiencia — sin estar atado a un post."
 
 msgid "Close"
 msgstr "Cerrar"
@@ -791,11 +936,159 @@ msgstr "Vacío = enviar ahora."
 msgid "Send broadcast"
 msgstr "Enviar difusión"
 
-msgid "Broadcast this post"
+#, python-format
+msgid "Connect %(label)s"
+msgstr "Conectar %(label)s"
+
+msgid "Handle (display name shown in the studio)"
+msgstr "Handle (nombre que se muestra en el studio)"
+
+msgid "Connect"
+msgstr "Conectar"
+
+msgid "Heads up:"
+msgstr "Atención:"
+
+msgid ""
+"Credentials are encrypted at rest with Fernet (key from "
+"<code>MADGA_CREDENTIAL_KEY</code>). Real OAuth flows land in 0.3.5 — for now "
+"this stores the token; the host project or future MADGA version handles the "
+"actual API call."
+msgstr ""
+
+msgid ""
+"Syndicate your posts to the platforms where readers already are. Edit the "
+"connection per account."
+msgstr ""
+
+#, fuzzy
+#| msgid "Create account"
+msgid "Connected accounts"
+msgstr "Crear cuenta"
+
+#, fuzzy, python-format
+#| msgid "%(n)s scheduled"
+#| msgid_plural "%(n)s scheduled"
+msgid "of %(n)s supported"
+msgid_plural "of %(n)s supported"
+msgstr[0] "%(n)s programado"
+msgstr[1] "%(n)s programados"
+msgstr[2] ""
+
+#, fuzzy
+#| msgid "Broadcast this post"
+msgid "Broadcasts this week"
 msgstr "Difundir este post"
 
-msgid "Fan out to the channels you've configured."
-msgstr "Difunde a los canales que tienes configurados."
+#, fuzzy
+#| msgid "Total views"
+msgid "Total reach"
+msgstr "Vistas totales"
+
+msgid "across active channels"
+msgstr "en canales activos"
+
+msgid "In queue"
+msgstr "En cola"
+
+#, fuzzy
+#| msgid "Last used"
+msgid "Paused"
+msgstr "Último uso"
+
+#, fuzzy, python-format
+#| msgid "scheduled %(when)s"
+msgid "Last posted %(when)s"
+msgstr "programada %(when)s"
+
+msgid "Never used"
+msgstr "Nunca usado"
+
+msgid "followers"
+msgstr "seguidores"
+
+msgid "Pause"
+msgstr "Pausar"
+
+msgid "Resume"
+msgstr "Reanudar"
+
+#, fuzzy
+#| msgid "Editorial"
+msgid "Edit credentials"
+msgstr "Editorial"
+
+msgid "Disconnect this account? You can reconnect it later."
+msgstr "¿Desconectar esta cuenta? Puedes reconectarla después."
+
+msgid "Disconnect"
+msgstr "Desconectar"
+
+#, fuzzy
+#| msgid "Create account"
+msgid "Add another account"
+msgstr "Crear cuenta"
+
+#, python-format
+msgid "%(n)s char limit per post"
+msgstr "Límite de %(n)s caracteres por post"
+
+#, fuzzy
+#| msgid "No publishers configured."
+msgid "No channel publishers registered"
+msgstr "Sin publishers configurados."
+
+msgid ""
+"Channel publishers ship with MADGA — install from PyPI or register your own."
+msgstr ""
+
+#, fuzzy, python-format
+#| msgid "Broadcast retried."
+msgid "Broadcast — %(title)s"
+msgstr "Difusión reintentada."
+
+msgid ""
+"Per-platform copy is auto-generated from the post. Edit each one to match "
+"the audience, then schedule or post immediately."
+msgstr ""
+
+#, fuzzy
+#| msgid "Broadcast"
+msgid "Broadcast to"
+msgstr "Difusión"
+
+msgid "No channels connected yet."
+msgstr "No hay canales conectados todavía."
+
+msgid "Connect one"
+msgstr "Conecta uno"
+
+msgid "Post copy"
+msgstr "Texto del post"
+
+#, fuzzy
+#| msgid "Featured post"
+msgid "Featured image"
+msgstr "Post destacado"
+
+#, fuzzy
+#| msgid "Button label"
+msgid "Link card"
+msgstr "Texto del botón"
+
+#, fuzzy
+#| msgid "%(n)s scheduled"
+#| msgid_plural "%(n)s scheduled"
+msgid "Schedule"
+msgstr "%(n)s programado"
+
+#, fuzzy
+#| msgid "Section title"
+msgid "Post immediately"
+msgstr "Título de la sección"
+
+msgid "At a specific time"
+msgstr "En un momento específico"
 
 #, fuzzy
 #| msgid "Editorial"
@@ -930,6 +1223,11 @@ msgstr "Crea el primero y aparecerá aquí."
 
 msgid "New post"
 msgstr "Nuevo post"
+
+#, fuzzy
+#| msgid "Workspace"
+msgid "New workspace"
+msgstr "Workspace"
 
 msgid "Dashboard"
 msgstr "Panel"
@@ -1362,11 +1660,6 @@ msgstr "Layout"
 msgid "Sort order"
 msgstr "Orden"
 
-#, fuzzy
-#| msgid "Featured post"
-msgid "Featured image"
-msgstr "Post destacado"
-
 msgid "Meta title"
 msgstr "Meta title"
 
@@ -1692,6 +1985,27 @@ msgid "No users yet"
 msgstr "Nuevo post"
 
 msgid ""
+"Spin up a new site you'll own. You become its owner; invite teammates from "
+"the Users page."
+msgstr ""
+
+msgid "e.g. Acme Inc."
+msgstr "ej: Acme S.A."
+
+msgid "Domain"
+msgstr ""
+
+msgid ""
+"Used to resolve which Site to load when someone hits a request. Leave empty "
+"to derive from the name."
+msgstr ""
+
+#, fuzzy
+#| msgid "Workspace"
+msgid "Create workspace"
+msgstr "Workspace"
+
+msgid ""
 "MADGA's stock theme. Tailwind-driven, generous whitespace, sans-serif "
 "throughout."
 msgstr ""
@@ -1716,3 +2030,6 @@ msgid ""
 "Editorial home with hero post + 4-up grid. Pairs with home-editorial + list-"
 "grid."
 msgstr ""
+
+#~ msgid "Fan out to the channels you've configured."
+#~ msgstr "Difunde a los canales que tienes configurados."

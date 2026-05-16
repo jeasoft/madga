@@ -195,9 +195,10 @@ wheels = [
 
 [[package]]
 name = "madga"
-version = "0.3.2"
+version = "0.3.4"
 source = { editable = "." }
 dependencies = [
+    { name = "cryptography" },
     { name = "django" },
     { name = "django-allauth", extra = ["headless"] },
     { name = "django-ninja" },
@@ -213,6 +214,7 @@ test = [
 
 [package.metadata]
 requires-dist = [
+    { name = "cryptography", specifier = ">=42" },
     { name = "django", specifier = ">=5.0,<6" },
     { name = "django-allauth", extras = ["headless"], specifier = ">=65.16.1" },
     { name = "django-ninja", specifier = ">=1.3" },

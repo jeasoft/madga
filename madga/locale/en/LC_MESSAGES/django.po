@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-16 17:27-0400\n"
+"POT-Creation-Date: 2026-05-16 17:54-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -152,6 +152,21 @@ msgstr ""
 msgid "Broadcasts"
 msgstr ""
 
+msgid "Key of a registered Publisher (e.g. 'twitter', 'linkedin')."
+msgstr ""
+
+msgid "Public handle/username shown in the studio (e.g. '@aitorruiz')."
+msgstr ""
+
+msgid "Cached follower/subscriber count for display."
+msgstr ""
+
+msgid "Channel"
+msgstr ""
+
+msgid "Channels"
+msgstr ""
+
 msgid "Scheduled"
 msgstr ""
 
@@ -198,6 +213,84 @@ msgstr ""
 msgid ""
 "Send the broadcast as an email to every active subscriber of this site. Uses "
 "your project's configured EMAIL_BACKEND."
+msgstr ""
+
+msgid "X (Twitter)"
+msgstr ""
+
+msgid "Post to an X account using its API v2 credentials."
+msgstr ""
+
+msgid "API Key"
+msgstr ""
+
+msgid "API Key Secret"
+msgstr ""
+
+msgid "Access Token"
+msgstr ""
+
+msgid "Access Token Secret"
+msgstr ""
+
+msgid "Mastodon"
+msgstr ""
+
+msgid "Post to a Mastodon instance with an account access token."
+msgstr ""
+
+msgid "Instance URL"
+msgstr ""
+
+msgid "The base URL of the Mastodon server you're posting to."
+msgstr ""
+
+msgid "Bluesky"
+msgstr ""
+
+msgid "Post to a Bluesky account using its AT Protocol app password."
+msgstr ""
+
+msgid "Handle"
+msgstr ""
+
+msgid "App password"
+msgstr ""
+
+msgid ""
+"Generate an app-specific password under Bluesky → Settings → App Passwords."
+msgstr ""
+
+msgid "LinkedIn"
+msgstr ""
+
+msgid "Post to a LinkedIn personal profile or company page."
+msgstr ""
+
+msgid "Owner URN"
+msgstr ""
+
+msgid "Whose page to post on. Find it in your LinkedIn developer console."
+msgstr ""
+
+msgid "Instagram"
+msgstr ""
+
+msgid ""
+"Post to an Instagram Business or Creator account via Facebook's Graph API."
+msgstr ""
+
+msgid "Page Access Token"
+msgstr ""
+
+msgid ""
+"Long-lived Facebook Page access token with instagram_basic + pages_show_list."
+msgstr ""
+
+msgid "Instagram Business Account ID"
+msgstr ""
+
+msgid "Numeric IG Business Account ID linked to the Page."
 msgstr ""
 
 msgid "API key created. Copy it now — won't be shown again."
@@ -258,6 +351,22 @@ msgid "Subscriber already exists."
 msgstr ""
 
 msgid "Subscriber removed."
+msgstr ""
+
+msgid "Unknown channel."
+msgstr ""
+
+#, python-format
+msgid "Connected %(label)s as %(handle)s."
+msgstr ""
+
+msgid "Channel paused."
+msgstr ""
+
+msgid "Channel resumed."
+msgstr ""
+
+msgid "Channel disconnected."
 msgstr ""
 
 msgid "Good evening"
@@ -430,6 +539,26 @@ msgstr "This invitation is no longer valid."
 
 msgid "Rol actualizado."
 msgstr "Role updated."
+
+msgid "You don't belong to that workspace."
+msgstr ""
+
+#, python-format
+msgid "Switched to %(name)s."
+msgstr ""
+
+#, fuzzy
+#| msgid "Email requerido."
+msgid "Name is required."
+msgstr "Email required."
+
+#, python-format
+msgid "A workspace with domain '%(domain)s' already exists."
+msgstr ""
+
+#, python-format
+msgid "Workspace '%(name)s' created."
+msgstr ""
 
 msgid "Bad request"
 msgstr ""
@@ -771,10 +900,132 @@ msgstr ""
 msgid "Send broadcast"
 msgstr ""
 
-msgid "Broadcast this post"
+#, python-format
+msgid "Connect %(label)s"
 msgstr ""
 
-msgid "Fan out to the channels you've configured."
+msgid "Handle (display name shown in the studio)"
+msgstr ""
+
+msgid "Connect"
+msgstr ""
+
+msgid "Heads up:"
+msgstr ""
+
+msgid ""
+"Credentials are encrypted at rest with Fernet (key from "
+"<code>MADGA_CREDENTIAL_KEY</code>). Real OAuth flows land in 0.3.5 — for now "
+"this stores the token; the host project or future MADGA version handles the "
+"actual API call."
+msgstr ""
+
+msgid ""
+"Syndicate your posts to the platforms where readers already are. Edit the "
+"connection per account."
+msgstr ""
+
+msgid "Connected accounts"
+msgstr ""
+
+#, python-format
+msgid "of %(n)s supported"
+msgid_plural "of %(n)s supported"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Broadcasts this week"
+msgstr ""
+
+msgid "Total reach"
+msgstr ""
+
+msgid "across active channels"
+msgstr ""
+
+msgid "In queue"
+msgstr ""
+
+msgid "Paused"
+msgstr ""
+
+#, python-format
+msgid "Last posted %(when)s"
+msgstr ""
+
+msgid "Never used"
+msgstr ""
+
+msgid "followers"
+msgstr ""
+
+msgid "Pause"
+msgstr ""
+
+msgid "Resume"
+msgstr ""
+
+msgid "Edit credentials"
+msgstr ""
+
+msgid "Disconnect this account? You can reconnect it later."
+msgstr ""
+
+msgid "Disconnect"
+msgstr ""
+
+msgid "Add another account"
+msgstr ""
+
+#, python-format
+msgid "%(n)s char limit per post"
+msgstr ""
+
+msgid "No channel publishers registered"
+msgstr ""
+
+msgid ""
+"Channel publishers ship with MADGA — install from PyPI or register your own."
+msgstr ""
+
+#, python-format
+msgid "Broadcast — %(title)s"
+msgstr ""
+
+msgid ""
+"Per-platform copy is auto-generated from the post. Edit each one to match "
+"the audience, then schedule or post immediately."
+msgstr ""
+
+#, fuzzy
+#| msgid "New post"
+msgid "Broadcast to"
+msgstr "New post"
+
+msgid "No channels connected yet."
+msgstr ""
+
+msgid "Connect one"
+msgstr ""
+
+msgid "Post copy"
+msgstr ""
+
+msgid "Featured image"
+msgstr ""
+
+msgid "Link card"
+msgstr ""
+
+msgid "Schedule"
+msgstr ""
+
+#, fuzzy
+#| msgid "Meta title"
+msgid "Post immediately"
+msgstr "Meta title"
+
+msgid "At a specific time"
 msgstr ""
 
 #, fuzzy
@@ -912,6 +1163,11 @@ msgstr ""
 
 msgid "New post"
 msgstr "New post"
+
+#, fuzzy
+#| msgid "Workspace"
+msgid "New workspace"
+msgstr "Workspace"
 
 msgid "Dashboard"
 msgstr "Dashboard"
@@ -1329,9 +1585,6 @@ msgstr "Layout"
 msgid "Sort order"
 msgstr "Sort order"
 
-msgid "Featured image"
-msgstr ""
-
 msgid "Meta title"
 msgstr "Meta title"
 
@@ -1645,6 +1898,27 @@ msgstr ""
 #| msgid "New post"
 msgid "No users yet"
 msgstr "New post"
+
+msgid ""
+"Spin up a new site you'll own. You become its owner; invite teammates from "
+"the Users page."
+msgstr ""
+
+msgid "e.g. Acme Inc."
+msgstr ""
+
+msgid "Domain"
+msgstr ""
+
+msgid ""
+"Used to resolve which Site to load when someone hits a request. Leave empty "
+"to derive from the name."
+msgstr ""
+
+#, fuzzy
+#| msgid "Workspace"
+msgid "Create workspace"
+msgstr "Workspace"
 
 msgid ""
 "MADGA's stock theme. Tailwind-driven, generous whitespace, sans-serif "
