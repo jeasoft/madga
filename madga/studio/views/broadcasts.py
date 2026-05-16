@@ -49,7 +49,7 @@ class BroadcastListView(MadgaStudioMixin, ListView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["publishers"] = all_publishers(only_configured=True)
+        ctx["publishers"] = all_publishers(only_configured=True, site=self.get_site())
         site = self.get_site()
         ctx["subscriber_count"] = (
             Subscriber.objects.filter(site=site, is_active=True).count() if site else 0

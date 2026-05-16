@@ -1,0 +1,51 @@
+{% extends "madga/studio/base.html" %}
+{% load i18n madga_studio_tags %}
+
+{% block breadcrumbs %}
+  <a href="{% url 'madga_studio:channel_list' %}" class="crumb">{% trans "Channels" %}</a>
+  <span class="sep">/</span>
+  <span class="crumb is-current">{{ publisher.label }}</span>
+{% endblock %}
+
+{% block content %}
+<div class="madga-page" style="max-width:560px;">
+  <div class="madga-card" style="padding:24px;">
+    <header style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
+      <div style="width:40px; height:40px; border-radius:10px; background:var(--bg-2); display:grid; place-items:center; color:var(--fg-0);">
+        {% if publisher.icon %}{% studio_icon publisher.icon size=20 stroke=2 %}{% else %}{% studio_icon "send" size=20 stroke=2 %}{% endif %}
+      </div>
+      <div>
+        <h1 class="madga-page-title" style="margin:0; font-size:18px;">{% blocktrans with label=publisher.label %}Connect {{ label }}{% endblocktrans %}</h1>
+        {% if publisher.description %}<p class="madga-page-subtitle" style="margin:2px 0 0;">{{ publisher.description }}</p>{% endif %}
+      </div>
+    </header>
+
+    <form method="post" style="display:flex; flex-direction:column; gap:14px;">
+      {% csrf_token %}
+
+      <div class="madga-field">
+        <label class="madga-field-label">{% trans "Handle (display name shown in the studio)" %}</label>
+        <input class="madga-input" type="text" name="handle" placeholder="@yourhandle" required>
+      </div>
+
+      {% for f in publisher.credential_fields %}
+        <div class="madga-field">
+          <label class="madga-field-label">{{ f.label }}</label>
+          <input class="madga-input" type="{% if f.secret %}password{% else %}text{% endif %}" name="{{ f.name }}" {% if f.placeholder %}placeholder="{{ f.placeholder }}"{% endif %} {% if f.secret %}autocomplete="off"{% endif %} required>
+          {% if f.help_text %}<span class="madga-field-help">{{ f.help_text }}</span>{% endif %}
+        </div>
+      {% endfor %}
+
+      <div style="display:flex; gap:8px; margin-top:6px;">
+        <button type="submit" class="madga-btn madga-btn--primary" style="flex:1;">{% studio_icon "check" size=12 stroke=2.5 %} {% trans "Connect" %}</button>
+        <a href="{% url 'madga_studio:channel_list' %}" class="madga-btn">{% trans "Cancel" %}</a>
+      </div>
+    </form>
+
+    <p style="margin-top:18px; padding:10px 12px; background:var(--bg-2); border-radius:8px; font-size:12px; color:var(--fg-2); line-height:1.5;">
+      <strong>{% trans "Heads up:" %}</strong>
+      {% blocktrans %}Credentials are encrypted at rest with Fernet (key from <code>MADGA_CREDENTIAL_KEY</code>). Real OAuth flows land in 0.3.5 — for now this stores the token; the host project or future MADGA version handles the actual API call.{% endblocktrans %}
+    </p>
+  </div>
+</div>
+{% endblock %}

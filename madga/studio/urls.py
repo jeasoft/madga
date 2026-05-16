@@ -36,6 +36,12 @@ from .views.taxonomy import (
     TaxonomyListView,
 )
 from .views.api_keys import UserApiKeyListView
+from .views.channels import (
+    ChannelConnectView,
+    ChannelDisconnectView,
+    ChannelListView,
+    ChannelToggleView,
+)
 from .views.broadcasts import (
     BroadcastCancelView,
     BroadcastCreateView,
@@ -111,4 +117,9 @@ urlpatterns = [
 
     path("workspaces/new/", WorkspaceCreateView.as_view(), name="workspace_create"),
     path("workspaces/switch/", WorkspaceSwitchView.as_view(), name="workspace_switch"),
+
+    path("channels/", ChannelListView.as_view(), name="channel_list"),
+    path("channels/<str:key>/connect/", ChannelConnectView.as_view(), name="channel_connect"),
+    path("channels/<uuid:pk>/toggle/", ChannelToggleView.as_view(), name="channel_toggle"),
+    path("channels/<uuid:pk>/disconnect/", ChannelDisconnectView.as_view(), name="channel_disconnect"),
 ]

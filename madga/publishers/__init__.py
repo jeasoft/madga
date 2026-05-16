@@ -22,6 +22,7 @@ Publisher uses Django's email backend and ships in this package.
 """
 
 from .base import (
+    CredField,
     Publisher,
     PublishResult,
     all_publishers,
@@ -29,10 +30,12 @@ from .base import (
     register_publisher,
 )
 
-# Side-effect: registers the built-in email publisher.
+# Side-effects: register the built-in publishers.
 from . import email  # noqa: F401
+from . import social  # noqa: F401  Twitter / Mastodon / Bluesky / LinkedIn stubs
 
 __all__ = [
+    "CredField",
     "Publisher",
     "PublishResult",
     "all_publishers",

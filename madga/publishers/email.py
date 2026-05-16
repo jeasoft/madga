@@ -19,7 +19,7 @@ class EmailSubscribersPublisher(Publisher):
     )
     icon = "mail"
 
-    def is_configured(self) -> bool:
+    def is_configured(self, site=None) -> bool:
         # Django always has an email backend (console/locmem in dev). We never
         # block this publisher — projects in dev can still try it and see the
         # rendered emails in the console.

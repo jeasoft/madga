@@ -157,7 +157,7 @@ class PostEditView(MadgaStudioMixin, View):
                 "membership": self.get_membership(),
                 "post_body_json": json.dumps(post.body if post else {}),
                 "selected_tag_slugs": list(post.tags.values_list("slug", flat=True)) if post else [],
-                "broadcast_publishers": all_publishers(only_configured=True),
+                "broadcast_publishers": all_publishers(only_configured=True, site=site),
             },
         )
 

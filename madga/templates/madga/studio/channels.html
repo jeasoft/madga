@@ -1,0 +1,101 @@
+{% extends "madga/studio/base.html" %}
+{% load i18n humanize madga_studio_tags %}
+
+{% block breadcrumbs %}<span class="crumb is-current">{% trans "Channels" %}</span>{% endblock %}
+
+{% block content %}
+<div class="madga-page">
+  <div class="madga-page-header">
+    <div class="madga-page-title-block">
+      <h1 class="madga-page-title">{% trans "Channels" %}</h1>
+      <p class="madga-page-subtitle">{% trans "Syndicate your posts to the platforms where readers already are. Edit the connection per account." %}</p>
+    </div>
+  </div>
+
+  <div class="madga-stat-grid">
+    <div class="madga-stat-card">
+      <div class="madga-stat-label">{% trans "Connected accounts" %}</div>
+      <div class="madga-stat-value">{{ connected_count }}</div>
+      <div class="madga-stat-meta">{% blocktrans count n=supported_count %}of {{ n }} supported{% plural %}of {{ n }} supported{% endblocktrans %}</div>
+    </div>
+    <div class="madga-stat-card">
+      <div class="madga-stat-label">{% trans "Broadcasts this week" %}</div>
+      <div class="madga-stat-value">{{ broadcasts_7d }}</div>
+    </div>
+    <div class="madga-stat-card">
+      <div class="madga-stat-label">{% trans "Total reach" %}</div>
+      <div class="madga-stat-value">{{ total_reach|intcomma }}</div>
+      <div class="madga-stat-meta">{% trans "across active channels" %}</div>
+    </div>
+    <div class="madga-stat-card">
+      <div class="madga-stat-label">{% trans "In queue" %}</div>
+      <div class="madga-stat-value">{{ in_queue }}</div>
+    </div>
+  </div>
+
+  <h2 class="madga-card-title" style="margin: 24px 0 12px;">{% trans "Connected accounts" %}</h2>
+
+  <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px;">
+    {% for p in publishers %}
+      {% with accts=accounts_by_key|get_item:p.key %}
+      <div class="madga-card" style="padding:16px;">
+        <header style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+          <div style="width:32px; height:32px; border-radius:8px; background:var(--bg-2); display:grid; place-items:center; color:var(--fg-0);">
+            {% if p.icon %}{% studio_icon p.icon size=16 stroke=2 %}{% else %}{% studio_icon "send" size=16 stroke=2 %}{% endif %}
+          </div>
+          <div style="flex:1; min-width:0;">
+            <div style="font-weight:600; color:var(--fg-0); font-size:14px;">{{ p.label }}</div>
+            {% if p.description %}<div style="color:var(--fg-2); font-size:11.5px; margin-top:2px;">{{ p.description }}</div>{% endif %}
+          </div>
+        </header>
+
+        {% if accts %}
+          {% for a in accts %}
+            <div style="padding:10px 12px; border:1px solid var(--border); border-radius:8px; margin-top:8px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <strong style="flex:1; color:var(--fg-0); font-size:13px;">{{ a.handle|default:a.display_name|default:"—" }}</strong>
+                {% if a.is_active %}
+                  {% studio_badge "published" _("Active") %}
+                {% else %}
+                  {% studio_badge "archived" _("Paused") %}
+                {% endif %}
+              </div>
+              <div style="font-size:11.5px; color:var(--fg-2); margin-top:6px;">
+                {% if a.last_used_at %}{% blocktrans with when=a.last_used_at|naturaltime %}Last posted {{ when }}{% endblocktrans %}{% else %}{% trans "Never used" %}{% endif %}
+                {% if a.audience_size %} · {{ a.audience_size|intcomma }} {% trans "followers" %}{% endif %}
+              </div>
+              {% if a.last_error %}
+                <div style="font-size:11px; color:#dc2626; margin-top:6px;">⚠ {{ a.last_error|truncatechars:140 }}</div>
+              {% endif %}
+              <div style="display:flex; gap:6px; margin-top:10px;">
+                <form method="post" action="{% url 'madga_studio:channel_toggle' pk=a.pk %}" style="margin:0;">{% csrf_token %}
+                  <button type="submit" class="madga-btn madga-btn--sm">
+                    {% if a.is_active %}{% trans "Pause" %}{% else %}{% trans "Resume" %}{% endif %}
+                  </button>
+                </form>
+                <a href="{% url 'madga_studio:channel_connect' key=p.key %}?account_id={{ a.pk }}" class="madga-btn madga-btn--sm madga-btn--ghost">{% trans "Edit credentials" %}</a>
+                <form method="post" action="{% url 'madga_studio:channel_disconnect' pk=a.pk %}" style="margin:0; margin-left:auto;">{% csrf_token %}
+                  <button type="submit" class="madga-btn madga-btn--sm madga-btn--ghost madga-btn--danger" data-madga-confirm="{% trans 'Disconnect this account? You can reconnect it later.' %}" title="{% trans 'Disconnect' %}">{% studio_icon "trash" size=12 stroke=2 %}</button>
+                </form>
+              </div>
+            </div>
+          {% endfor %}
+          <a href="{% url 'madga_studio:channel_connect' key=p.key %}" class="madga-btn madga-btn--sm madga-btn--ghost" style="margin-top:8px; width:100%; justify-content:center;">
+            {% studio_icon "plus" size=12 stroke=2.5 %} {% trans "Add another account" %}
+          </a>
+        {% else %}
+          <a href="{% url 'madga_studio:channel_connect' key=p.key %}" class="madga-btn madga-btn--sm madga-btn--primary" style="width:100%; justify-content:center;">
+            {% studio_icon "plus" size=12 stroke=2.5 %} {% trans "Connect" %}
+          </a>
+          {% if p.char_limit %}
+            <div style="font-size:11px; color:var(--fg-3); text-align:center; margin-top:6px;">{% blocktrans with n=p.char_limit %}{{ n }} char limit per post{% endblocktrans %}</div>
+          {% endif %}
+        {% endif %}
+      </div>
+      {% endwith %}
+    {% empty %}
+      {% studio_empty title=_("No channel publishers registered") message=_("Channel publishers ship with MADGA — install from PyPI or register your own.") %}
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

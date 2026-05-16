@@ -111,6 +111,9 @@
     </a>
 
     <div class="madga-nav-section">{% trans "Broadcast" %}</div>
+    <a href="{% url 'madga_studio:channel_list' %}" class="madga-nav-item {% studio_active request 'channel_list' 'channel_connect' %}">
+      {% studio_icon "broadcast" %} {% trans "Channels" %}
+    </a>
     <a href="{% url 'madga_studio:broadcast_list' %}" class="madga-nav-item {% studio_active request 'broadcast_list' %}">
       {% studio_icon "send" %} {% trans "Broadcasts" %}
     </a>
