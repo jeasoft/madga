@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-16 15:46-0400\n"
+"POT-Creation-Date: 2026-05-16 16:53-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -96,6 +96,42 @@ msgstr "Páginas"
 
 msgid "File uploaded"
 msgstr "Archivo subido"
+
+#, fuzzy
+#| msgid "%(n)s scheduled"
+#| msgid_plural "%(n)s scheduled"
+msgid "Scheduled"
+msgstr "%(n)s programado"
+
+msgid "Archived"
+msgstr "Archivado"
+
+msgid "Owner"
+msgstr "Propietario"
+
+#, fuzzy
+#| msgid "Editorial"
+msgid "Editor"
+msgstr "Editorial"
+
+msgid "Author"
+msgstr "Autor"
+
+msgid "Contributor"
+msgstr "Colaborador"
+
+#, fuzzy
+#| msgid "Branding"
+msgid "Pending"
+msgstr "Marca"
+
+#, fuzzy
+#| msgid "Accent"
+msgid "Accepted"
+msgstr "Accent"
+
+msgid "Expired"
+msgstr "Vencida"
 
 msgid "API key created. Copy it now — won't be shown again."
 msgstr "Clave API creada. Cópiala ahora — no se mostrará de nuevo."
@@ -547,9 +583,6 @@ msgstr "Subir nuevo"
 msgid "Category"
 msgstr "Categoría"
 
-msgid "Author"
-msgstr "Autor"
-
 msgid "Date"
 msgstr "Fecha"
 
@@ -664,11 +697,6 @@ msgstr "Últimos 7 días"
 #| msgid "When you publish or upload something, it'll show up here."
 msgid "Nothing recent. When you publish or upload, it'll show up here."
 msgstr "Cuando publiques o subas algo, aparecerá aquí."
-
-#, fuzzy
-#| msgid "Editorial"
-msgid "Editor"
-msgstr "Editorial"
 
 msgid "Open the block menu (heading, list, image, code…)"
 msgstr "Abrir el menú de bloques (encabezado, lista, imagen, código…)"
@@ -1311,11 +1339,6 @@ msgstr "Usuarios"
 
 msgid "Since"
 msgstr "Desde"
-
-#, fuzzy
-#| msgid "Branding"
-msgid "Pending"
-msgstr "Marca"
 
 #, fuzzy
 #| msgid "New post"

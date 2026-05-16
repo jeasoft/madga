@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-16 15:46-0400\n"
+"POT-Creation-Date: 2026-05-16 16:53-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -92,6 +92,39 @@ msgid "Page"
 msgstr "Pages"
 
 msgid "File uploaded"
+msgstr ""
+
+msgid "Scheduled"
+msgstr ""
+
+#, fuzzy
+#| msgid "Archivo eliminado."
+msgid "Archived"
+msgstr "File deleted."
+
+msgid "Owner"
+msgstr ""
+
+#, fuzzy
+#| msgid "Editar"
+msgid "Editor"
+msgstr "Edit"
+
+msgid "Author"
+msgstr ""
+
+msgid "Contributor"
+msgstr ""
+
+#, fuzzy
+#| msgid "Settings"
+msgid "Pending"
+msgstr "Settings"
+
+msgid "Accepted"
+msgstr ""
+
+msgid "Expired"
 msgstr ""
 
 msgid "API key created. Copy it now — won't be shown again."
@@ -552,9 +585,6 @@ msgstr ""
 msgid "Category"
 msgstr "Category"
 
-msgid "Author"
-msgstr ""
-
 msgid "Date"
 msgstr ""
 
@@ -665,11 +695,6 @@ msgstr ""
 
 msgid "Nothing recent. When you publish or upload, it'll show up here."
 msgstr ""
-
-#, fuzzy
-#| msgid "Editar"
-msgid "Editor"
-msgstr "Edit"
 
 msgid "Open the block menu (heading, list, image, code…)"
 msgstr ""
@@ -1289,11 +1314,6 @@ msgstr "Users"
 
 msgid "Since"
 msgstr ""
-
-#, fuzzy
-#| msgid "Settings"
-msgid "Pending"
-msgstr "Settings"
 
 #, fuzzy
 #| msgid "New post"

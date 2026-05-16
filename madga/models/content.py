@@ -2,6 +2,7 @@
 
 from django.conf import settings
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from .base import SoftDeleteMixin, TimestampMixin, UUIDMixin
 
@@ -12,10 +13,10 @@ class Post(UUIDMixin, TimestampMixin, SoftDeleteMixin, models.Model):
     STATUS_SCHEDULED = "scheduled"
     STATUS_ARCHIVED = "archived"
     STATUS_CHOICES = [
-        (STATUS_DRAFT, "Borrador"),
-        (STATUS_PUBLISHED, "Publicado"),
-        (STATUS_SCHEDULED, "Programado"),
-        (STATUS_ARCHIVED, "Archivado"),
+        (STATUS_DRAFT, _("Draft")),
+        (STATUS_PUBLISHED, _("Published")),
+        (STATUS_SCHEDULED, _("Scheduled")),
+        (STATUS_ARCHIVED, _("Archived")),
     ]
 
     site = models.ForeignKey(

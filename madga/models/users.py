@@ -4,6 +4,7 @@ import secrets
 
 from django.conf import settings
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from .base import TimestampMixin
 
@@ -14,10 +15,10 @@ class SiteUser(TimestampMixin, models.Model):
     ROLE_AUTHOR = "author"
     ROLE_CONTRIBUTOR = "contributor"
     ROLE_CHOICES = [
-        (ROLE_OWNER, "Owner"),
-        (ROLE_EDITOR, "Editor"),
-        (ROLE_AUTHOR, "Author"),
-        (ROLE_CONTRIBUTOR, "Contributor"),
+        (ROLE_OWNER, _("Owner")),
+        (ROLE_EDITOR, _("Editor")),
+        (ROLE_AUTHOR, _("Author")),
+        (ROLE_CONTRIBUTOR, _("Contributor")),
     ]
 
     site = models.ForeignKey(
@@ -46,9 +47,9 @@ class UserInvitation(TimestampMixin, models.Model):
     STATUS_ACCEPTED = "accepted"
     STATUS_EXPIRED = "expired"
     STATUS_CHOICES = [
-        (STATUS_PENDING, "Pending"),
-        (STATUS_ACCEPTED, "Accepted"),
-        (STATUS_EXPIRED, "Expired"),
+        (STATUS_PENDING, _("Pending")),
+        (STATUS_ACCEPTED, _("Accepted")),
+        (STATUS_EXPIRED, _("Expired")),
     ]
 
     site = models.ForeignKey(
