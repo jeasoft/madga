@@ -51,6 +51,7 @@ from .views.users import (
     UserListView,
     UserRoleUpdateView,
 )
+from .views.workspaces import WorkspaceCreateView, WorkspaceSwitchView
 
 app_name = "madga_studio"
 
@@ -107,4 +108,7 @@ urlpatterns = [
     path("subscribers/", SubscriberListView.as_view(), name="subscriber_list"),
     path("subscribers/add/", SubscriberAddView.as_view(), name="subscriber_add"),
     path("subscribers/<uuid:pk>/delete/", SubscriberDeleteView.as_view(), name="subscriber_delete"),
+
+    path("workspaces/new/", WorkspaceCreateView.as_view(), name="workspace_create"),
+    path("workspaces/switch/", WorkspaceSwitchView.as_view(), name="workspace_switch"),
 ]

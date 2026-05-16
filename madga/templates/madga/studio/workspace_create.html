@@ -1,0 +1,30 @@
+{% extends "madga/studio/base.html" %}
+{% load i18n madga_studio_tags %}
+
+{% block breadcrumbs %}<span class="crumb is-current">{% trans "New workspace" %}</span>{% endblock %}
+
+{% block content %}
+<div class="madga-page" style="max-width:520px; margin: 40px auto;">
+  <div class="madga-card" style="padding:28px;">
+    <h1 class="madga-page-title" style="margin:0 0 6px; font-size:22px;">{% trans "New workspace" %}</h1>
+    <p class="madga-page-subtitle" style="margin:0 0 22px;">{% trans "Spin up a new site you'll own. You become its owner; invite teammates from the Users page." %}</p>
+
+    <form method="post" style="display:flex; flex-direction:column; gap:14px;">
+      {% csrf_token %}
+      <div class="madga-field">
+        <label class="madga-field-label">{% trans "Name" %}</label>
+        <input class="madga-input" type="text" name="name" value="{{ name|default:'' }}" placeholder="{% trans 'e.g. Acme Inc.' %}" required autofocus>
+      </div>
+      <div class="madga-field">
+        <label class="madga-field-label">{% trans "Domain" %}</label>
+        <input class="madga-input" type="text" name="domain" value="{{ domain|default:'' }}" placeholder="acme.com">
+        <span class="madga-field-help">{% trans "Used to resolve which Site to load when someone hits a request. Leave empty to derive from the name." %}</span>
+      </div>
+      <div style="display:flex; gap:8px; margin-top:6px;">
+        <button type="submit" class="madga-btn madga-btn--primary">{% studio_icon "plus" size=12 stroke=2.5 %} {% trans "Create workspace" %}</button>
+        <a href="{% url 'madga_studio:dashboard' %}" class="madga-btn">{% trans "Cancel" %}</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

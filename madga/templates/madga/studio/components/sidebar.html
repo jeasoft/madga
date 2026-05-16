@@ -5,11 +5,71 @@
     <span class="madga-brand-name">Ma<span class="accent">DG</span>A</span>
   </div>
 
-  <div class="madga-workspace">
+  <div class="madga-workspace" data-madga-ws-toggle role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">
     <div class="madga-workspace-avatar">{{ site.name|first|default:"M"|upper }}</div>
     <div class="madga-workspace-name">{{ site.name|default:"MADGA" }}</div>
     {% studio_icon "chevron-down" size=14 css_class="text-[var(--fg-2)]" %}
   </div>
+
+  {# Workspace switcher dropdown — populated by the studio_topbar context processor with user_sites. #}
+  <div class="madga-ws-menu" data-madga-ws-menu hidden>
+    {% if user_sites %}
+      {% for s in user_sites %}
+        <form method="post" action="{% url 'madga_studio:workspace_switch' %}" style="margin:0;">
+          {% csrf_token %}
+          <input type="hidden" name="site_id" value="{{ s.id }}">
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <button type="submit" class="madga-ws-menu-item {% if s.id == site.id %}is-active{% endif %}">
+            <span class="madga-workspace-avatar" style="width:22px; height:22px; font-size:11px;">{{ s.name|first|upper }}</span>
+            <span style="flex:1; text-align:left; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ s.name }}</span>
+            {% if s.id == site.id %}{% studio_icon "check" size=12 stroke=2.5 %}{% endif %}
+          </button>
+        </form>
+      {% endfor %}
+    {% endif %}
+    <a href="{% url 'madga_studio:workspace_create' %}" class="madga-ws-menu-item madga-ws-menu-create">
+      {% studio_icon "plus" size=12 stroke=2.5 %}
+      <span>{% trans "New workspace" %}</span>
+    </a>
+  </div>
+
+  <style>
+    .madga-workspace { cursor: pointer; }
+    .madga-workspace[aria-expanded="true"] { background: var(--bg-2); }
+    .madga-ws-menu {
+      margin: 4px 12px 10px;
+      background: var(--bg-1);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+    .madga-ws-menu[hidden] { display: none; }
+    .madga-ws-menu-item {
+      display: flex; align-items: center; gap: 8px;
+      width: 100%; padding: 8px 10px;
+      background: transparent; border: 0; cursor: pointer;
+      color: var(--fg-1); font-size: 13px; font-family: inherit;
+      text-decoration: none;
+    }
+    .madga-ws-menu-item:hover { background: var(--bg-2); color: var(--fg-0); }
+    .madga-ws-menu-item.is-active { color: var(--accent); font-weight: 500; }
+    .madga-ws-menu-create { border-top: 1px solid var(--border); color: var(--fg-2); }
+  </style>
+  <script>
+  (function () {
+    var toggle = document.querySelector('[data-madga-ws-toggle]');
+    var menu = document.querySelector('[data-madga-ws-menu]');
+    if (!toggle || !menu) return;
+    function close() { menu.hidden = true; toggle.setAttribute('aria-expanded', 'false'); }
+    function open() { menu.hidden = false; toggle.setAttribute('aria-expanded', 'true'); }
+    toggle.addEventListener('click', function () { menu.hidden ? open() : close(); });
+    toggle.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); menu.hidden ? open() : close(); } });
+    document.addEventListener('click', function (e) {
+      if (!menu.contains(e.target) && !toggle.contains(e.target)) close();
+    });
+  })();
+  </script>
 
   <a href="{% url 'madga_studio:post_create' %}" class="madga-new-post-btn">
     {% studio_icon "plus" size=14 stroke=2.5 %} {% trans "New post" %}

@@ -24,16 +24,19 @@ def current_site(request):
 
 
 def studio_topbar(request):
-    """Topbar widgets: recent activity for the notifications panel.
+    """Topbar + sidebar widgets: recent activity + user's accessible workspaces.
 
-    Cheap query: 5 most recent posts/pages/media for the active site.
-    Only enabled inside the studio, where it's actually shown.
+    Cheap queries — only enabled inside the studio, where the data is shown.
     """
     if not request.path.startswith("/studio"):
         return {}
     site = getattr(request, "madga_site", None)
+    user_sites = []
+    if request.user.is_authenticated:
+        from madga.studio.views.workspaces import _user_sites
+        user_sites = list(_user_sites(request.user))
     if site is None:
-        return {"recent_activity": []}
+        return {"recent_activity": [], "user_sites": user_sites}
 
     events = []
     posts = (
@@ -85,4 +88,4 @@ def studio_topbar(request):
             }
         )
     events.sort(key=lambda e: e["when"], reverse=True)
-    return {"recent_activity": events[:8]}
+    return {"recent_activity": events[:8], "user_sites": user_sites}

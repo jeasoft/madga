@@ -19,11 +19,34 @@ class MadgaStudioMiddleware:
         if not path.startswith("/studio/"):
             return self.get_response(request)
 
-        # Resolve active site by host or fallback
-        host = request.get_host().split(":")[0]
-        site = Site.objects.filter(domain=host, is_active=True).first()
+        # Resolve the active Site for this request. Precedence:
+        #   1. An upstream middleware or view already set ``request.madga_site``
+        #      (e.g. host project mounts MADGA at /company/<slug>/studio/ and
+        #      resolves the slug → Site). We respect that and don't overwrite.
+        #   2. Session-pinned site from the workspace switcher.
+        #   3. Host-based lookup (one Site per domain — classic single-tenant).
+        #   4. Any active Site as last-resort fallback (single-Site projects).
+        site = getattr(request, "madga_site", None)
+
+        if site is None:
+            session_site_id = request.session.get("madga_active_site_id")
+            if session_site_id:
+                site = Site.objects.filter(
+                    id=session_site_id, is_active=True
+                ).first()
+                # Authorize: superusers always; otherwise must be a member.
+                if site is not None and not request.user.is_superuser and request.user.is_authenticated:
+                    if not SiteUser.objects.filter(site=site, user=request.user).exists():
+                        site = None  # session pin was stale or unauthorized
+                        request.session.pop("madga_active_site_id", None)
+
+        if site is None:
+            host = request.get_host().split(":")[0]
+            site = Site.objects.filter(domain=host, is_active=True).first()
+
         if site is None:
             site = Site.objects.filter(is_active=True).order_by("id").first()
+
         request.madga_site = site
 
         # Public Studio pages don't need auth
