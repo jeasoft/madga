@@ -1,0 +1,83 @@
+{% extends "madga/studio/base.html" %}
+{% load i18n madga_studio_tags %}
+
+{% block breadcrumbs %}<span class="crumb">Workspace</span><span class="sep">/</span><span class="crumb is-current">{% trans "API keys" %}</span>{% endblock %}
+
+{% block content %}
+<div class="madga-page" style="max-width:880px;">
+  <div class="madga-page-header">
+    <div class="madga-page-title-block">
+      <h1 class="madga-page-title">{% trans "Your API keys" %}</h1>
+      <p class="madga-page-subtitle">{% trans "Personal tokens for the headless API. Each key is bound to your user — revoking it doesn't affect others. Bearer auth: " %}<code>Authorization: Bearer madga_…</code></p>
+    </div>
+  </div>
+
+  {% if new_key %}
+    <div class="madga-card" style="border: 1px solid var(--accent); background: var(--accent-soft); padding: 16px; margin-bottom: 18px;">
+      <h2 class="madga-card-title">{% trans "New key" %}: {{ new_key_label }}</h2>
+      <p class="madga-card-subtitle" style="margin-top: 4px;">{% trans "Copy this now — for security, we won't show it again." %}</p>
+      <code style="display:block; padding:12px 14px; background:var(--bg-1); border:1px solid var(--border-strong); border-radius:8px; margin-top:10px; font-family:var(--font-mono); font-size:12.5px; word-break:break-all;">{{ new_key }}</code>
+    </div>
+  {% endif %}
+
+  <div class="madga-card" style="padding:18px; margin-bottom:18px;">
+    <h2 class="madga-card-title">{% trans "Create a new key" %}</h2>
+    <form method="post" style="display:flex; gap:8px; margin-top:10px; align-items:end;">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="create">
+      <div class="madga-field" style="margin:0; flex:1;">
+        <label class="madga-field-label">{% trans "Label" %}</label>
+        <input class="madga-input" type="text" name="label" placeholder="iOS app, CI bot, …" required>
+      </div>
+      <button type="submit" class="madga-btn madga-btn--sm madga-btn--primary">{% studio_icon "plus" size=12 stroke=2.5 %} {% trans "Generate" %}</button>
+    </form>
+  </div>
+
+  <div class="madga-card" style="padding:0;">
+    <table class="madga-table">
+      <thead><tr>
+        <th>{% trans "Label" %}</th>
+        <th>{% trans "Key" %}</th>
+        <th>{% trans "Last used" %}</th>
+        <th>{% trans "Status" %}</th>
+        <th class="col-actions"></th>
+      </tr></thead>
+      <tbody>
+        {% for k in keys %}
+          <tr>
+            <td><strong>{{ k.label }}</strong></td>
+            <td><code style="font-family:var(--font-mono); font-size:11.5px; color:var(--fg-2);">{{ k.display_key }}</code></td>
+            <td style="color:var(--fg-2); font-size:12px;">{% if k.last_used_at %}{{ k.last_used_at|timesince }} {% trans "ago" %}{% else %}—{% endif %}</td>
+            <td>
+              {% if k.is_active %}{% studio_badge "published" _("Active") %}{% else %}{% studio_badge "archived" _("Revoked") %}{% endif %}
+            </td>
+            <td class="col-actions">
+              <div style="display:flex; gap:4px; justify-content:flex-end;">
+                {% if k.is_active %}
+                  <form method="post" style="margin:0;">{% csrf_token %}
+                    <input type="hidden" name="action" value="rotate">
+                    <input type="hidden" name="pk" value="{{ k.pk }}">
+                    <button type="submit" class="madga-icon-btn" title="{% trans 'Rotate' %}" data-madga-confirm="{% trans 'Rotate this key? The current value will stop working immediately.' %}">{% studio_icon "edit" size=12 stroke=2 %}</button>
+                  </form>
+                  <form method="post" style="margin:0;">{% csrf_token %}
+                    <input type="hidden" name="action" value="revoke">
+                    <input type="hidden" name="pk" value="{{ k.pk }}">
+                    <button type="submit" class="madga-icon-btn" title="{% trans 'Revoke' %}" data-madga-confirm="{% trans 'Revoke this key? It can be re-enabled later.' %}">{% studio_icon "x" size=12 stroke=2 %}</button>
+                  </form>
+                {% endif %}
+                <form method="post" style="margin:0;">{% csrf_token %}
+                  <input type="hidden" name="action" value="delete">
+                  <input type="hidden" name="pk" value="{{ k.pk }}">
+                  <button type="submit" class="madga-icon-btn" title="{% trans 'Delete' %}" data-madga-confirm="{% trans 'Permanently delete this key?' %}">{% studio_icon "trash" size=12 stroke=2 %}</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="5">{% studio_empty title=_("No API keys yet") message=_("Generate one above to authenticate apps against the headless API.") %}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

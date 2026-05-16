@@ -1,0 +1,31 @@
+{# Public-site base template for host projects.
+
+   Extend this in any custom view (job board, profile page, marketplace
+   listing, etc.) to inherit the MADGA public chrome: header with brand +
+   nav, theme tokens (--color-accent etc.), GA/Pixel injection, footer,
+   responsive hamburger.
+
+   Available blocks:
+     title              → <title>
+     meta_description   → <meta name=description>
+     og                 → all <meta property=og:*>
+     og_title           → <meta property=og:title> (inside og)
+     head_extra         → end of <head>, for stylesheets / scripts you load
+     content            → <main> body
+     footer             → entire footer (override to replace, super to keep)
+     body_extra         → end of <body>, for modals / scripts
+
+   Usage::
+
+       {% extends "madga/site_base.html" %}
+       {% block title %}Jobs · {{ site.name }}{% endblock %}
+       {% block content %}
+         <section class="max-w-5xl mx-auto px-4 py-12">
+           <h1>Open positions</h1>
+           …
+         </section>
+       {% endblock %}
+
+   This is the canonical name for host projects. Internally MADGA also
+   uses madga/blog/base.html which is the same template — both work. #}
+{% extends "madga/blog/base.html" %}

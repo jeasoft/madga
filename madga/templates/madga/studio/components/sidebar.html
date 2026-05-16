@@ -57,6 +57,9 @@
     <a href="{% url 'madga_studio:settings' %}" class="madga-nav-item {% studio_active request 'settings' %}">
       {% studio_icon "settings" %} {% trans "Settings" %}
     </a>
+    <a href="{% url 'madga_studio:api_keys' %}" class="madga-nav-item {% studio_active request 'api_keys' %}">
+      {% studio_icon "external" %} {% trans "API keys" %}
+    </a>
   </nav>
 
   <div style="flex:1"></div>

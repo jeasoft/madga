@@ -104,12 +104,15 @@
   {% block content %}{% endblock %}
 </main>
 
+{% block footer %}
 <footer class="border-t border-slate-200 dark:border-slate-800 mt-20">
   <div class="max-w-3xl mx-auto px-4 sm:px-6 py-8 text-sm text-slate-500 dark:text-slate-400 flex flex-col sm:flex-row gap-4 sm:items-center">
     <div>© {% now "Y" %} {{ site.name }}</div>
     <div class="sm:ml-auto">Powered by <a href="https://github.com/jeasoft/madga" class="hover:text-accent font-medium">MADGA</a></div>
   </div>
 </footer>
+{% endblock %}
 
+{% block body_extra %}{% endblock %}
 </body>
 </html>

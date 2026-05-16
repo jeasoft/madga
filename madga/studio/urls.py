@@ -35,6 +35,7 @@ from .views.taxonomy import (
     TagDeleteView,
     TaxonomyListView,
 )
+from .views.api_keys import UserApiKeyListView
 from .views.users import (
     AcceptInviteView,
     UserInviteView,
@@ -81,6 +82,7 @@ urlpatterns = [
     path("users/invite/", UserInviteView.as_view(), name="user_invite"),
     path("users/<int:pk>/role/", UserRoleUpdateView.as_view(), name="user_role"),
     path("accept-invite/<str:token>/", AcceptInviteView.as_view(), name="accept_invite"),
+    path("api-keys/", UserApiKeyListView.as_view(), name="api_keys"),
 
     path("settings/", SettingsView.as_view(), name="settings"),
     path("theme/", ThemeView.as_view(), name="theme"),
