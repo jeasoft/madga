@@ -3,12 +3,12 @@
   <thead>
     <tr>
       <th class="col-check"><input type="checkbox" data-madga-select-all form="post-bulk-form"></th>
-      <th>Título</th>
-      <th>{% trans "Estado" %}</th>
-      <th>{% trans "Categoría" %}</th>
-      <th>Autor</th>
-      <th>Fecha</th>
-      <th style="text-align:right;">Vistas</th>
+      <th>{% trans "Title" %}</th>
+      <th>{% trans "Status" %}</th>
+      <th>{% trans "Category" %}</th>
+      <th>{% trans "Author" %}</th>
+      <th>{% trans "Date" %}</th>
+      <th style="text-align:right;">{% trans "Views" %}</th>
       <th class="col-actions"></th>
     </tr>
   </thead>
@@ -20,7 +20,7 @@
         <div class="madga-post-cell">
           <div class="madga-post-thumb"></div>
           <div class="madga-post-title-stack">
-            <a href="{% url 'madga_studio:post_edit' pk=post.pk %}" class="madga-post-title" style="text-decoration:none;">{{ post.title|default:"Sin título" }}</a>
+            <a href="{% url 'madga_studio:post_edit' pk=post.pk %}" class="madga-post-title" style="text-decoration:none;">{{ post.title|default:_("Untitled") }}</a>
             <div class="madga-post-slug">/{{ post.slug }}</div>
           </div>
         </div>
@@ -33,14 +33,14 @@
       <td class="col-actions">
         <div style="display:flex; gap:4px; justify-content:flex-end;">
           {% if post.slug %}
-            <a href="{% url 'madga_studio:post_preview' pk=post.pk %}" target="_blank" class="madga-btn madga-btn--ghost madga-btn--sm" title="Preview">{% studio_icon "eye" size=14 stroke=2 %}</a>
+            <a href="{% url 'madga_studio:post_preview' pk=post.pk %}" target="_blank" class="madga-btn madga-btn--ghost madga-btn--sm" title="{% trans 'Preview' %}">{% studio_icon "eye" size=14 stroke=2 %}</a>
           {% endif %}
-          <a href="{% url 'madga_studio:post_edit' pk=post.pk %}" class="madga-btn madga-btn--ghost madga-btn--sm">{% trans "Editar" %}</a>
+          <a href="{% url 'madga_studio:post_edit' pk=post.pk %}" class="madga-btn madga-btn--ghost madga-btn--sm">{% trans "Edit" %}</a>
         </div>
       </td>
     </tr>
     {% empty %}
-    <tr><td colspan="8">{% studio_empty title="Sin posts en esta vista" message="Crea el primero." action_label="Nuevo post" action_href="/studio/posts/new/" %}</td></tr>
+    <tr><td colspan="8">{% studio_empty title=_("No posts in this view") message=_("Create the first one.") action_label=_("New post") action_href="/studio/posts/new/" %}</td></tr>
     {% endfor %}
   </tbody>
 </table>

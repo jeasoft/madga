@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-16 12:39-0400\n"
+"POT-Creation-Date: 2026-05-16 15:46-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -134,7 +134,7 @@ msgid "Bloque eliminado."
 msgstr "Block deleted."
 
 msgid "Archivo eliminado."
-msgstr ""
+msgstr "File deleted."
 
 msgid "Label y URL son obligatorios."
 msgstr "Label and URL are required."
@@ -149,16 +149,16 @@ msgid "Item eliminado."
 msgstr "Item deleted."
 
 msgid "Página eliminada."
-msgstr ""
+msgstr "Page deleted."
 
 msgid "Tu rol no permite publicar."
-msgstr ""
+msgstr "Your role can't publish."
 
 msgid "Tu rol no permite publicar — guardado como borrador."
-msgstr ""
+msgstr "Your role can't publish — saved as draft."
 
 msgid "Post enviado a la papelera."
-msgstr ""
+msgstr "Post moved to trash."
 
 msgid "General"
 msgstr ""
@@ -245,22 +245,22 @@ msgid "Layouts actualizados."
 msgstr "Layouts updated."
 
 msgid "Categoría creada."
-msgstr ""
+msgstr "Category created."
 
 msgid "No se pudo crear la categoría."
-msgstr ""
+msgstr "Could not create the category."
 
 msgid "Categoría eliminada."
-msgstr ""
+msgstr "Category deleted."
 
 msgid "Tag creado."
-msgstr ""
+msgstr "Tag created."
 
 msgid "No se pudo crear el tag."
-msgstr ""
+msgstr "Could not create the tag."
 
 msgid "Tag eliminado."
-msgstr ""
+msgstr "Tag deleted."
 
 msgid "Theme no encontrado."
 msgstr "Theme not found."
@@ -317,11 +317,49 @@ msgstr ""
 msgid "privacy policy"
 msgstr ""
 
-msgid "Ir al login"
+#, fuzzy
+#| msgid "Aceptar invitación"
+msgid "Accept invitation"
+msgstr "Accept invitation"
+
+#, fuzzy
+#| msgid "Navigation"
+msgid "Invitation"
+msgstr "Navigation"
+
+msgid "Invitation not found"
+msgstr ""
+
+msgid ""
+"This link is no longer valid. Ask the admin to send you a new invitation."
+msgstr ""
+
+#, fuzzy
+#| msgid "Ir al login"
+msgid "Go to login"
 msgstr "Go to login"
 
-msgid "Aceptar invitación"
-msgstr "Accept invitation"
+msgid "Invitation expired"
+msgstr ""
+
+#, python-format
+msgid ""
+"This invitation expired (over 14 days old). Ask the admin of %(site_name)s "
+"to send you a new one."
+msgstr ""
+
+#, python-format
+msgid "You've been invited to %(site_name)s"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Role"
+msgstr ""
+
+msgid "Workspace"
+msgstr "Workspace"
 
 msgid "API keys"
 msgstr ""
@@ -471,20 +509,75 @@ msgstr ""
 msgid "min read"
 msgstr "Item created."
 
-msgid "Elegir imagen"
-msgstr "Choose image"
+msgid "Pick an image"
+msgstr ""
 
-msgid "Elegir desde la biblioteca"
-msgstr "Choose from library"
+msgid "Change"
+msgstr ""
 
-msgid "Estado"
-msgstr "Status"
+msgid "Remove"
+msgstr ""
 
-msgid "Categoría"
+msgid "Alt"
+msgstr ""
+
+msgid "Pick from the library"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Search by filename or alt text…"
+msgstr ""
+
+#, fuzzy
+#| msgid "Pages"
+msgid "Images"
+msgstr "Pages"
+
+msgid "Videos"
+msgstr ""
+
+msgid "Documents"
+msgstr ""
+
+msgid "Click a file to select it"
+msgstr ""
+
+msgid "Upload new"
+msgstr ""
+
+#, fuzzy
+#| msgid "Categoría"
+msgid "Category"
 msgstr "Category"
 
-msgid "Editar"
+msgid "Author"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+#, fuzzy
+#| msgid "View site"
+msgid "Views"
+msgstr "View site"
+
+msgid "Preview"
+msgstr "Preview"
+
+#, fuzzy
+#| msgid "Editar"
+msgid "Edit"
 msgstr "Edit"
+
+#, fuzzy
+#| msgid "New post"
+msgid "No posts in this view"
+msgstr "New post"
+
+msgid "Create the first one."
+msgstr ""
 
 msgid "New post"
 msgstr "New post"
@@ -521,9 +614,6 @@ msgstr "Navigation"
 
 msgid "Homepage"
 msgstr "Homepage"
-
-msgid "Workspace"
-msgstr "Workspace"
 
 msgid "Users"
 msgstr "Users"
@@ -570,8 +660,42 @@ msgstr "Help and shortcuts"
 msgid "Help"
 msgstr "Help"
 
-msgid "Publicar"
-msgstr "Publish"
+msgid "Last 7 days"
+msgstr ""
+
+msgid "Nothing recent. When you publish or upload, it'll show up here."
+msgstr ""
+
+#, fuzzy
+#| msgid "Editar"
+msgid "Editor"
+msgstr "Edit"
+
+msgid "Open the block menu (heading, list, image, code…)"
+msgstr ""
+
+msgid "Bold the selected text"
+msgstr ""
+
+msgid "Italic"
+msgstr ""
+
+msgid "Insert link"
+msgstr ""
+
+msgid "Highlight"
+msgstr ""
+
+msgid "Publishing"
+msgstr ""
+
+msgid ""
+"Save a draft or hit <strong>Publish</strong> to make the post publicly "
+"visible."
+msgstr ""
+
+msgid "If you set a future date in <em>Publish on</em>, the post is scheduled."
+msgstr ""
 
 msgid "Hello"
 msgstr ""
@@ -663,20 +787,207 @@ msgstr ""
 msgid "When you publish or upload something, it'll show up here."
 msgstr ""
 
-msgid "Guardar cambios"
-msgstr "Save changes"
+msgid ""
+"Blocks that appear on the home page, in order. Use the arrows to move them "
+"and toggle a block off without deleting it via the switch."
+msgstr ""
+
+#, fuzzy
+#| msgid "Homepage"
+msgid "View homepage"
+msgstr "Homepage"
+
+msgid "Add a block"
+msgstr ""
+
+#, fuzzy
+#| msgid "Sort order"
+msgid "Drag to reorder"
+msgstr "Sort order"
+
+msgid "Hidden"
+msgstr ""
+
+msgid "Move up"
+msgstr ""
+
+msgid "Move down"
+msgstr ""
+
+msgid "Hide"
+msgstr ""
+
+msgid "Show"
+msgstr ""
+
+msgid "Delete this block?"
+msgstr ""
+
+msgid "Visible on the homepage"
+msgstr ""
+
+msgid "Save changes"
+msgstr ""
+
+#, python-format
+msgid ""
+"The block type \"%(type)s\" is not registered. Delete it, or restore the "
+"type in code."
+msgstr ""
+
+#, fuzzy
+#| msgid "Homepage"
+msgid "Homepage is empty"
+msgstr "Homepage"
+
+msgid "Add your first block from the panel above."
+msgstr ""
+
+msgid ""
+"Choose how each page type renders on the public site. The selection is "
+"persisted in <code>Site.settings</code>; templates resolve the suffix "
+"automatically."
+msgstr ""
+
+msgid "Blog index"
+msgstr ""
+
+#, fuzzy
+#| msgid "Meta title"
+msgid "Post detail"
+msgstr "Meta title"
+
+msgid "Static pages"
+msgstr ""
+
+msgid "In use"
+msgstr ""
+
+#, fuzzy
+#| msgid "Layouts"
+msgid "Save layouts"
+msgstr "Layouts"
+
+msgid "Login"
+msgstr ""
+
+msgid "Welcome"
+msgstr ""
+
+msgid "Sign in to access the backoffice."
+msgstr ""
+
+#, fuzzy
+#| msgid "Users"
+msgid "Username"
+msgstr "Users"
+
+msgid "Password"
+msgstr ""
+
+msgid "Images, videos, and documents for this site."
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+msgid "Copied"
+msgstr ""
+
+msgid "Copy URL"
+msgstr ""
+
+msgid "Delete this file?"
+msgstr ""
+
+#, fuzzy
+#| msgid "Media library"
+msgid "Media library is empty"
+msgstr "Media library"
+
+msgid "Upload your first file."
+msgstr ""
+
+msgid "Header menu items. Drag the handle to reorder."
+msgstr ""
 
 msgid "Header"
 msgstr "Header"
 
+msgid "/path or https://..."
+msgstr ""
+
+msgid "Open in new tab"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Delete this item?"
+msgstr ""
+
+msgid "No items yet. Add the first one below."
+msgstr ""
+
+msgid "/blog or https://..."
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
 msgid "Footer"
 msgstr "Footer"
 
-msgid "Preview"
-msgstr "Preview"
+msgid ""
+"Each footer column is an item with sub-items. Create the column first; then "
+"add links to it."
+msgstr ""
 
-msgid "Guardar"
-msgstr "Save"
+msgid "Column title"
+msgstr ""
+
+msgid "(optional)"
+msgstr ""
+
+msgid "Delete column and its links?"
+msgstr ""
+
+msgid "Delete column"
+msgstr ""
+
+#, fuzzy
+#| msgid "New post"
+msgid "New tab"
+msgstr "New post"
+
+msgid "Delete this link?"
+msgstr ""
+
+msgid "Link label"
+msgstr ""
+
+msgid "Add link"
+msgstr ""
+
+#, fuzzy
+#| msgid "New post"
+msgid "No columns yet."
+msgstr "New post"
+
+msgid "New column title (e.g. Product)"
+msgstr ""
+
+msgid "Add column"
+msgstr ""
+
+msgid "New"
+msgstr ""
+
+msgid "Live"
+msgstr "Live"
 
 #, fuzzy
 #| msgid "Meta title"
@@ -692,8 +1003,8 @@ msgstr "Layout"
 msgid "Sort order"
 msgstr "Sort order"
 
-msgid "Imagen destacada"
-msgstr "Featured image"
+msgid "Featured image"
+msgstr ""
 
 msgid "Meta title"
 msgstr "Meta title"
@@ -701,19 +1012,81 @@ msgstr "Meta title"
 msgid "Meta description"
 msgstr "Meta description"
 
-msgid "Peligro"
-msgstr "Danger zone"
+msgid "Open Graph image"
+msgstr ""
 
-msgid "Guardar borrador"
-msgstr "Save draft"
+msgid "Danger zone"
+msgstr ""
+
+msgid "Delete this page? This action cannot be undone."
+msgstr ""
+
+msgid "Delete page"
+msgstr ""
+
+msgid "Write something, or press / to see the blocks…"
+msgstr ""
+
+msgid "Static pages: about, pricing, privacy, etc."
+msgstr ""
+
+#, fuzzy
+#| msgid "New post"
+msgid "New page"
+msgstr "New post"
+
+msgid "Updated"
+msgstr ""
+
+#, fuzzy
+#| msgid "New post"
+msgid "No pages yet"
+msgstr "New post"
+
+msgid "Edit post"
+msgstr ""
+
+msgid "No changes"
+msgstr ""
+
+msgid "Unsaved changes"
+msgstr ""
+
+msgid "Saved"
+msgstr ""
+
+msgid "Save first"
+msgstr ""
+
+msgid "Save draft"
+msgstr ""
+
+#, fuzzy
+#| msgid "Publicar"
+msgid "Publish"
+msgstr "Publish"
 
 #, fuzzy
 #| msgid "Meta title"
 msgid "Post title…"
 msgstr "Meta title"
 
-msgid "Organización"
+msgid "Publish on"
+msgstr ""
+
+msgid "If the date is in the future, the post is scheduled."
+msgstr ""
+
+msgid "auto-generated"
+msgstr ""
+
+#, fuzzy
+#| msgid "Organización"
+msgid "Organization"
 msgstr "Organization"
+
+msgid "— none —"
+msgstr ""
 
 msgid "Tags"
 msgstr "Tags"
@@ -721,17 +1094,211 @@ msgstr "Tags"
 msgid "Excerpt"
 msgstr "Excerpt"
 
+msgid "Google preview"
+msgstr ""
+
+msgid "yourdomain.com"
+msgstr ""
+
+msgid "post-slug"
+msgstr ""
+
+#, fuzzy
+#| msgid "Meta title"
+msgid "Post title"
+msgstr "Meta title"
+
+msgid "Meta description preview, or if empty, the post excerpt."
+msgstr ""
+
 msgid "Focus keyword"
 msgstr "Focus keyword"
 
 msgid "Canonical URL"
 msgstr "Canonical URL"
 
-msgid "Live"
-msgstr "Live"
+msgid "Move to trash"
+msgstr ""
 
-msgid "Activar"
+msgid "Everything you've published, scheduled, or have in draft."
+msgstr ""
+
+msgid "Filter by title or slug…"
+msgstr ""
+
+#, python-format
+msgid "%(n)s result"
+msgid_plural "%(n)s results"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "0 selected"
+msgstr ""
+
+msgid "Restore"
+msgstr ""
+
+msgid "Delete permanently"
+msgstr ""
+
+msgid "Back to editor"
+msgstr ""
+
+msgid "Mobile"
+msgstr ""
+
+msgid "Tablet"
+msgstr ""
+
+msgid "Desktop"
+msgstr ""
+
+#, fuzzy
+#| msgid "Open menu"
+msgid "Open live"
+msgstr "Open menu"
+
+msgid "Publish first to get a public URL"
+msgstr ""
+
+msgid "Site-wide configuration."
+msgstr ""
+
+msgid "API key"
+msgstr ""
+
+msgid ""
+"Use this key in the <code>Authorization: Bearer …</code> header when calling "
+"the headless API."
+msgstr ""
+
+#, fuzzy
+#| msgid "Categories & tags"
+msgid "Categories &amp; tags"
+msgstr "Categories & tags"
+
+#, fuzzy
+#| msgid "Categories & tags"
+msgid "Categories and tags"
+msgstr "Categories & tags"
+
+msgid "How posts are grouped on the public site."
+msgstr ""
+
+#, fuzzy
+#| msgid "Categories & tags"
+msgid "Categories"
+msgstr "Categories & tags"
+
+msgid "Name"
+msgstr ""
+
+msgid "Delete this category?"
+msgstr ""
+
+msgid "No categories."
+msgstr ""
+
+msgid "No tags."
+msgstr ""
+
+msgid "Visual tokens with live preview."
+msgstr ""
+
+msgid "Color"
+msgstr ""
+
+msgid "Accent"
+msgstr ""
+
+msgid "Color scheme"
+msgstr ""
+
+msgid "Theme preset"
+msgstr ""
+
+msgid "Typography"
+msgstr ""
+
+#, fuzzy
+#| msgid "Settings"
+msgid "Heading font"
+msgstr "Settings"
+
+msgid "Body font"
+msgstr ""
+
+msgid "Border radius"
+msgstr ""
+
+msgid "Content density"
+msgstr ""
+
+msgid "Device size"
+msgstr ""
+
+#, fuzzy
+#| msgid "Open menu"
+msgid "Open in tab"
+msgstr "Open menu"
+
+msgid ""
+"Registered themes (including pip-installed ones). Click Activate to apply "
+"one to the site, or Activate with palette to overwrite colors and fonts with "
+"the ones the theme suggests."
+msgstr ""
+
+msgid "Edit tokens"
+msgstr ""
+
+#, python-format
+msgid "by %(author)s"
+msgstr ""
+
+#, fuzzy
+#| msgid "Activar"
+msgid "Activate"
 msgstr "Activate"
+
+msgid ""
+"Overwrite your accent color and fonts with the theme defaults. Continue?"
+msgstr ""
+
+msgid "palette"
+msgstr ""
+
+#, fuzzy
+#| msgid "Toggle theme"
+msgid "No themes"
+msgstr "Toggle theme"
+
+msgid ""
+"No themes are registered. Install one via pip or register one from code."
+msgstr ""
+
+msgid "Who has access to the Studio."
+msgstr ""
+
+msgid "Invite"
+msgstr ""
+
+#, fuzzy
+#| msgid "Users"
+msgid "User"
+msgstr "Users"
+
+msgid "Since"
+msgstr ""
+
+#, fuzzy
+#| msgid "Settings"
+msgid "Pending"
+msgstr "Settings"
+
+#, fuzzy
+#| msgid "New post"
+msgid "No users yet"
+msgstr "New post"
 
 msgid ""
 "MADGA's stock theme. Tailwind-driven, generous whitespace, sans-serif "
@@ -758,3 +1325,30 @@ msgid ""
 "Editorial home with hero post + 4-up grid. Pairs with home-editorial + list-"
 "grid."
 msgstr ""
+
+#~ msgid "Elegir imagen"
+#~ msgstr "Choose image"
+
+#~ msgid "Elegir desde la biblioteca"
+#~ msgstr "Choose from library"
+
+#~ msgid "Estado"
+#~ msgstr "Status"
+
+#~ msgid "Guardar cambios"
+#~ msgstr "Save changes"
+
+#~ msgid "Guardar"
+#~ msgstr "Save"
+
+#~ msgid "Imagen destacada"
+#~ msgstr "Featured image"
+
+#~ msgid "Peligro"
+#~ msgstr "Danger zone"
+
+#~ msgid "Guardar borrador"
+#~ msgstr "Save draft"
+
+#~ msgid "Activar"
+#~ msgstr "Activate"

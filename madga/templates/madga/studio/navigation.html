@@ -1,14 +1,14 @@
 {% extends "madga/studio/base.html" %}
 {% load i18n madga_studio_tags %}
 
-{% block breadcrumbs %}<span class="crumb">Site</span><span class="sep">/</span><span class="crumb is-current">Navigation</span>{% endblock %}
+{% block breadcrumbs %}<span class="crumb">{% trans "Site" %}</span><span class="sep">/</span><span class="crumb is-current">{% trans "Navigation" %}</span>{% endblock %}
 
 {% block content %}
 <div class="madga-page" style="max-width:880px;">
   <div class="madga-page-header">
     <div class="madga-page-title-block">
-      <h1 class="madga-page-title">Navigation</h1>
-      <p class="madga-page-subtitle">Items del menú del header. Arrastrá del handle para reordenar.</p>
+      <h1 class="madga-page-title">{% trans "Navigation" %}</h1>
+      <p class="madga-page-subtitle">{% trans "Header menu items. Drag the handle to reorder." %}</p>
     </div>
   </div>
 
@@ -20,29 +20,29 @@
       {% for item in items %}
         {% if item.location != 'footer' %}
         <div class="madga-nav-row" data-pk="{{ item.pk }}">
-          <span class="madga-nav-drag-handle" title="Arrastrar para reordenar">{% studio_icon "more-v" size=14 stroke=2 %}{% studio_icon "more-v" size=14 stroke=2 %}</span>
+          <span class="madga-nav-drag-handle" title="{% trans 'Drag to reorder' %}">{% studio_icon "more-v" size=14 stroke=2 %}{% studio_icon "more-v" size=14 stroke=2 %}</span>
           <form method="post" class="madga-nav-form">
             {% csrf_token %}
             <input type="hidden" name="action" value="update">
             <input type="hidden" name="pk" value="{{ item.pk }}">
-            <input class="madga-input" name="label" value="{{ item.label }}" placeholder="Label">
-            <input class="madga-input" name="url" value="{{ item.url }}" placeholder="/ruta o https://...">
-            <label class="madga-nav-checkbox" title="Abrir en nueva pestaña">
+            <input class="madga-input" name="label" value="{{ item.label }}" placeholder="{% trans 'Label' %}">
+            <input class="madga-input" name="url" value="{{ item.url }}" placeholder="{% trans '/path or https://...' %}">
+            <label class="madga-nav-checkbox" title="{% trans 'Open in new tab' %}">
               <input type="checkbox" name="open_in_new_tab" {% if item.open_in_new_tab %}checked{% endif %}>
               <span>↗</span>
             </label>
-            <button type="submit" class="madga-icon-btn" title="Guardar">{% studio_icon "check" size=14 stroke=2.5 %}</button>
+            <button type="submit" class="madga-icon-btn" title="{% trans 'Save' %}">{% studio_icon "check" size=14 stroke=2.5 %}</button>
           </form>
           <form method="post" style="margin:0;">
             {% csrf_token %}
             <input type="hidden" name="action" value="delete">
             <input type="hidden" name="pk" value="{{ item.pk }}">
-            <button type="submit" class="madga-icon-btn" data-madga-confirm="¿Borrar este item?" title="Borrar">{% studio_icon "trash" size=14 stroke=2 %}</button>
+            <button type="submit" class="madga-icon-btn" data-madga-confirm="{% trans 'Delete this item?' %}" title="{% trans 'Delete' %}">{% studio_icon "trash" size=14 stroke=2 %}</button>
           </form>
         </div>
         {% endif %}
       {% empty %}
-        <p class="madga-nav-empty">Sin items todavía. Añadí el primero abajo.</p>
+        <p class="madga-nav-empty">{% trans "No items yet. Add the first one below." %}</p>
       {% endfor %}
     </div>
 
@@ -50,16 +50,16 @@
       {% csrf_token %}
       <input type="hidden" name="action" value="create">
       <input type="hidden" name="location" value="header">
-      <input class="madga-input" name="label" placeholder="Label" required>
-      <input class="madga-input" name="url" placeholder="/blog o https://..." required>
-      <button type="submit" class="madga-btn madga-btn--sm madga-btn--primary">{% studio_icon "plus" size=12 stroke=2.5 %} Añadir</button>
+      <input class="madga-input" name="label" placeholder="{% trans 'Label' %}" required>
+      <input class="madga-input" name="url" placeholder="{% trans '/blog or https://...' %}" required>
+      <button type="submit" class="madga-btn madga-btn--sm madga-btn--primary">{% studio_icon "plus" size=12 stroke=2.5 %} {% trans "Add" %}</button>
     </form>
   </div>
 
   {# Footer columns ---------------------------------------------------- #}
   <div class="madga-card">
     <h2 class="madga-card-title">{% trans "Footer" %}</h2>
-    <p class="madga-card-subtitle">Cada columna del footer es un item con sub-items. Crea primero la columna; después le añadís links.</p>
+    <p class="madga-card-subtitle">{% trans "Each footer column is an item with sub-items. Create the column first; then add links to it." %}</p>
 
     {% for col in footer_columns %}
       <div class="madga-footer-col">
@@ -69,15 +69,15 @@
             {% csrf_token %}
             <input type="hidden" name="action" value="update">
             <input type="hidden" name="pk" value="{{ col.pk }}">
-            <input class="madga-input" name="label" value="{{ col.label }}" placeholder="Título de la columna">
-            <input class="madga-input" name="url" value="{{ col.url|default:'#' }}" placeholder="(opcional)">
-            <button type="submit" class="madga-icon-btn" title="Guardar">{% studio_icon "check" size=14 stroke=2.5 %}</button>
+            <input class="madga-input" name="label" value="{{ col.label }}" placeholder="{% trans 'Column title' %}">
+            <input class="madga-input" name="url" value="{{ col.url|default:'#' }}" placeholder="{% trans '(optional)' %}">
+            <button type="submit" class="madga-icon-btn" title="{% trans 'Save' %}">{% studio_icon "check" size=14 stroke=2.5 %}</button>
           </form>
           <form method="post" style="margin:0;">
             {% csrf_token %}
             <input type="hidden" name="action" value="delete">
             <input type="hidden" name="pk" value="{{ col.pk }}">
-            <button type="submit" class="madga-icon-btn" data-madga-confirm="¿Borrar columna y sus links?" title="Borrar columna">{% studio_icon "trash" size=14 stroke=2 %}</button>
+            <button type="submit" class="madga-icon-btn" data-madga-confirm="{% trans 'Delete column and its links?' %}" title="{% trans 'Delete column' %}">{% studio_icon "trash" size=14 stroke=2 %}</button>
           </form>
         </div>
         <div class="madga-footer-col-children" data-madga-sortable data-reorder-url="{% url 'madga_studio:navigation' %}">
@@ -89,19 +89,19 @@
                 <input type="hidden" name="action" value="update">
                 <input type="hidden" name="pk" value="{{ child.pk }}">
                 <input type="hidden" name="parent" value="{{ col.pk }}">
-                <input class="madga-input" name="label" value="{{ child.label }}" placeholder="Label">
-                <input class="madga-input" name="url" value="{{ child.url }}" placeholder="/ruta o https://...">
-                <label class="madga-nav-checkbox" title="Nueva pestaña">
+                <input class="madga-input" name="label" value="{{ child.label }}" placeholder="{% trans 'Label' %}">
+                <input class="madga-input" name="url" value="{{ child.url }}" placeholder="{% trans '/path or https://...' %}">
+                <label class="madga-nav-checkbox" title="{% trans 'New tab' %}">
                   <input type="checkbox" name="open_in_new_tab" {% if child.open_in_new_tab %}checked{% endif %}>
                   <span>↗</span>
                 </label>
-                <button type="submit" class="madga-icon-btn" title="Guardar">{% studio_icon "check" size=14 stroke=2.5 %}</button>
+                <button type="submit" class="madga-icon-btn" title="{% trans 'Save' %}">{% studio_icon "check" size=14 stroke=2.5 %}</button>
               </form>
               <form method="post" style="margin:0;">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="delete">
                 <input type="hidden" name="pk" value="{{ child.pk }}">
-                <button type="submit" class="madga-icon-btn" data-madga-confirm="¿Borrar este link?" title="Borrar">{% studio_icon "trash" size=14 stroke=2 %}</button>
+                <button type="submit" class="madga-icon-btn" data-madga-confirm="{% trans 'Delete this link?' %}" title="{% trans 'Delete' %}">{% studio_icon "trash" size=14 stroke=2 %}</button>
               </form>
             </div>
           {% endfor %}
@@ -111,22 +111,22 @@
           <input type="hidden" name="action" value="create">
           <input type="hidden" name="location" value="footer">
           <input type="hidden" name="parent" value="{{ col.pk }}">
-          <input class="madga-input" name="label" placeholder="Link label" required>
-          <input class="madga-input" name="url" placeholder="/ruta o https://..." required>
-          <button type="submit" class="madga-btn madga-btn--sm">{% studio_icon "plus" size=12 stroke=2.5 %} Añadir link</button>
+          <input class="madga-input" name="label" placeholder="{% trans 'Link label' %}" required>
+          <input class="madga-input" name="url" placeholder="{% trans '/path or https://...' %}" required>
+          <button type="submit" class="madga-btn madga-btn--sm">{% studio_icon "plus" size=12 stroke=2.5 %} {% trans "Add link" %}</button>
         </form>
       </div>
     {% empty %}
-      <p class="madga-nav-empty" style="margin: 12px 0 0;">Sin columnas todavía.</p>
+      <p class="madga-nav-empty" style="margin: 12px 0 0;">{% trans "No columns yet." %}</p>
     {% endfor %}
 
     <form method="post" class="madga-nav-add" style="margin-top: 18px;">
       {% csrf_token %}
       <input type="hidden" name="action" value="create">
       <input type="hidden" name="location" value="footer">
-      <input class="madga-input" name="label" placeholder="Título de columna nueva (ej: Producto)" required>
+      <input class="madga-input" name="label" placeholder="{% trans 'New column title (e.g. Product)' %}" required>
       <input type="hidden" name="url" value="">
-      <button type="submit" class="madga-btn madga-btn--sm madga-btn--primary">{% studio_icon "plus" size=12 stroke=2.5 %} Añadir columna</button>
+      <button type="submit" class="madga-btn madga-btn--sm madga-btn--primary">{% studio_icon "plus" size=12 stroke=2.5 %} {% trans "Add column" %}</button>
     </form>
   </div>
 </div>

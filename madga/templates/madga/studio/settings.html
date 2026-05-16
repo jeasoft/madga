@@ -1,14 +1,14 @@
 {% extends "madga/studio/base.html" %}
 {% load i18n madga_studio_tags %}
 
-{% block breadcrumbs %}<span class="crumb is-current">Settings</span>{% endblock %}
+{% block breadcrumbs %}<span class="crumb is-current">{% trans "Settings" %}</span>{% endblock %}
 
 {% block content %}
 <div class="madga-page" style="max-width:880px;">
   <div class="madga-page-header">
     <div class="madga-page-title-block">
-      <h1 class="madga-page-title">Settings</h1>
-      <p class="madga-page-subtitle">Configuración global del sitio.</p>
+      <h1 class="madga-page-title">{% trans "Settings" %}</h1>
+      <p class="madga-page-subtitle">{% trans "Site-wide configuration." %}</p>
     </div>
   </div>
 
@@ -40,15 +40,15 @@
     {% endfor %}
 
     <div style="display:flex; gap:8px; margin-top:14px; padding-top:14px; border-top:1px solid var(--border);">
-      <button type="submit" class="madga-btn madga-btn--primary">{% trans "Guardar cambios" %}</button>
+      <button type="submit" class="madga-btn madga-btn--primary">{% trans "Save changes" %}</button>
     </div>
   </form>
 
   {% if current_tab == 'integrations' and site %}
   <div class="madga-card" style="margin-top:18px;">
-    <h3 style="font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--fg-2); margin:0 0 10px;">API key</h3>
+    <h3 style="font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--fg-2); margin:0 0 10px;">{% trans "API key" %}</h3>
     <code style="display:block; padding:10px; background:var(--bg-input); border:1px solid var(--border-strong); border-radius:6px; font-size:12px; color:var(--fg-0); word-break:break-all; font-family:var(--font-mono);">{{ site.api_key }}</code>
-    <span class="madga-field-help" style="display:block; margin-top:8px;">Usa esta clave en el header <code>Authorization: Bearer …</code> al consumir la API headless.</span>
+    <span class="madga-field-help" style="display:block; margin-top:8px;">{% blocktrans %}Use this key in the <code>Authorization: Bearer …</code> header when calling the headless API.{% endblocktrans %}</span>
   </div>
   {% endif %}
 </div>

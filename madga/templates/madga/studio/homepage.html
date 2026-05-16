@@ -1,25 +1,25 @@
 {% extends "madga/studio/base.html" %}
 {% load i18n madga_studio_tags %}
 
-{% block breadcrumbs %}<span class="crumb">Site</span><span class="sep">/</span><span class="crumb is-current">Homepage</span>{% endblock %}
+{% block breadcrumbs %}<span class="crumb">{% trans "Site" %}</span><span class="sep">/</span><span class="crumb is-current">{% trans "Homepage" %}</span>{% endblock %}
 
 {% block content %}
 <div class="madga-page" style="max-width:880px;">
   <div class="madga-page-header">
     <div class="madga-page-title-block">
-      <h1 class="madga-page-title">Homepage</h1>
-      <p class="madga-page-subtitle">Bloques que aparecen en la home, en orden. Mové con las flechitas y desactivá un bloque sin borrarlo con el switch.</p>
+      <h1 class="madga-page-title">{% trans "Homepage" %}</h1>
+      <p class="madga-page-subtitle">{% trans "Blocks that appear on the home page, in order. Use the arrows to move them and toggle a block off without deleting it via the switch." %}</p>
     </div>
     <div class="madga-page-actions">
       <a href="/" target="_blank" rel="noopener" class="madga-btn madga-btn--sm madga-btn--ghost">
-        {% studio_icon "external" size=12 stroke=2 %} Ver homepage
+        {% studio_icon "external" size=12 stroke=2 %} {% trans "View homepage" %}
       </a>
     </div>
   </div>
 
   {# Add-block tray (driven by registered block types) ------------------- #}
   <div class="madga-hb-add">
-    <div class="madga-hb-add-title">Añadir un bloque</div>
+    <div class="madga-hb-add-title">{% trans "Add a block" %}</div>
     <div class="madga-hb-add-grid">
       {% for bt in block_types %}
         <form method="post" class="madga-hb-add-tile-form">
@@ -41,30 +41,30 @@
       {% with b=row.obj %}
       <div class="madga-hb-block" data-pk="{{ b.pk }}">
         <header class="madga-hb-block-head">
-          <span class="madga-hb-drag-handle" title="Arrastrá para reordenar">{% studio_icon "more-v" size=14 stroke=2 %}{% studio_icon "more-v" size=14 stroke=2 %}</span>
+          <span class="madga-hb-drag-handle" title="{% trans 'Drag to reorder' %}">{% studio_icon "more-v" size=14 stroke=2 %}{% studio_icon "more-v" size=14 stroke=2 %}</span>
           <div class="madga-hb-block-meta">
             <span class="madga-hb-block-type">{{ row.label }}</span>
-            {% if not b.is_visible %}<span class="madga-hb-block-hidden">Oculto</span>{% endif %}
+            {% if not b.is_visible %}<span class="madga-hb-block-hidden">{% trans "Hidden" %}</span>{% endif %}
             <span class="madga-hb-block-desc">{{ row.description }}</span>
           </div>
           <div class="madga-hb-block-actions">
             <form method="post" style="display:inline;">{% csrf_token %}
               <input type="hidden" name="action" value="move_up"><input type="hidden" name="pk" value="{{ b.pk }}">
-              <button type="submit" class="madga-icon-btn" title="Mover arriba" {% if row.is_first %}disabled{% endif %}>{% studio_icon "chevron-up" size=14 stroke=2 %}</button>
+              <button type="submit" class="madga-icon-btn" title="{% trans 'Move up' %}" {% if row.is_first %}disabled{% endif %}>{% studio_icon "chevron-up" size=14 stroke=2 %}</button>
             </form>
             <form method="post" style="display:inline;">{% csrf_token %}
               <input type="hidden" name="action" value="move_down"><input type="hidden" name="pk" value="{{ b.pk }}">
-              <button type="submit" class="madga-icon-btn" title="Mover abajo" {% if row.is_last %}disabled{% endif %}>{% studio_icon "chevron-down" size=14 stroke=2 %}</button>
+              <button type="submit" class="madga-icon-btn" title="{% trans 'Move down' %}" {% if row.is_last %}disabled{% endif %}>{% studio_icon "chevron-down" size=14 stroke=2 %}</button>
             </form>
             <form method="post" style="display:inline;">{% csrf_token %}
               <input type="hidden" name="action" value="toggle_visibility"><input type="hidden" name="pk" value="{{ b.pk }}">
-              <button type="submit" class="madga-icon-btn" title="{% if b.is_visible %}Ocultar{% else %}Mostrar{% endif %}">
+              <button type="submit" class="madga-icon-btn" title="{% if b.is_visible %}{% trans 'Hide' %}{% else %}{% trans 'Show' %}{% endif %}">
                 {% if b.is_visible %}{% studio_icon "eye" size=14 stroke=2 %}{% else %}{% studio_icon "eye" size=14 stroke=2 css_class="madga-hb-eye-off" %}{% endif %}
               </button>
             </form>
             <form method="post" style="display:inline;">{% csrf_token %}
               <input type="hidden" name="action" value="delete"><input type="hidden" name="pk" value="{{ b.pk }}">
-              <button type="submit" class="madga-icon-btn" title="Borrar" data-madga-confirm="¿Borrar este bloque?">{% studio_icon "trash" size=14 stroke=2 %}</button>
+              <button type="submit" class="madga-icon-btn" title="{% trans 'Delete' %}" data-madga-confirm="{% trans 'Delete this block?' %}">{% studio_icon "trash" size=14 stroke=2 %}</button>
             </form>
           </div>
         </header>
@@ -82,21 +82,21 @@
           {% endfor %}
           <label class="madga-hb-visible">
             <input type="checkbox" name="is_visible" {% if b.is_visible %}checked{% endif %}>
-            <span>Bloque visible en la homepage</span>
+            <span>{% trans "Visible on the homepage" %}</span>
           </label>
           <div class="madga-hb-block-foot">
-            <button type="submit" class="madga-btn madga-btn--sm madga-btn--primary">{% trans "Guardar cambios" %}</button>
+            <button type="submit" class="madga-btn madga-btn--sm madga-btn--primary">{% trans "Save changes" %}</button>
           </div>
         </form>
         {% else %}
         <div class="madga-hb-block-body">
-          <p style="color:var(--fg-3); font-size:12.5px;">El tipo "{{ b.block_type }}" no está registrado. Borralo o restaurá el tipo en código.</p>
+          <p style="color:var(--fg-3); font-size:12.5px;">{% blocktrans with type=b.block_type %}The block type "{{ type }}" is not registered. Delete it, or restore the type in code.{% endblocktrans %}</p>
         </div>
         {% endif %}
       </div>
       {% endwith %}
     {% empty %}
-      {% studio_empty title="Homepage vacía" message="Añadí tu primer bloque desde el panel de arriba." %}
+      {% studio_empty title=_("Homepage is empty") message=_("Add your first block from the panel above.") %}
     {% endfor %}
   </div>
 </div>

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-16 12:39-0400\n"
+"POT-Creation-Date: 2026-05-16 15:46-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -98,16 +98,16 @@ msgid "File uploaded"
 msgstr "Archivo subido"
 
 msgid "API key created. Copy it now — won't be shown again."
-msgstr ""
+msgstr "Clave API creada. Cópiala ahora — no se mostrará de nuevo."
 
 msgid "API key revoked."
-msgstr ""
+msgstr "Clave API revocada."
 
 msgid "API key deleted."
-msgstr ""
+msgstr "Clave API eliminada."
 
 msgid "API key rotated. Copy the new value."
-msgstr ""
+msgstr "Clave API rotada. Copia el nuevo valor."
 
 msgid "Good evening"
 msgstr "Buenas noches"
@@ -286,10 +286,10 @@ msgid "Sign in"
 msgstr "Salir"
 
 msgid "Welcome back"
-msgstr ""
+msgstr "Bienvenido de nuevo"
 
 msgid "No account yet?"
-msgstr ""
+msgstr "¿No tienes cuenta?"
 
 #, fuzzy
 #| msgid "Sign out"
@@ -297,40 +297,74 @@ msgid "Sign up"
 msgstr "Salir"
 
 msgid "Forgot your password?"
-msgstr ""
+msgstr "¿Olvidaste tu contraseña?"
 
 msgid "Create your account"
-msgstr ""
+msgstr "Crea tu cuenta"
 
 msgid "Already have one?"
-msgstr ""
+msgstr "¿Ya tienes una?"
 
 msgid "Create account"
-msgstr ""
+msgstr "Crear cuenta"
 
 msgid "By signing up you accept our"
-msgstr ""
+msgstr "Al crear una cuenta aceptas nuestros"
 
 msgid "terms"
-msgstr ""
+msgstr "términos"
 
 msgid "and"
 msgstr "y"
 
 msgid "privacy policy"
+msgstr "política de privacidad"
+
+msgid "Accept invitation"
+msgstr "Aceptar invitación"
+
+#, fuzzy
+#| msgid "Integrations"
+msgid "Invitation"
+msgstr "Integraciones"
+
+msgid "Invitation not found"
+msgstr "Invitación no encontrada"
+
+msgid ""
+"This link is no longer valid. Ask the admin to send you a new invitation."
 msgstr ""
 
-msgid "Ir al login"
+msgid "Go to login"
+msgstr "Ir al login"
+
+msgid "Invitation expired"
+msgstr "Invitación vencida"
+
+#, python-format
+msgid ""
+"This invitation expired (over 14 days old). Ask the admin of %(site_name)s "
+"to send you a new one."
 msgstr ""
 
-msgid "Aceptar invitación"
-msgstr ""
+#, python-format
+msgid "You've been invited to %(site_name)s"
+msgstr "Te invitaron a %(site_name)s"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Role"
+msgstr "Rol"
+
+msgid "Workspace"
+msgstr "Workspace"
 
 msgid "API keys"
-msgstr ""
+msgstr "Claves API"
 
 msgid "Your API keys"
-msgstr ""
+msgstr "Tus claves API"
 
 msgid ""
 "Personal tokens for the headless API. Each key is bound to your user — "
@@ -338,16 +372,16 @@ msgid ""
 msgstr ""
 
 msgid "New key"
-msgstr ""
+msgstr "Nueva clave"
 
 msgid "Copy this now — for security, we won't show it again."
-msgstr ""
+msgstr "Cópiala ahora — por seguridad, no la mostraremos de nuevo."
 
 msgid "Create a new key"
-msgstr ""
+msgstr "Crear nueva clave"
 
 msgid "Label"
-msgstr ""
+msgstr "Label"
 
 #, fuzzy
 #| msgid "General"
@@ -355,52 +389,52 @@ msgid "Generate"
 msgstr "General"
 
 msgid "Key"
-msgstr ""
+msgstr "Clave"
 
 msgid "Last used"
-msgstr ""
+msgstr "Último uso"
 
 msgid "Status"
-msgstr ""
+msgstr "Estado"
 
 msgid "ago"
-msgstr ""
+msgstr "atrás"
 
 msgid "Active"
-msgstr ""
+msgstr "Activa"
 
 msgid "Revoked"
-msgstr ""
+msgstr "Revocada"
 
 msgid "Rotate"
-msgstr ""
+msgstr "Rotar"
 
 msgid "Rotate this key? The current value will stop working immediately."
-msgstr ""
+msgstr "¿Rotar esta clave? El valor actual dejará de funcionar inmediatamente."
 
 msgid "Revoke"
-msgstr ""
+msgstr "Revocar"
 
 msgid "Revoke this key? It can be re-enabled later."
-msgstr ""
+msgstr "¿Revocar esta clave? Se puede re-activar después."
 
 msgid "Delete"
-msgstr ""
+msgstr "Eliminar"
 
 msgid "Permanently delete this key?"
-msgstr ""
+msgstr "¿Eliminar esta clave permanentemente?"
 
 msgid "No API keys yet"
-msgstr ""
+msgstr "Sin claves API todavía"
 
 msgid "Generate one above to authenticate apps against the headless API."
-msgstr ""
+msgstr "Genera una arriba para autenticar apps contra la API headless."
 
 msgid "Cancelar"
-msgstr ""
+msgstr "Cancelar"
 
 msgid "Confirmar"
-msgstr ""
+msgstr "Confirmar"
 
 #, fuzzy
 #| msgid "Editorial"
@@ -413,79 +447,134 @@ msgid "Headings"
 msgstr "Marca"
 
 msgid "Heading 2"
-msgstr ""
+msgstr "Encabezado 2"
 
 msgid "Heading 3"
-msgstr ""
+msgstr "Encabezado 3"
 
 msgid "Blocks"
-msgstr ""
+msgstr "Bloques"
 
 msgid "Bullet list"
-msgstr ""
+msgstr "Lista"
 
 msgid "Numbered list"
-msgstr ""
+msgstr "Lista numerada"
 
 msgid "Quote"
-msgstr ""
+msgstr "Cita"
 
 msgid "Code block"
-msgstr ""
+msgstr "Bloque de código"
 
 msgid "Divider"
-msgstr ""
+msgstr "Separador"
 
 msgid "Media"
-msgstr ""
+msgstr "Media"
 
 msgid "Image"
-msgstr ""
+msgstr "Imagen"
 
 msgid "Embed (YouTube, Twitter, …)"
-msgstr ""
+msgstr "Embed (YouTube, Twitter, …)"
 
 msgid "Select text for"
-msgstr ""
+msgstr "Selecciona texto para"
 
 msgid "bold"
-msgstr ""
+msgstr "negrita"
 
 msgid "italics"
-msgstr ""
+msgstr "cursiva"
 
 msgid "links and highlight"
-msgstr ""
+msgstr "enlaces y resaltado"
 
 msgid "Press"
-msgstr ""
+msgstr "Pulsa"
 
 msgid "for more blocks"
-msgstr ""
+msgstr "para más bloques"
 
 msgid "Paste a YouTube / Twitter / Vimeo URL"
-msgstr ""
+msgstr "Pega una URL de YouTube / Twitter / Vimeo"
 
 msgid "words"
-msgstr ""
+msgstr "palabras"
 
 msgid "min read"
-msgstr ""
+msgstr "min de lectura"
 
-msgid "Elegir imagen"
-msgstr ""
+msgid "Pick an image"
+msgstr "Elegir imagen"
 
-msgid "Elegir desde la biblioteca"
-msgstr ""
+msgid "Change"
+msgstr "Cambiar"
 
-msgid "Estado"
-msgstr ""
+msgid "Remove"
+msgstr "Quitar"
 
-msgid "Categoría"
-msgstr ""
+msgid "Alt"
+msgstr "Alt"
 
-msgid "Editar"
-msgstr ""
+msgid "Pick from the library"
+msgstr "Elegir desde la biblioteca"
+
+msgid "Close"
+msgstr "Cerrar"
+
+msgid "Search by filename or alt text…"
+msgstr "Buscar por nombre o alt text…"
+
+#, fuzzy
+#| msgid "Pages"
+msgid "Images"
+msgstr "Páginas"
+
+msgid "Videos"
+msgstr "Videos"
+
+msgid "Documents"
+msgstr "Documentos"
+
+msgid "Click a file to select it"
+msgstr "Click en un archivo para seleccionarlo"
+
+msgid "Upload new"
+msgstr "Subir nuevo"
+
+msgid "Category"
+msgstr "Categoría"
+
+msgid "Author"
+msgstr "Autor"
+
+msgid "Date"
+msgstr "Fecha"
+
+#, fuzzy
+#| msgid "View site"
+msgid "Views"
+msgstr "Ver site"
+
+msgid "Preview"
+msgstr "Preview"
+
+#, fuzzy
+#| msgid "Editorial"
+msgid "Edit"
+msgstr "Editorial"
+
+#, fuzzy
+#| msgid "New post"
+msgid "No posts in this view"
+msgstr "Nuevo post"
+
+#, fuzzy
+#| msgid "Create the first one and it'll show up here."
+msgid "Create the first one."
+msgstr "Crea el primero y aparecerá aquí."
 
 msgid "New post"
 msgstr "Nuevo post"
@@ -523,9 +612,6 @@ msgstr "Navegación"
 msgid "Homepage"
 msgstr "Homepage"
 
-msgid "Workspace"
-msgstr "Workspace"
-
 msgid "Users"
 msgstr "Usuarios"
 
@@ -545,7 +631,7 @@ msgid "Open menu"
 msgstr "Abrir menú"
 
 msgid "Studio"
-msgstr ""
+msgstr "Studio"
 
 msgid "Search posts, pages…"
 msgstr "Buscar posts, páginas…"
@@ -557,7 +643,7 @@ msgid "Toggle theme"
 msgstr "Cambiar tema"
 
 msgid "Language"
-msgstr ""
+msgstr "Idioma"
 
 msgid "Recent activity"
 msgstr "Actividad reciente"
@@ -571,8 +657,48 @@ msgstr "Ayuda y atajos"
 msgid "Help"
 msgstr "Ayuda"
 
-msgid "Publicar"
+msgid "Last 7 days"
+msgstr "Últimos 7 días"
+
+#, fuzzy
+#| msgid "When you publish or upload something, it'll show up here."
+msgid "Nothing recent. When you publish or upload, it'll show up here."
+msgstr "Cuando publiques o subas algo, aparecerá aquí."
+
+#, fuzzy
+#| msgid "Editorial"
+msgid "Editor"
+msgstr "Editorial"
+
+msgid "Open the block menu (heading, list, image, code…)"
+msgstr "Abrir el menú de bloques (encabezado, lista, imagen, código…)"
+
+msgid "Bold the selected text"
+msgstr "Negrita en el texto seleccionado"
+
+msgid "Italic"
+msgstr "Cursiva"
+
+msgid "Insert link"
+msgstr "Insertar enlace"
+
+msgid "Highlight"
+msgstr "Resaltado"
+
+#, fuzzy
+#| msgid "Published"
+msgid "Publishing"
+msgstr "Publicado"
+
+msgid ""
+"Save a draft or hit <strong>Publish</strong> to make the post publicly "
+"visible."
 msgstr ""
+
+#, fuzzy
+#| msgid "If the date is in the future, the post is scheduled."
+msgid "If you set a future date in <em>Publish on</em>, the post is scheduled."
+msgstr "Si la fecha es futura, queda programado."
 
 msgid "Hello"
 msgstr "Hola"
@@ -669,20 +795,211 @@ msgstr "Últimos cambios en este sitio"
 msgid "When you publish or upload something, it'll show up here."
 msgstr "Cuando publiques o subas algo, aparecerá aquí."
 
-msgid "Guardar cambios"
+msgid ""
+"Blocks that appear on the home page, in order. Use the arrows to move them "
+"and toggle a block off without deleting it via the switch."
 msgstr ""
+
+#, fuzzy
+#| msgid "Homepage"
+msgid "View homepage"
+msgstr "Homepage"
+
+msgid "Add a block"
+msgstr "Añadir un bloque"
+
+msgid "Drag to reorder"
+msgstr "Arrastra para reordenar"
+
+msgid "Hidden"
+msgstr "Oculto"
+
+msgid "Move up"
+msgstr "Mover arriba"
+
+msgid "Move down"
+msgstr "Mover abajo"
+
+msgid "Hide"
+msgstr "Ocultar"
+
+msgid "Show"
+msgstr "Mostrar"
+
+msgid "Delete this block?"
+msgstr "¿Borrar este bloque?"
+
+msgid "Visible on the homepage"
+msgstr "Bloque visible en la homepage"
+
+msgid "Save changes"
+msgstr "Guardar cambios"
+
+#, python-format
+msgid ""
+"The block type \"%(type)s\" is not registered. Delete it, or restore the "
+"type in code."
+msgstr ""
+
+#, fuzzy
+#| msgid "Homepage"
+msgid "Homepage is empty"
+msgstr "Homepage"
+
+msgid "Add your first block from the panel above."
+msgstr "Añadí tu primer bloque desde el panel de arriba."
+
+msgid ""
+"Choose how each page type renders on the public site. The selection is "
+"persisted in <code>Site.settings</code>; templates resolve the suffix "
+"automatically."
+msgstr ""
+
+msgid "Blog index"
+msgstr "Blog index"
+
+msgid "Post detail"
+msgstr "Detalle de post"
+
+msgid "Static pages"
+msgstr "Páginas estáticas"
+
+msgid "In use"
+msgstr "En uso"
+
+#, fuzzy
+#| msgid "Layouts"
+msgid "Save layouts"
+msgstr "Layouts"
+
+msgid "Login"
+msgstr "Login"
+
+msgid "Welcome"
+msgstr "Bienvenido"
+
+msgid "Sign in to access the backoffice."
+msgstr "Inicia sesión para entrar al backoffice."
+
+#, fuzzy
+#| msgid "Users"
+msgid "Username"
+msgstr "Usuarios"
+
+msgid "Password"
+msgstr "Contraseña"
+
+msgid "Images, videos, and documents for this site."
+msgstr "Imágenes, videos y documentos del site."
+
+msgid "Upload"
+msgstr "Subir"
+
+msgid "All"
+msgstr "Todos"
+
+msgid "Copied"
+msgstr "Copiado"
+
+msgid "Copy URL"
+msgstr "Copiar URL"
+
+msgid "Delete this file?"
+msgstr "¿Borrar este archivo?"
+
+#, fuzzy
+#| msgid "Media library"
+msgid "Media library is empty"
+msgstr "Biblioteca de media"
+
+msgid "Upload your first file."
+msgstr "Sube tu primer archivo."
+
+msgid "Header menu items. Drag the handle to reorder."
+msgstr "Items del menú del header. Arrastra del handle para reordenar."
 
 msgid "Header"
-msgstr ""
+msgstr "Header"
+
+msgid "/path or https://..."
+msgstr "/ruta o https://..."
+
+msgid "Open in new tab"
+msgstr "Abrir en nueva pestaña"
+
+msgid "Save"
+msgstr "Guardar"
+
+#, fuzzy
+#| msgid "Latest on this site"
+msgid "Delete this item?"
+msgstr "Lo último en el sitio"
+
+msgid "No items yet. Add the first one below."
+msgstr "Sin items todavía. Añade el primero abajo."
+
+msgid "/blog or https://..."
+msgstr "/blog o https://..."
+
+msgid "Add"
+msgstr "Añadir"
 
 msgid "Footer"
+msgstr "Footer"
+
+msgid ""
+"Each footer column is an item with sub-items. Create the column first; then "
+"add links to it."
 msgstr ""
 
-msgid "Preview"
-msgstr ""
+#, fuzzy
+#| msgid "Section title"
+msgid "Column title"
+msgstr "Título de la sección"
 
-msgid "Guardar"
-msgstr ""
+#, fuzzy
+#| msgid "Title (optional)"
+msgid "(optional)"
+msgstr "Título (opcional)"
+
+msgid "Delete column and its links?"
+msgstr "¿Borrar columna y sus links?"
+
+msgid "Delete column"
+msgstr "Borrar columna"
+
+#, fuzzy
+#| msgid "New post"
+msgid "New tab"
+msgstr "Nuevo post"
+
+msgid "Delete this link?"
+msgstr "¿Borrar este link?"
+
+#, fuzzy
+#| msgid "Button label"
+msgid "Link label"
+msgstr "Texto del botón"
+
+msgid "Add link"
+msgstr "Añadir link"
+
+#, fuzzy
+#| msgid "New post"
+msgid "No columns yet."
+msgstr "Nuevo post"
+
+msgid "New column title (e.g. Product)"
+msgstr "Título de columna nueva (ej: Producto)"
+
+msgid "Add column"
+msgstr "Añadir columna"
+
+msgid "New"
+msgstr "Nuevo"
+
+msgid "Live"
+msgstr "Live"
 
 #, fuzzy
 #| msgid "Section title"
@@ -690,52 +1007,320 @@ msgid "Page title"
 msgstr "Título de la sección"
 
 msgid "Slug"
-msgstr ""
+msgstr "Slug"
 
 msgid "Layout"
-msgstr ""
+msgstr "Layout"
 
 msgid "Sort order"
-msgstr ""
+msgstr "Orden"
 
-msgid "Imagen destacada"
-msgstr ""
+#, fuzzy
+#| msgid "Featured post"
+msgid "Featured image"
+msgstr "Post destacado"
 
 msgid "Meta title"
-msgstr ""
+msgstr "Meta title"
 
 msgid "Meta description"
-msgstr ""
+msgstr "Meta description"
 
-msgid "Peligro"
-msgstr ""
+msgid "Open Graph image"
+msgstr "Imagen para Open Graph"
 
-msgid "Guardar borrador"
-msgstr ""
+msgid "Danger zone"
+msgstr "Zona peligrosa"
+
+msgid "Delete this page? This action cannot be undone."
+msgstr "¿Borrar esta página? Esta acción no se puede deshacer."
+
+msgid "Delete page"
+msgstr "Eliminar página"
+
+msgid "Write something, or press / to see the blocks…"
+msgstr "Escribe algo, o presiona / para ver los bloques…"
+
+msgid "Static pages: about, pricing, privacy, etc."
+msgstr "Páginas estáticas: about, pricing, privacidad, etc."
+
+#, fuzzy
+#| msgid "New post"
+msgid "New page"
+msgstr "Nuevo post"
+
+msgid "Updated"
+msgstr "Actualizada"
+
+#, fuzzy
+#| msgid "New post"
+msgid "No pages yet"
+msgstr "Nuevo post"
+
+#, fuzzy
+#| msgid "Recent posts"
+msgid "Edit post"
+msgstr "Posts recientes"
+
+msgid "No changes"
+msgstr "Sin cambios"
+
+msgid "Unsaved changes"
+msgstr "Cambios sin guardar"
+
+msgid "Saved"
+msgstr "Guardado"
+
+msgid "Save first"
+msgstr "Guarda primero"
+
+msgid "Save draft"
+msgstr "Guardar borrador"
+
+#, fuzzy
+#| msgid "Published"
+msgid "Publish"
+msgstr "Publicado"
 
 msgid "Post title…"
-msgstr ""
+msgstr "Título del post…"
 
-msgid "Organización"
-msgstr ""
+#, fuzzy
+#| msgid "Published"
+msgid "Publish on"
+msgstr "Publicado"
+
+msgid "If the date is in the future, the post is scheduled."
+msgstr "Si la fecha es futura, queda programado."
+
+#, fuzzy
+#| msgid "General"
+msgid "auto-generated"
+msgstr "General"
+
+#, fuzzy
+#| msgid "Navigation"
+msgid "Organization"
+msgstr "Navegación"
+
+msgid "— none —"
+msgstr "— ninguna —"
 
 msgid "Tags"
-msgstr ""
+msgstr "Tags"
 
 msgid "Excerpt"
+msgstr "Excerpt"
+
+msgid "Google preview"
+msgstr "Vista previa en Google"
+
+msgid "yourdomain.com"
+msgstr "midominio.com"
+
+msgid "post-slug"
+msgstr "slug-del-post"
+
+#, fuzzy
+#| msgid "Section title"
+msgid "Post title"
+msgstr "Título de la sección"
+
+msgid "Meta description preview, or if empty, the post excerpt."
 msgstr ""
+"Aquí aparecerá la meta description o, si está vacía, el excerpt del post."
 
 msgid "Focus keyword"
-msgstr ""
+msgstr "Focus keyword"
 
 msgid "Canonical URL"
+msgstr "Canonical URL"
+
+msgid "Move to trash"
+msgstr "Mover a papelera"
+
+msgid "Everything you've published, scheduled, or have in draft."
+msgstr "Todo lo que has publicado, programado o tienes en borrador."
+
+msgid "Filter by title or slug…"
+msgstr "Filtrar por título o slug…"
+
+#, fuzzy, python-format
+#| msgid "%(n)s scheduled"
+#| msgid_plural "%(n)s scheduled"
+msgid "%(n)s result"
+msgid_plural "%(n)s results"
+msgstr[0] "%(n)s programado"
+msgstr[1] "%(n)s programados"
+msgstr[2] ""
+
+msgid "0 selected"
+msgstr "0 seleccionados"
+
+msgid "Restore"
+msgstr "Restaurar"
+
+msgid "Delete permanently"
+msgstr "Borrar definitivamente"
+
+msgid "Back to editor"
+msgstr "Volver al editor"
+
+msgid "Mobile"
+msgstr "Móvil"
+
+msgid "Tablet"
+msgstr "Tablet"
+
+msgid "Desktop"
+msgstr "Desktop"
+
+#, fuzzy
+#| msgid "Open menu"
+msgid "Open live"
+msgstr "Abrir menú"
+
+msgid "Publish first to get a public URL"
+msgstr "Publica primero para tener URL pública"
+
+msgid "Site-wide configuration."
+msgstr "Configuración global del sitio."
+
+msgid "API key"
+msgstr "Clave API"
+
+msgid ""
+"Use this key in the <code>Authorization: Bearer …</code> header when calling "
+"the headless API."
 msgstr ""
 
-msgid "Live"
+#, fuzzy
+#| msgid "Categories & tags"
+msgid "Categories &amp; tags"
+msgstr "Categorías y tags"
+
+#, fuzzy
+#| msgid "Categories & tags"
+msgid "Categories and tags"
+msgstr "Categorías y tags"
+
+msgid "How posts are grouped on the public site."
+msgstr "Cómo se agrupan los posts en el sitio público."
+
+#, fuzzy
+#| msgid "Categories & tags"
+msgid "Categories"
+msgstr "Categorías y tags"
+
+msgid "Name"
+msgstr "Nombre"
+
+msgid "Delete this category?"
+msgstr "¿Borrar esta categoría?"
+
+msgid "No categories."
+msgstr "Sin categorías."
+
+msgid "No tags."
+msgstr "Sin tags."
+
+msgid "Visual tokens with live preview."
+msgstr "Tokens visuales con preview en vivo."
+
+msgid "Color"
+msgstr "Color"
+
+msgid "Accent"
+msgstr "Accent"
+
+msgid "Color scheme"
+msgstr "Esquema de color"
+
+msgid "Theme preset"
+msgstr "Theme preset"
+
+msgid "Typography"
+msgstr "Tipografía"
+
+#, fuzzy
+#| msgid "Branding"
+msgid "Heading font"
+msgstr "Marca"
+
+msgid "Body font"
+msgstr "Fuente del cuerpo"
+
+msgid "Border radius"
+msgstr "Border radius"
+
+msgid "Content density"
+msgstr "Densidad de contenido"
+
+msgid "Device size"
+msgstr "Tamaño del dispositivo"
+
+#, fuzzy
+#| msgid "Open menu"
+msgid "Open in tab"
+msgstr "Abrir menú"
+
+msgid ""
+"Registered themes (including pip-installed ones). Click Activate to apply "
+"one to the site, or Activate with palette to overwrite colors and fonts with "
+"the ones the theme suggests."
 msgstr ""
 
-msgid "Activar"
+msgid "Edit tokens"
+msgstr "Editar tokens"
+
+#, python-format
+msgid "by %(author)s"
+msgstr "por %(author)s"
+
+#, fuzzy
+#| msgid "Recent activity"
+msgid "Activate"
+msgstr "Actividad reciente"
+
+msgid ""
+"Overwrite your accent color and fonts with the theme defaults. Continue?"
 msgstr ""
+
+msgid "palette"
+msgstr "paleta"
+
+#, fuzzy
+#| msgid "Toggle theme"
+msgid "No themes"
+msgstr "Cambiar tema"
+
+msgid ""
+"No themes are registered. Install one via pip or register one from code."
+msgstr ""
+
+msgid "Who has access to the Studio."
+msgstr "Quién tiene acceso al Studio."
+
+msgid "Invite"
+msgstr "Invitar"
+
+#, fuzzy
+#| msgid "Users"
+msgid "User"
+msgstr "Usuarios"
+
+msgid "Since"
+msgstr "Desde"
+
+#, fuzzy
+#| msgid "Branding"
+msgid "Pending"
+msgstr "Marca"
+
+#, fuzzy
+#| msgid "New post"
+msgid "No users yet"
+msgstr "Nuevo post"
 
 msgid ""
 "MADGA's stock theme. Tailwind-driven, generous whitespace, sans-serif "

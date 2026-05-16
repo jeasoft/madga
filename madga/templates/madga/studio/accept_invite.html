@@ -1,29 +1,29 @@
 {% extends "madga/studio/base.html" %}
 {% load i18n madga_studio_tags %}
 
-{% block title %}Aceptar invitación · {{ site.name|default:"MADGA" }}{% endblock %}
-{% block breadcrumbs %}<span class="crumb is-current">Invitación</span>{% endblock %}
+{% block title %}{% trans "Accept invitation" %} · {{ site.name|default:"MADGA" }}{% endblock %}
+{% block breadcrumbs %}<span class="crumb is-current">{% trans "Invitation" %}</span>{% endblock %}
 
 {% block content %}
 <div class="madga-page" style="max-width:520px; margin: 60px auto;">
   <div class="madga-card" style="padding:28px; text-align:center;">
     {% if error == "not-found" %}
-      <h1 class="madga-page-title" style="font-size:22px;">Invitación no encontrada</h1>
-      <p class="madga-page-subtitle" style="margin-top:10px;">Este enlace ya no es válido. Pídele al admin que te envíe una nueva invitación.</p>
-      <a href="{% url 'madga_studio:login' %}" class="madga-btn madga-btn--sm" style="margin-top:18px;">{% trans "Ir al login" %}</a>
+      <h1 class="madga-page-title" style="font-size:22px;">{% trans "Invitation not found" %}</h1>
+      <p class="madga-page-subtitle" style="margin-top:10px;">{% trans "This link is no longer valid. Ask the admin to send you a new invitation." %}</p>
+      <a href="{% url 'madga_studio:login' %}" class="madga-btn madga-btn--sm" style="margin-top:18px;">{% trans "Go to login" %}</a>
     {% elif error == "expired" %}
-      <h1 class="madga-page-title" style="font-size:22px;">Invitación vencida</h1>
-      <p class="madga-page-subtitle" style="margin-top:10px;">Esta invitación venció (más de 14 días). Pedile al admin de {{ invitation.site.name }} que te envíe una nueva.</p>
-      <a href="{% url 'madga_studio:login' %}" class="madga-btn madga-btn--sm" style="margin-top:18px;">{% trans "Ir al login" %}</a>
+      <h1 class="madga-page-title" style="font-size:22px;">{% trans "Invitation expired" %}</h1>
+      <p class="madga-page-subtitle" style="margin-top:10px;">{% blocktrans with site_name=invitation.site.name %}This invitation expired (over 14 days old). Ask the admin of {{ site_name }} to send you a new one.{% endblocktrans %}</p>
+      <a href="{% url 'madga_studio:login' %}" class="madga-btn madga-btn--sm" style="margin-top:18px;">{% trans "Go to login" %}</a>
     {% else %}
-      <h1 class="madga-page-title" style="font-size:22px;">Te invitaron a {{ invitation.site.name }}</h1>
+      <h1 class="madga-page-title" style="font-size:22px;">{% blocktrans with site_name=invitation.site.name %}You've been invited to {{ site_name }}{% endblocktrans %}</h1>
       <p class="madga-page-subtitle" style="margin-top:10px;">
-        Email: <strong>{{ invitation.email }}</strong><br>
-        Rol: <strong>{{ invitation.get_role_display }}</strong>
+        {% trans "Email" %}: <strong>{{ invitation.email }}</strong><br>
+        {% trans "Role" %}: <strong>{{ invitation.get_role_display }}</strong>
       </p>
       <form method="post" style="margin-top:22px;">
         {% csrf_token %}
-        <button type="submit" class="madga-btn madga-btn--primary">{% trans "Aceptar invitación" %}</button>
+        <button type="submit" class="madga-btn madga-btn--primary">{% trans "Accept invitation" %}</button>
       </form>
     {% endif %}
   </div>

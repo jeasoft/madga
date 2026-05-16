@@ -1,23 +1,23 @@
 {% extends "madga/studio/base.html" %}
 {% load i18n madga_studio_tags %}
 
-{% block breadcrumbs %}<span class="crumb is-current">Categories &amp; tags</span>{% endblock %}
+{% block breadcrumbs %}<span class="crumb is-current">{% trans "Categories &amp; tags" %}</span>{% endblock %}
 
 {% block content %}
 <div class="madga-page">
   <div class="madga-page-header">
     <div class="madga-page-title-block">
-      <h1 class="madga-page-title">Categorías y tags</h1>
-      <p class="madga-page-subtitle">Cómo se agrupan los posts en el sitio público.</p>
+      <h1 class="madga-page-title">{% trans "Categories and tags" %}</h1>
+      <p class="madga-page-subtitle">{% trans "How posts are grouped on the public site." %}</p>
     </div>
   </div>
 
   <div style="display:grid; grid-template-columns: 1fr 1fr; gap:18px;">
     <div class="madga-card">
-      <h2 class="madga-card-title">Categorías</h2>
+      <h2 class="madga-card-title">{% trans "Categories" %}</h2>
       <form method="post" action="{% url 'madga_studio:category_create' %}" style="display:flex; gap:6px; margin:12px 0;">
         {% csrf_token %}
-        <input class="madga-input" name="name" placeholder="Nombre" required style="flex:1;">
+        <input class="madga-input" name="name" placeholder="{% trans 'Name' %}" required style="flex:1;">
         <input class="madga-color" name="color" type="color" value="#6C63FF">
         <input class="madga-input" name="slug" placeholder="slug" style="width:120px;">
         <button class="madga-btn madga-btn--primary madga-btn--sm">{% studio_icon "plus" size=12 stroke=2.5 %}</button>
@@ -27,9 +27,9 @@
         <li style="display:flex; align-items:center; gap:8px; padding:8px 0; border-bottom:1px solid var(--border); font-size:13px;">
           <span style="width:10px; height:10px; border-radius:3px; background:{{ c.color }};"></span>
           <span style="flex:1;">{{ c.name }} <span class="madga-post-slug" style="margin-left:6px;">/{{ c.slug }}</span></span>
-          <form method="post" action="{% url 'madga_studio:category_delete' pk=c.pk %}" style="margin:0;">{% csrf_token %}<button class="madga-btn madga-btn--ghost madga-btn--sm madga-btn--danger" title="Eliminar" data-madga-confirm="¿Borrar esta categoría?">{% studio_icon "x" size=12 stroke=2 %}</button></form>
+          <form method="post" action="{% url 'madga_studio:category_delete' pk=c.pk %}" style="margin:0;">{% csrf_token %}<button class="madga-btn madga-btn--ghost madga-btn--sm madga-btn--danger" title="{% trans 'Delete' %}" data-madga-confirm="{% trans 'Delete this category?' %}">{% studio_icon "x" size=12 stroke=2 %}</button></form>
         </li>
-        {% empty %}<li style="color:var(--fg-2); padding:8px 0;">Sin categorías.</li>{% endfor %}
+        {% empty %}<li style="color:var(--fg-2); padding:8px 0;">{% trans "No categories." %}</li>{% endfor %}
       </ul>
     </div>
 
@@ -37,7 +37,7 @@
       <h2 class="madga-card-title">{% trans "Tags" %}</h2>
       <form method="post" action="{% url 'madga_studio:tag_create' %}" style="display:flex; gap:6px; margin:12px 0;">
         {% csrf_token %}
-        <input class="madga-input" name="name" placeholder="Nombre" required style="flex:1;">
+        <input class="madga-input" name="name" placeholder="{% trans 'Name' %}" required style="flex:1;">
         <input class="madga-input" name="slug" placeholder="slug" style="width:120px;">
         <button class="madga-btn madga-btn--primary madga-btn--sm">{% studio_icon "plus" size=12 stroke=2.5 %}</button>
       </form>
@@ -47,7 +47,7 @@
             #{{ t.name }}
             <form method="post" action="{% url 'madga_studio:tag_delete' pk=t.pk %}" style="margin:0; display:inline;">{% csrf_token %}<button style="background:none; border:none; color:var(--fg-3); cursor:pointer; padding:0; line-height:1;">×</button></form>
           </span>
-        {% empty %}<span style="color:var(--fg-2); font-size:13px;">Sin tags.</span>{% endfor %}
+        {% empty %}<span style="color:var(--fg-2); font-size:13px;">{% trans "No tags." %}</span>{% endfor %}
       </div>
     </div>
   </div>

@@ -1,17 +1,17 @@
 {% extends "madga/studio/base.html" %}
 {% load i18n madga_studio_tags %}
 
-{% block breadcrumbs %}<span class="crumb is-current">Pages</span>{% endblock %}
+{% block breadcrumbs %}<span class="crumb is-current">{% trans "Pages" %}</span>{% endblock %}
 
 {% block content %}
 <div class="madga-page">
   <div class="madga-page-header">
     <div class="madga-page-title-block">
-      <h1 class="madga-page-title">Pages</h1>
-      <p class="madga-page-subtitle">Páginas estáticas: about, pricing, privacidad, etc.</p>
+      <h1 class="madga-page-title">{% trans "Pages" %}</h1>
+      <p class="madga-page-subtitle">{% trans "Static pages: about, pricing, privacy, etc." %}</p>
     </div>
     <div class="madga-page-actions">
-      {% studio_btn label="Nueva página" href="/studio/pages/new/" variant="primary" icon="plus" %}
+      {% studio_btn label=_("New page") href="/studio/pages/new/" variant="primary" icon="plus" %}
     </div>
   </div>
 
@@ -19,11 +19,11 @@
     <table class="madga-table">
       <thead>
         <tr>
-          <th>Título</th>
+          <th>{% trans "Title" %}</th>
           <th>{% trans "Slug" %}</th>
-          <th>{% trans "Estado" %}</th>
+          <th>{% trans "Status" %}</th>
           <th>{% trans "Layout" %}</th>
-          <th>Actualizada</th>
+          <th>{% trans "Updated" %}</th>
           <th class="col-actions"></th>
         </tr>
       </thead>
@@ -40,14 +40,14 @@
           <td class="col-actions">
             <div style="display:flex; gap:4px; justify-content:flex-end;">
               {% if p.slug %}
-                <a href="{% url 'madga_studio:page_preview' pk=p.pk %}" target="_blank" class="madga-btn madga-btn--ghost madga-btn--sm" title="Preview">{% studio_icon "eye" size=14 stroke=2 %}</a>
+                <a href="{% url 'madga_studio:page_preview' pk=p.pk %}" target="_blank" class="madga-btn madga-btn--ghost madga-btn--sm" title="{% trans 'Preview' %}">{% studio_icon "eye" size=14 stroke=2 %}</a>
               {% endif %}
-              <a href="{% url 'madga_studio:page_edit' pk=p.pk %}" class="madga-btn madga-btn--ghost madga-btn--sm">{% trans "Editar" %}</a>
+              <a href="{% url 'madga_studio:page_edit' pk=p.pk %}" class="madga-btn madga-btn--ghost madga-btn--sm">{% trans "Edit" %}</a>
             </div>
           </td>
         </tr>
         {% empty %}
-        <tr><td colspan="6">{% studio_empty title="Sin páginas" message="Crea la primera." action_label="Nueva página" action_href="/studio/pages/new/" %}</td></tr>
+        <tr><td colspan="6">{% studio_empty title=_("No pages yet") message=_("Create the first one.") action_label=_("New page") action_href="/studio/pages/new/" %}</td></tr>
         {% endfor %}
       </tbody>
     </table>

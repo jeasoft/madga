@@ -1,29 +1,29 @@
 {% extends "madga/studio/base.html" %}
 {% load i18n madga_studio_tags %}
 
-{% block breadcrumbs %}<span class="crumb is-current">Users</span>{% endblock %}
+{% block breadcrumbs %}<span class="crumb is-current">{% trans "Users" %}</span>{% endblock %}
 
 {% block content %}
 <div class="madga-page">
   <div class="madga-page-header">
     <div class="madga-page-title-block">
-      <h1 class="madga-page-title">Usuarios</h1>
-      <p class="madga-page-subtitle">Quién tiene acceso al Studio.</p>
+      <h1 class="madga-page-title">{% trans "Users" %}</h1>
+      <p class="madga-page-subtitle">{% trans "Who has access to the Studio." %}</p>
     </div>
   </div>
 
   <form method="post" action="{% url 'madga_studio:user_invite' %}" style="display:flex; gap:8px; margin-bottom:18px;">
     {% csrf_token %}
-    <input type="email" name="email" placeholder="email@dominio.com" required class="madga-input" style="flex:1;">
+    <input type="email" name="email" placeholder="email@domain.com" required class="madga-input" style="flex:1;">
     <select name="role" class="madga-select" style="width:160px;">
       {% for v,l in roles %}<option value="{{ v }}">{{ l }}</option>{% endfor %}
     </select>
-    <button class="madga-btn madga-btn--primary" type="submit">{% studio_icon "plus" size=14 stroke=2.5 %} Invitar</button>
+    <button class="madga-btn madga-btn--primary" type="submit">{% studio_icon "plus" size=14 stroke=2.5 %} {% trans "Invite" %}</button>
   </form>
 
   <div class="madga-table-wrap">
     <table class="madga-table">
-      <thead><tr><th>Usuario</th><th>Email</th><th>Rol</th><th>Desde</th><th class="col-actions"></th></tr></thead>
+      <thead><tr><th>{% trans "User" %}</th><th>{% trans "Email" %}</th><th>{% trans "Role" %}</th><th>{% trans "Since" %}</th><th class="col-actions"></th></tr></thead>
       <tbody>
         {% for m in memberships %}
         <tr>
@@ -49,13 +49,13 @@
         {% endfor %}
         {% for inv in invitations %}
         <tr style="opacity:.7;">
-          <td><em>Pendiente</em></td>
+          <td><em>{% trans "Pending" %}</em></td>
           <td><span class="madga-post-slug">{{ inv.email }}</span></td>
           <td>{{ inv.get_role_display }}</td>
           <td>{{ inv.created_at|date:"M j" }}</td>
-          <td>{% studio_badge "draft" "Invitación" %}</td>
+          <td>{% studio_badge "draft" _("Invitation") %}</td>
         </tr>
-        {% empty %}{% if not memberships %}<tr><td colspan="5">{% studio_empty title="Sin usuarios todavía" %}</td></tr>{% endif %}
+        {% empty %}{% if not memberships %}<tr><td colspan="5">{% studio_empty title=_("No users yet") %}</td></tr>{% endif %}
         {% endfor %}
       </tbody>
     </table>

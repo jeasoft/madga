@@ -2,9 +2,9 @@
 {% load i18n madga_studio_tags %}
 
 {% block breadcrumbs %}
-  <a href="{% url 'madga_studio:page_list' %}" class="crumb">Pages</a>
+  <a href="{% url 'madga_studio:page_list' %}" class="crumb">{% trans "Pages" %}</a>
   <span class="sep">/</span>
-  <span class="crumb is-current">{% if page_obj %}{{ page_obj.title }}{% else %}Nueva{% endif %}</span>
+  <span class="crumb is-current">{% if page_obj %}{{ page_obj.title }}{% else %}{% trans "New" %}{% endif %}</span>
 {% endblock %}
 
 {% block head_extra %}
@@ -35,12 +35,12 @@
   <div>
     <div style="display:flex; gap:8px; margin-bottom:14px; justify-content:flex-end; align-items:center;">
       {% if page_obj and page_obj.slug %}
-        <a href="{% url 'madga_studio:page_preview' pk=page_obj.pk %}" target="_blank" class="madga-btn madga-btn--sm">{% studio_icon "eye" size=14 stroke=2 %} Preview</a>
-        <a href="/p/{{ page_obj.slug }}/" target="_blank" class="madga-btn madga-btn--ghost madga-btn--sm">{% studio_icon "external" size=12 stroke=2 %} Live</a>
+        <a href="{% url 'madga_studio:page_preview' pk=page_obj.pk %}" target="_blank" class="madga-btn madga-btn--sm">{% studio_icon "eye" size=14 stroke=2 %} {% trans "Preview" %}</a>
+        <a href="/p/{{ page_obj.slug }}/" target="_blank" class="madga-btn madga-btn--ghost madga-btn--sm">{% studio_icon "external" size=12 stroke=2 %} {% trans "Live" %}</a>
       {% else %}
         <span class="madga-btn madga-btn--sm" style="opacity:.5; cursor:not-allowed;">{% trans "Preview" %}</span>
       {% endif %}
-      <button type="submit" class="madga-btn madga-btn--sm madga-btn--primary">{% trans "Guardar" %}</button>
+      <button type="submit" class="madga-btn madga-btn--sm madga-btn--primary">{% trans "Save" %}</button>
     </div>
     <div class="madga-editor-main">
       <input class="madga-editor-title" type="text" name="title" value="{{ form.title.value|default:'' }}" placeholder="{% trans 'Page title' %}" required>
@@ -56,9 +56,9 @@
   </div>
   <aside style="display:flex; flex-direction:column; gap:14px;">
     <div class="madga-rail-card">
-      <h3>{% trans "Estado" %}</h3>
+      <h3>{% trans "Status" %}</h3>
       <div class="madga-field"><label class="madga-field-label">{% trans "Slug" %}</label><input class="madga-input" type="text" name="slug" value="{{ form.slug.value|default:'' }}" placeholder="auto"></div>
-      <div class="madga-field"><label class="madga-field-label">Status</label>
+      <div class="madga-field"><label class="madga-field-label">{% trans "Status" %}</label>
         <select class="madga-select" name="status">{% for v,l in form.status.field.choices %}<option value="{{ v }}" {% if form.status.value == v %}selected{% endif %}>{{ l }}</option>{% endfor %}</select>
       </div>
       <div class="madga-field"><label class="madga-field-label">{% trans "Layout" %}</label>
@@ -72,7 +72,7 @@
     </div>
 
     <div class="madga-rail-card">
-      <h3>{% trans "Imagen destacada" %}</h3>
+      <h3>{% trans "Featured image" %}</h3>
       {% include "madga/studio/components/featured_image_field.html" with name="featured_image" media=page_obj.featured_image %}
     </div>
 
@@ -81,15 +81,15 @@
       <div class="madga-field"><label class="madga-field-label">{% trans "Meta title" %}</label><input class="madga-input" type="text" name="meta_title" value="{{ form.meta_title.value|default:'' }}"></div>
       <div class="madga-field"><label class="madga-field-label">{% trans "Meta description" %}</label><input class="madga-input" type="text" name="meta_description" value="{{ form.meta_description.value|default:'' }}"></div>
       <div class="madga-field" style="margin-top:8px;">
-        <label class="madga-field-label" style="margin-bottom:8px;">Imagen para Open Graph</label>
+        <label class="madga-field-label" style="margin-bottom:8px;">{% trans "Open Graph image" %}</label>
         {% include "madga/studio/components/featured_image_field.html" with name="og_image" media=page_obj.og_image %}
       </div>
     </div>
     {% if page_obj %}
     <form method="post" action="{% url 'madga_studio:page_delete' pk=page_obj.pk %}" class="madga-rail-card">
       {% csrf_token %}
-      <h3>{% trans "Peligro" %}</h3>
-      <button class="madga-btn madga-btn--sm madga-btn--danger" style="width:100%; justify-content:center;" data-madga-confirm="¿Borrar esta página? Esta acción no se puede deshacer.">{% studio_icon "trash" size=12 stroke=2 %} Eliminar página</button>
+      <h3>{% trans "Danger zone" %}</h3>
+      <button class="madga-btn madga-btn--sm madga-btn--danger" style="width:100%; justify-content:center;" data-madga-confirm="{% trans 'Delete this page? This action cannot be undone.' %}">{% studio_icon "trash" size=12 stroke=2 %} {% trans "Delete page" %}</button>
     </form>
     {% endif %}
   </aside>
@@ -105,7 +105,7 @@
     const editor = new EditorJS({
       holder: 'editorjs-container',
       autofocus: false,
-      placeholder: 'Escribe algo, o presiona / para ver los bloques…',
+      placeholder: '{% trans "Write something, or press / to see the blocks…" %}',
       data: initialData && initialData.blocks ? initialData : {blocks:[]},
       tools: {
         header: { class: Header, inlineToolbar: inlineTools },

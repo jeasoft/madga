@@ -1,18 +1,18 @@
 {% extends "madga/studio/base.html" %}
 {% load i18n madga_studio_tags %}
 
-{% block title %}Posts · {{ site.name|default:"MADGA" }}{% endblock %}
-{% block breadcrumbs %}<span class="crumb is-current">Posts</span>{% endblock %}
+{% block title %}{% trans "Posts" %} · {{ site.name|default:"MADGA" }}{% endblock %}
+{% block breadcrumbs %}<span class="crumb is-current">{% trans "Posts" %}</span>{% endblock %}
 
 {% block content %}
 <div class="madga-page">
   <div class="madga-page-header">
     <div class="madga-page-title-block">
-      <h1 class="madga-page-title">Posts</h1>
-      <p class="madga-page-subtitle">Todo lo que has publicado, programado o tienes en borrador.</p>
+      <h1 class="madga-page-title">{% trans "Posts" %}</h1>
+      <p class="madga-page-subtitle">{% trans "Everything you've published, scheduled, or have in draft." %}</p>
     </div>
     <div class="madga-page-actions">
-      {% studio_btn label="Nuevo post" href="/studio/posts/new/" variant="primary" icon="plus" %}
+      {% studio_btn label=_("New post") href="/studio/posts/new/" variant="primary" icon="plus" %}
     </div>
   </div>
 
@@ -29,26 +29,28 @@
           hx-get="{% url 'madga_studio:post_list' %}" hx-trigger="input from:input delay:300ms"
           hx-target="#post-list-rows" hx-include="this" hx-push-url="true">
       {% studio_icon "search" size=14 stroke=2 %}
-      <input type="text" name="q" value="{{ search_q }}" placeholder="Filtrar por título o slug…">
+      <input type="text" name="q" value="{{ search_q }}" placeholder="{% trans 'Filter by title or slug…' %}">
       <input type="hidden" name="tab" value="{{ current_tab }}">
     </form>
     <div style="flex:1"></div>
-    <span style="font-size:12px; color:var(--fg-2);">{{ paginator.count }} resultado{{ paginator.count|pluralize }}</span>
+    <span style="font-size:12px; color:var(--fg-2);">
+      {% blocktrans count n=paginator.count %}{{ n }} result{% plural %}{{ n }} results{% endblocktrans %}
+    </span>
   </div>
 
   <form id="post-bulk-form" method="post" action="{% url 'madga_studio:post_bulk' %}">
     {% csrf_token %}
     <div class="madga-bulk-bar" data-madga-bulk-bar="post-bulk-form" hidden>
-      <span class="madga-bulk-count" data-madga-bulk-count>0 seleccionados</span>
-      <button class="madga-btn madga-btn--sm" type="submit" name="action" value="publish">{% studio_icon "check" size=12 stroke=2.5 %} Publicar</button>
-      <button class="madga-btn madga-btn--sm" type="submit" name="action" value="draft">{% studio_icon "edit" size=12 stroke=2 %} Borrador</button>
+      <span class="madga-bulk-count" data-madga-bulk-count>{% trans "0 selected" %}</span>
+      <button class="madga-btn madga-btn--sm" type="submit" name="action" value="publish">{% studio_icon "check" size=12 stroke=2.5 %} {% trans "Publish" %}</button>
+      <button class="madga-btn madga-btn--sm" type="submit" name="action" value="draft">{% studio_icon "edit" size=12 stroke=2 %} {% trans "Draft" %}</button>
       {% if current_tab == 'trash' %}
-        <button class="madga-btn madga-btn--sm" type="submit" name="action" value="restore">Restaurar</button>
+        <button class="madga-btn madga-btn--sm" type="submit" name="action" value="restore">{% trans "Restore" %}</button>
         <div style="flex:1"></div>
-        <button class="madga-btn madga-btn--sm madga-btn--danger" type="submit" name="action" value="delete">Borrar definitivamente</button>
+        <button class="madga-btn madga-btn--sm madga-btn--danger" type="submit" name="action" value="delete">{% trans "Delete permanently" %}</button>
       {% else %}
         <div style="flex:1"></div>
-        <button class="madga-btn madga-btn--sm madga-btn--danger" type="submit" name="action" value="trash">{% studio_icon "trash" size=12 stroke=2 %} Mover a papelera</button>
+        <button class="madga-btn madga-btn--sm madga-btn--danger" type="submit" name="action" value="trash">{% studio_icon "trash" size=12 stroke=2 %} {% trans "Move to trash" %}</button>
       {% endif %}
     </div>
 

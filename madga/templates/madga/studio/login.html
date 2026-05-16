@@ -1,9 +1,9 @@
 {% load i18n static %}
-<html lang="es" data-theme="dark">
+<html lang="{{ LANGUAGE_CODE|default:'en' }}" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MADGA · Login</title>
+  <title>MADGA · {% trans "Login" %}</title>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'madga/studio/studio.tailwind.css' %}">
   <style>
@@ -31,21 +31,21 @@
       </div>
       <div style="font-size:18px; font-weight:700; color:var(--fg-0);">MADGA Studio</div>
     </div>
-    <h1>Bienvenido</h1>
-    <p class="hint">Inicia sesión para entrar al backoffice.</p>
+    <h1>{% trans "Welcome" %}</h1>
+    <p class="hint">{% trans "Sign in to access the backoffice." %}</p>
 
     {% if form.non_field_errors %}<div class="err">{{ form.non_field_errors }}</div>{% endif %}
 
     <div class="madga-field">
-      <label class="madga-field-label" for="id_username">Usuario</label>
+      <label class="madga-field-label" for="id_username">{% trans "Username" %}</label>
       <input class="madga-input" type="text" name="username" id="id_username" autofocus required value="{{ form.username.value|default:'' }}">
     </div>
     <div class="madga-field">
-      <label class="madga-field-label" for="id_password">Contraseña</label>
+      <label class="madga-field-label" for="id_password">{% trans "Password" %}</label>
       <input class="madga-input" type="password" name="password" id="id_password" required>
     </div>
     <input type="hidden" name="next" value="{{ next }}">
-    <button type="submit" class="madga-btn madga-btn--primary" style="width:100%; justify-content:center; margin-top:8px;">Entrar</button>
+    <button type="submit" class="madga-btn madga-btn--primary" style="width:100%; justify-content:center; margin-top:8px;">{% trans "Sign in" %}</button>
   </form>
 </body>
 </html>

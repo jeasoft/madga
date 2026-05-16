@@ -13,18 +13,18 @@
 
   <button type="button" class="madga-fi-empty" data-fi-pick {% if media %}hidden{% endif %}>
     {% studio_icon "image" size=22 stroke=1.6 %}
-    <span>{% trans "Elegir imagen" %}</span>
+    <span>{% trans "Pick an image" %}</span>
   </button>
 
   <div class="madga-fi-actions" data-fi-actions {% if not media %}hidden{% endif %}>
-    <button type="button" class="madga-btn madga-btn--sm" data-fi-pick>{% studio_icon "image" size=12 stroke=2 %} Cambiar</button>
-    <button type="button" class="madga-btn madga-btn--sm madga-btn--ghost" data-fi-clear>{% studio_icon "x" size=12 stroke=2 %} Quitar</button>
+    <button type="button" class="madga-btn madga-btn--sm" data-fi-pick>{% studio_icon "image" size=12 stroke=2 %} {% trans "Change" %}</button>
+    <button type="button" class="madga-btn madga-btn--sm madga-btn--ghost" data-fi-clear>{% studio_icon "x" size=12 stroke=2 %} {% trans "Remove" %}</button>
   </div>
 
   {% if media %}
     <div class="madga-field-help" style="margin-top:8px;">
       <strong data-fi-filename>{{ media.filename }}</strong>
-      {% if media.alt_text %}<br><span style="color:var(--fg-3)">Alt: <span data-fi-alt>{{ media.alt_text }}</span></span>{% endif %}
+      {% if media.alt_text %}<br><span style="color:var(--fg-3)">{% trans "Alt" %}: <span data-fi-alt>{{ media.alt_text }}</span></span>{% endif %}
     </div>
   {% else %}
     <div class="madga-field-help" style="margin-top:8px; display:none;" data-fi-filename-wrap>

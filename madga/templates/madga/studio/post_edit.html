@@ -1,11 +1,11 @@
 {% extends "madga/studio/base.html" %}
 {% load i18n static madga_studio_tags %}
 
-{% block title %}{% if post %}{{ post.title|default:"Editar post" }}{% else %}Nuevo post{% endif %} · Studio{% endblock %}
+{% block title %}{% if post %}{{ post.title|default:_("Edit post") }}{% else %}{% trans "New post" %}{% endif %} · Studio{% endblock %}
 {% block breadcrumbs %}
-  <a href="{% url 'madga_studio:post_list' %}" class="crumb">Posts</a>
+  <a href="{% url 'madga_studio:post_list' %}" class="crumb">{% trans "Posts" %}</a>
   <span class="sep">/</span>
-  <span class="crumb is-current">{% if post %}{{ post.title|default:"Sin título" }}{% else %}Nuevo post{% endif %}</span>
+  <span class="crumb is-current">{% if post %}{{ post.title|default:_("Untitled") }}{% else %}{% trans "New post" %}{% endif %}</span>
 {% endblock %}
 
 {% block head_extra %}
@@ -55,18 +55,18 @@
 
   <div>
     <div class="madga-editor-actions">
-      <span class="madga-editor-status" id="autosave-status">Sin cambios</span>
+      <span class="madga-editor-status" id="autosave-status" data-i18n-clean="{% trans 'No changes' %}" data-i18n-dirty="{% trans 'Unsaved changes' %}" data-i18n-saved="{% trans 'Saved' %}">{% trans "No changes" %}</span>
       <div style="flex:1"></div>
       {% if post and post.slug %}
-        <a href="{% url 'madga_studio:post_preview' pk=post.pk %}" target="_blank" class="madga-btn madga-btn--sm">{% studio_icon "eye" size=14 stroke=2 %} Preview</a>
+        <a href="{% url 'madga_studio:post_preview' pk=post.pk %}" target="_blank" class="madga-btn madga-btn--sm">{% studio_icon "eye" size=14 stroke=2 %} {% trans "Preview" %}</a>
         {% if post.status == 'published' %}
-          <a href="/blog/{{ post.slug }}/" target="_blank" class="madga-btn madga-btn--ghost madga-btn--sm">{% studio_icon "external" size=12 stroke=2 %} Live</a>
+          <a href="/blog/{{ post.slug }}/" target="_blank" class="madga-btn madga-btn--ghost madga-btn--sm">{% studio_icon "external" size=12 stroke=2 %} {% trans "Live" %}</a>
         {% endif %}
       {% else %}
-        <span class="madga-btn madga-btn--sm" aria-disabled="true" style="opacity:.5; cursor:not-allowed;" title="Guarda primero">{% trans "Preview" %}</span>
+        <span class="madga-btn madga-btn--sm" aria-disabled="true" style="opacity:.5; cursor:not-allowed;" title="{% trans 'Save first' %}">{% trans "Preview" %}</span>
       {% endif %}
-      <button type="submit" data-set-status="draft" class="madga-btn madga-btn--sm">{% trans "Guardar borrador" %}</button>
-      <button type="submit" data-set-status="published" class="madga-btn madga-btn--sm madga-btn--primary">{% trans "Publicar" %}</button>
+      <button type="submit" data-set-status="draft" class="madga-btn madga-btn--sm">{% trans "Save draft" %}</button>
+      <button type="submit" data-set-status="published" class="madga-btn madga-btn--sm madga-btn--primary">{% trans "Publish" %}</button>
     </div>
 
     <div class="madga-editor-main">
@@ -92,9 +92,9 @@
 
   <aside class="madga-editor-rail">
     <div class="madga-rail-card">
-      <h3>{% trans "Estado" %}</h3>
+      <h3>{% trans "Status" %}</h3>
       <div class="madga-field">
-        <label class="madga-field-label">Status</label>
+        <label class="madga-field-label">{% trans "Status" %}</label>
         <select class="madga-select" name="status">
           {% for value, label in form.status.field.choices %}
             <option value="{{ value }}" {% if form.status.value == value %}selected{% endif %}>{{ label }}</option>
@@ -102,27 +102,27 @@
         </select>
       </div>
       <div class="madga-field">
-        <label class="madga-field-label">Publicar el</label>
+        <label class="madga-field-label">{% trans "Publish on" %}</label>
         <input class="madga-input" type="datetime-local" name="published_at" value="{{ form.published_at.value|date:'Y-m-d\TH:i' }}">
-        <span class="madga-field-help">Si la fecha es futura, queda programado.</span>
+        <span class="madga-field-help">{% trans "If the date is in the future, the post is scheduled." %}</span>
       </div>
       <div class="madga-field">
         <label class="madga-field-label">{% trans "Slug" %}</label>
-        <input class="madga-input" type="text" name="slug" id="id_slug" value="{{ form.slug.value|default:'' }}" placeholder="auto-generado" data-serp-source="slug">
+        <input class="madga-input" type="text" name="slug" id="id_slug" value="{{ form.slug.value|default:'' }}" placeholder="{% trans 'auto-generated' %}" data-serp-source="slug">
       </div>
     </div>
 
     <div class="madga-rail-card">
-      <h3>{% trans "Imagen destacada" %}</h3>
+      <h3>{% trans "Featured image" %}</h3>
       {% include "madga/studio/components/featured_image_field.html" with name="featured_image" media=post.featured_image alt_name="featured_image_alt" %}
     </div>
 
     <div class="madga-rail-card">
-      <h3>{% trans "Organización" %}</h3>
+      <h3>{% trans "Organization" %}</h3>
       <div class="madga-field">
-        <label class="madga-field-label">{% trans "Categoría" %}</label>
+        <label class="madga-field-label">{% trans "Category" %}</label>
         <select class="madga-select" name="category">
-          <option value="">— ninguna —</option>
+          <option value="">{% trans "— none —" %}</option>
           {% for cat in categories %}
             <option value="{{ cat.id }}" {% if form.category.value|stringformat:"s" == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
           {% endfor %}
@@ -145,10 +145,10 @@
     <div class="madga-rail-card" data-madga-serp>
       <h3>{% trans "SEO" %}</h3>
 
-      <div class="madga-serp" aria-label="Vista previa en Google">
-        <div class="madga-serp-url" data-serp-url>{{ site.domain|default:"midominio.com" }} › blog › {% if post %}{{ post.slug|default:"slug-del-post" }}{% else %}slug-del-post{% endif %}</div>
-        <div class="madga-serp-title" data-serp-title>{% if post %}{{ post.meta_title|default:post.title|default:"Título del post" }}{% else %}Título del post{% endif %}</div>
-        <div class="madga-serp-desc" data-serp-desc>{% if post %}{{ post.meta_description|default:post.excerpt|default:"Aquí aparecerá la meta description o, si está vacía, el excerpt del post." }}{% else %}Aquí aparecerá la meta description o, si está vacía, el excerpt del post.{% endif %}</div>
+      <div class="madga-serp" aria-label="{% trans 'Google preview' %}">
+        <div class="madga-serp-url" data-serp-url>{{ site.domain|default:_("yourdomain.com") }} › blog › {% if post %}{{ post.slug|default:_("post-slug") }}{% else %}{% trans "post-slug" %}{% endif %}</div>
+        <div class="madga-serp-title" data-serp-title>{% if post %}{{ post.meta_title|default:post.title|default:_("Post title") }}{% else %}{% trans "Post title" %}{% endif %}</div>
+        <div class="madga-serp-desc" data-serp-desc>{% if post %}{{ post.meta_description|default:post.excerpt|default:_("Meta description preview, or if empty, the post excerpt.") }}{% else %}{% trans "Meta description preview, or if empty, the post excerpt." %}{% endif %}</div>
       </div>
 
       <div class="madga-field" style="margin-top:12px;">
@@ -172,8 +172,8 @@
     {% if post %}
     <form method="post" action="{% url 'madga_studio:post_delete' pk=post.pk %}" class="madga-rail-card">
       {% csrf_token %}
-      <h3>{% trans "Peligro" %}</h3>
-      <button type="submit" class="madga-btn madga-btn--sm madga-btn--danger" style="width:100%; justify-content:center;">{% studio_icon "trash" size=12 stroke=2 %} Mover a papelera</button>
+      <h3>{% trans "Danger zone" %}</h3>
+      <button type="submit" class="madga-btn madga-btn--sm madga-btn--danger" style="width:100%; justify-content:center;">{% studio_icon "trash" size=12 stroke=2 %} {% trans "Move to trash" %}</button>
     </form>
     {% endif %}
   </aside>
@@ -194,7 +194,7 @@
     const editor = new EditorJS({
       holder: 'editorjs-container',
       autofocus: false,
-      placeholder: 'Escribe algo, o presiona / para ver los bloques…',
+      placeholder: '{% trans "Write something, or press / to see the blocks…" %}',
       data: initialData && initialData.blocks ? initialData : {blocks: []},
       tools: {
         header: { class: Header, inlineToolbar: inlineTools, config: { levels: [2, 3], defaultLevel: 2 } },
@@ -230,8 +230,10 @@
 
     let dirty = false, autosaveTimer = null;
     const statusEl = document.getElementById('autosave-status');
-    function setDirty() { dirty = true; statusEl.textContent = 'Cambios sin guardar'; }
-    function setSaved() { dirty = false; statusEl.textContent = 'Guardado · ' + new Date().toLocaleTimeString(); }
+    const i18nDirty = statusEl.dataset.i18nDirty || 'Unsaved changes';
+    const i18nSaved = statusEl.dataset.i18nSaved || 'Saved';
+    function setDirty() { dirty = true; statusEl.textContent = i18nDirty; }
+    function setSaved() { dirty = false; statusEl.textContent = i18nSaved + ' · ' + new Date().toLocaleTimeString(); }
     async function syncBody() {
       const data = await editor.save();
       document.getElementById('id_body').value = JSON.stringify(data);
@@ -277,7 +279,10 @@
     document.getElementById('id_title').addEventListener('input', setDirty);
 
     // SERP preview live updates --------------------------------------------
-    const siteDomain = "{{ site.domain|default:''|escapejs }}" || 'midominio.com';
+    const siteDomain = "{{ site.domain|default:''|escapejs }}" || '{% trans "yourdomain.com" %}';
+    const fallbackSlug = '{% trans "post-slug" %}';
+    const fallbackTitle = '{% trans "Post title" %}';
+    const fallbackDesc = '{% trans "Meta description preview, or if empty, the post excerpt." %}';
     const serpUrl = document.querySelector('[data-serp-url]');
     const serpTitle = document.querySelector('[data-serp-title]');
     const serpDesc = document.querySelector('[data-serp-desc]');
@@ -289,11 +294,11 @@
     function updateSerp() {
       if (!serpUrl) return;
       const slug = (slugInput && slugInput.value) || (titleInput && titleInput.value || '')
-        .toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'slug-del-post';
+        .toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || fallbackSlug;
       serpUrl.textContent = siteDomain + ' › blog › ' + slug;
-      const t = (metaTitleInput && metaTitleInput.value) || (titleInput && titleInput.value) || 'Título del post';
+      const t = (metaTitleInput && metaTitleInput.value) || (titleInput && titleInput.value) || fallbackTitle;
       serpTitle.textContent = t.length > 60 ? t.slice(0, 60) + '…' : t;
-      const d = (metaDescInput && metaDescInput.value) || (excerptInput && excerptInput.value) || 'Aquí aparecerá la meta description o, si está vacía, el excerpt del post.';
+      const d = (metaDescInput && metaDescInput.value) || (excerptInput && excerptInput.value) || fallbackDesc;
       serpDesc.textContent = d.length > 160 ? d.slice(0, 160) + '…' : d;
     }
     [titleInput, slugInput, metaTitleInput, metaDescInput, excerptInput].forEach(el => {

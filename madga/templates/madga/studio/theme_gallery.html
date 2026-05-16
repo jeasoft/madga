@@ -1,17 +1,17 @@
 {% extends "madga/studio/base.html" %}
 {% load i18n madga_studio_tags %}
 
-{% block breadcrumbs %}<span class="crumb">Site</span><span class="sep">/</span><span class="crumb is-current">Theme gallery</span>{% endblock %}
+{% block breadcrumbs %}<span class="crumb">{% trans "Site" %}</span><span class="sep">/</span><span class="crumb is-current">{% trans "Theme gallery" %}</span>{% endblock %}
 
 {% block content %}
 <div class="madga-page">
   <div class="madga-page-header">
     <div class="madga-page-title-block">
-      <h1 class="madga-page-title">Theme gallery</h1>
-      <p class="madga-page-subtitle">Themes registrados (incluyendo los instalados via pip). Click "Activar" para aplicar al site, o "Activar con paleta" para sobreescribir colores y fuentes con los que sugiere el theme.</p>
+      <h1 class="madga-page-title">{% trans "Theme gallery" %}</h1>
+      <p class="madga-page-subtitle">{% trans "Registered themes (including pip-installed ones). Click Activate to apply one to the site, or Activate with palette to overwrite colors and fonts with the ones the theme suggests." %}</p>
     </div>
     <div class="madga-page-actions">
-      <a href="{% url 'madga_studio:theme' %}" class="madga-btn madga-btn--sm madga-btn--ghost">{% studio_icon "theme" size=12 stroke=2 %} Editar tokens</a>
+      <a href="{% url 'madga_studio:theme' %}" class="madga-btn madga-btn--sm madga-btn--ghost">{% studio_icon "theme" size=12 stroke=2 %} {% trans "Edit tokens" %}</a>
     </div>
   </div>
 
@@ -19,7 +19,7 @@
     {% for theme in themes %}
       <div class="madga-theme-card-item {% if site.theme == theme.key %}is-active{% endif %}">
         <div class="madga-theme-card-preview" style="background: linear-gradient(135deg, {{ theme.accent_color|default:'#6C63FF' }}, {{ theme.accent_color|default:'#6C63FF' }}80);">
-          {% if site.theme == theme.key %}<span class="madga-theme-card-badge">Activo</span>{% endif %}
+          {% if site.theme == theme.key %}<span class="madga-theme-card-badge">{% trans "Active" %}</span>{% endif %}
           <div class="madga-theme-card-mock">
             <div class="madga-theme-card-mock-h" style="font-family: '{{ theme.heading_font|default:'Geist' }}', sans-serif; color: {{ theme.accent_color|default:'#6C63FF' }};">{{ theme.label }}</div>
             <div class="madga-theme-card-mock-line"></div>
@@ -34,23 +34,23 @@
             <span class="madga-theme-card-key">{{ theme.key }}</span>
           </div>
           {% if theme.description %}<p class="madga-theme-card-desc">{{ theme.description }}</p>{% endif %}
-          <div class="madga-theme-card-author">{% if theme.author %}por {{ theme.author }}{% endif %}</div>
+          <div class="madga-theme-card-author">{% if theme.author %}{% blocktrans with author=theme.author %}by {{ author }}{% endblocktrans %}{% endif %}</div>
           <div class="madga-theme-card-actions">
             {% if site.theme == theme.key %}
-              <span class="madga-btn madga-btn--sm" style="opacity:.5; cursor:not-allowed;">{% studio_icon "check" size=12 stroke=2.5 %} En uso</span>
+              <span class="madga-btn madga-btn--sm" style="opacity:.5; cursor:not-allowed;">{% studio_icon "check" size=12 stroke=2.5 %} {% trans "In use" %}</span>
             {% else %}
               <form method="post" style="margin:0; display:inline;">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="activate">
                 <input type="hidden" name="theme" value="{{ theme.key }}">
-                <button type="submit" class="madga-btn madga-btn--sm madga-btn--primary">{% trans "Activar" %}</button>
+                <button type="submit" class="madga-btn madga-btn--sm madga-btn--primary">{% trans "Activate" %}</button>
               </form>
               {% if theme.accent_color or theme.heading_font %}
                 <form method="post" style="margin:0; display:inline;">
                   {% csrf_token %}
                   <input type="hidden" name="action" value="activate_with_palette">
                   <input type="hidden" name="theme" value="{{ theme.key }}">
-                  <button type="submit" class="madga-btn madga-btn--sm" data-madga-confirm="Esto sobreescribirá tu accent color y fuentes con los del theme. ¿Continuar?">+ paleta</button>
+                  <button type="submit" class="madga-btn madga-btn--sm" data-madga-confirm="{% trans 'Overwrite your accent color and fonts with the theme defaults. Continue?' %}">+ {% trans "palette" %}</button>
                 </form>
               {% endif %}
             {% endif %}
@@ -58,7 +58,7 @@
         </div>
       </div>
     {% empty %}
-      {% studio_empty title="Sin themes" message="No hay themes registrados. Instala uno via pip o registra uno desde el código." %}
+      {% studio_empty title=_("No themes") message=_("No themes are registered. Install one via pip or register one from code.") %}
     {% endfor %}
   </div>
 </div>

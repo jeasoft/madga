@@ -1,9 +1,9 @@
 {% load i18n static madga_studio_tags %}
-<html lang="es" data-theme="dark">
+<html lang="{{ LANGUAGE_CODE|default:'en' }}" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=1440">
-  <title>Preview · {{ obj_title|default:"" }}</title>
+  <title>{% trans "Preview" %} · {{ obj_title|default:"" }}</title>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'madga/studio/studio.tailwind.css' %}">
   <style>
@@ -22,20 +22,20 @@
 <body>
   <header class="preview-toolbar">
     {% if edit_url_name and obj %}
-      <a href="{% url edit_url_name pk=obj.pk %}" class="madga-btn madga-btn--sm madga-btn--ghost">← Volver al editor</a>
+      <a href="{% url edit_url_name pk=obj.pk %}" class="madga-btn madga-btn--sm madga-btn--ghost">← {% trans "Back to editor" %}</a>
     {% else %}
       <a href="/studio/" class="madga-btn madga-btn--sm madga-btn--ghost">← Studio</a>
     {% endif %}
     <span class="preview-url">{{ public_url|default:'' }}</span>
     <div class="device-switcher">
-      <button data-device="mobile"  {% if device == 'mobile' %}class="active"{% endif %}  onclick="setDevice('mobile')">Mobile</button>
-      <button data-device="tablet"  {% if device == 'tablet' %}class="active"{% endif %}  onclick="setDevice('tablet')">Tablet</button>
-      <button data-device="desktop" {% if device == 'desktop' or not device %}class="active"{% endif %} onclick="setDevice('desktop')">Desktop</button>
+      <button data-device="mobile"  {% if device == 'mobile' %}class="active"{% endif %}  onclick="setDevice('mobile')">{% trans "Mobile" %}</button>
+      <button data-device="tablet"  {% if device == 'tablet' %}class="active"{% endif %}  onclick="setDevice('tablet')">{% trans "Tablet" %}</button>
+      <button data-device="desktop" {% if device == 'desktop' or not device %}class="active"{% endif %} onclick="setDevice('desktop')">{% trans "Desktop" %}</button>
     </div>
     {% if is_published and public_url %}
-      <a href="{{ public_url }}" target="_blank" class="madga-btn madga-btn--sm">{% studio_icon "external" size=12 stroke=2 %} Abrir live</a>
+      <a href="{{ public_url }}" target="_blank" class="madga-btn madga-btn--sm">{% studio_icon "external" size=12 stroke=2 %} {% trans "Open live" %}</a>
     {% else %}
-      <span class="madga-btn madga-btn--sm" style="opacity:.5; cursor:not-allowed;" title="Publicá primero para tener URL pública">{% trans "Live" %}</span>
+      <span class="madga-btn madga-btn--sm" style="opacity:.5; cursor:not-allowed;" title="{% trans 'Publish first to get a public URL' %}">{% trans "Live" %}</span>
     {% endif %}
   </header>
   <div class="preview-frame-outer">

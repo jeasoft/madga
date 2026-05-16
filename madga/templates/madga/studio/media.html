@@ -1,25 +1,25 @@
 {% extends "madga/studio/base.html" %}
 {% load i18n madga_studio_tags %}
 
-{% block breadcrumbs %}<span class="crumb is-current">Media library</span>{% endblock %}
+{% block breadcrumbs %}<span class="crumb is-current">{% trans "Media library" %}</span>{% endblock %}
 
 {% block content %}
 <div class="madga-page">
   <div class="madga-page-header">
     <div class="madga-page-title-block">
-      <h1 class="madga-page-title">Media library</h1>
-      <p class="madga-page-subtitle">Imágenes, videos y documentos del site.</p>
+      <h1 class="madga-page-title">{% trans "Media library" %}</h1>
+      <p class="madga-page-subtitle">{% trans "Images, videos, and documents for this site." %}</p>
     </div>
     <div class="madga-page-actions">
-      <button class="madga-btn madga-btn--primary" type="button" onclick="document.getElementById('media-upload-input').click()">{% studio_icon "upload" size=14 stroke=2 %} Subir</button>
+      <button class="madga-btn madga-btn--primary" type="button" onclick="document.getElementById('media-upload-input').click()">{% studio_icon "upload" size=14 stroke=2 %} {% trans "Upload" %}</button>
     </div>
   </div>
 
   <div class="madga-tabs">
-    <a href="?" class="madga-tab {% if current_kind == 'all' %}is-active{% endif %}">Todos</a>
-    <a href="?kind=image" class="madga-tab {% if current_kind == 'image' %}is-active{% endif %}">Imágenes</a>
-    <a href="?kind=video" class="madga-tab {% if current_kind == 'video' %}is-active{% endif %}">Videos</a>
-    <a href="?kind=document" class="madga-tab {% if current_kind == 'document' %}is-active{% endif %}">Documentos</a>
+    <a href="?" class="madga-tab {% if current_kind == 'all' %}is-active{% endif %}">{% trans "All" %}</a>
+    <a href="?kind=image" class="madga-tab {% if current_kind == 'image' %}is-active{% endif %}">{% trans "Images" %}</a>
+    <a href="?kind=video" class="madga-tab {% if current_kind == 'video' %}is-active{% endif %}">{% trans "Videos" %}</a>
+    <a href="?kind=document" class="madga-tab {% if current_kind == 'document' %}is-active{% endif %}">{% trans "Documents" %}</a>
   </div>
 
   <form method="post" enctype="multipart/form-data" action="{% url 'madga_studio:media_upload' %}" id="media-upload-form">
@@ -39,13 +39,13 @@
         <div class="madga-post-title">{{ m.filename }}</div>
         <div style="font-size:11px; color:var(--fg-2); margin-top:2px;">{{ m.size|filesizeformat }} · {{ m.created_at|date:"M j" }}</div>
         <div style="display:flex; gap:4px; margin-top:8px;">
-          <button type="button" class="madga-btn madga-btn--sm" onclick="navigator.clipboard.writeText('{{ m.file.url }}'); this.textContent='Copiado'">Copiar URL</button>
-          <form method="post" action="{% url 'madga_studio:media_delete' pk=m.pk %}" style="margin:0;">{% csrf_token %}<button class="madga-btn madga-btn--sm madga-btn--danger" title="Eliminar" data-madga-confirm="¿Eliminar este archivo?">{% studio_icon "trash" size=12 stroke=2 %}</button></form>
+          <button type="button" class="madga-btn madga-btn--sm" onclick="navigator.clipboard.writeText('{{ m.file.url }}'); this.textContent='{% trans "Copied" %}'">{% trans "Copy URL" %}</button>
+          <form method="post" action="{% url 'madga_studio:media_delete' pk=m.pk %}" style="margin:0;">{% csrf_token %}<button class="madga-btn madga-btn--sm madga-btn--danger" title="{% trans 'Delete' %}" data-madga-confirm="{% trans 'Delete this file?' %}">{% studio_icon "trash" size=12 stroke=2 %}</button></form>
         </div>
       </div>
     </div>
     {% empty %}
-    <div style="grid-column: 1 / -1;">{% studio_empty title="Media library vacía" message="Sube tu primer archivo." %}</div>
+    <div style="grid-column: 1 / -1;">{% studio_empty title=_("Media library is empty") message=_("Upload your first file.") %}</div>
     {% endfor %}
   </div>
 </div>
