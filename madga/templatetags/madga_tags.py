@@ -38,11 +38,29 @@ def get_categories(site=None):
     return list(qs)
 
 
+def _resolve_madga_site(context):
+    """Return the MADGA Site from the context, never the contrib.sites Site.
+
+    Third-party views (notably allauth's signup/login) inject their own
+    ``site`` value via ``get_context_data``, which is a ``django.contrib.sites``
+    Site and breaks MADGA queries that filter by ``site=``. Prefer
+    ``madga_site`` (set by our context processor), then fall back to the
+    request attribute.
+    """
+    site = context.get("madga_site")
+    if site is not None:
+        return site
+    request = context.get("request")
+    if request is not None:
+        return getattr(request, "madga_site", None)
+    return None
+
+
 @register.simple_tag(takes_context=True)
 def get_header_nav_items(context):
     """Return top-level NavItems with location=header for the current Site."""
     from madga.models import NavItem
-    site = context.get("site")
+    site = _resolve_madga_site(context)
     if site is None:
         return []
     return list(
@@ -56,7 +74,7 @@ def get_header_nav_items(context):
 def get_footer_nav_columns(context):
     """Return footer column NavItems (location=footer, no parent) with their children."""
     from madga.models import NavItem
-    site = context.get("site")
+    site = _resolve_madga_site(context)
     if site is None:
         return []
     return list(

@@ -217,7 +217,22 @@ pytest tests/
 ```
 
 Integration suite covers post lifecycle, page rendering, block registry,
-headless API, and invitation flow. Currently 16 tests, ~2s.
+headless API, invitations, public signup signal, and i18n. The suite runs
+against sqlite by default; CI also runs it against Postgres 16.
+
+### Verify on Postgres locally
+
+```bash
+docker run -d --rm --name madga-pg-test \
+    -e POSTGRES_PASSWORD=madga -e POSTGRES_USER=madga \
+    -e POSTGRES_DB=madga_test -p 55432:5432 postgres:16-alpine
+
+DJANGO_SETTINGS_MODULE=testproject.settings_pg pytest tests/
+docker stop madga-pg-test
+```
+
+Both sqlite and Postgres are first-class targets — MADGA uses only portable
+ORM primitives (`JSONField`, `TextField`, `__icontains`) and ships no raw SQL.
 
 ## Versioning
 

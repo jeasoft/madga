@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        db: [sqlite, postgres]
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: madga
+          POSTGRES_PASSWORD: madga
+          POSTGRES_DB: madga_test
+        ports:
+          - 55432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: |
+          pip install -e .[test]
+          if [ "${{ matrix.db }}" = "postgres" ]; then
+            pip install psycopg2-binary
+          fi
+
+      - name: Test (sqlite)
+        if: matrix.db == 'sqlite'
+        run: pytest tests/ -v
+
+      - name: Test (postgres)
+        if: matrix.db == 'postgres'
+        env:
+          DJANGO_SETTINGS_MODULE: testproject.settings_pg
+        run: pytest tests/ -v

@@ -1,0 +1,55 @@
+name: Publish to PyPI
+
+# Triggered when a `vX.Y.Z` tag is pushed.
+# Uses PyPI Trusted Publishing (OIDC) — no API tokens stored as secrets.
+#
+# One-time setup on pypi.org:
+#   Account → Publishing → Add pending publisher
+#     PyPI project name: madga
+#     Owner:             jeasoft
+#     Repository name:   madga
+#     Workflow name:     publish.yml
+#     Environment name:  pypi
+#
+# After the first successful publish PyPI promotes "pending publisher" to
+# a permanent one. Subsequent releases just need a `git tag vX.Y.Z && git push --tags`.
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build tooling
+        run: pip install build
+
+      - name: Build sdist + wheel
+        run: python -m build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write  # required for trusted publishing
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - uses: pypa/gh-action-pypi-publish@release/v1

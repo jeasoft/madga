@@ -78,6 +78,13 @@ class Command(BaseCommand):
         # version -----------------------------------------------------------
         sub.add_parser("version", help="Print MADGA version.")
 
+        # backfill-profiles -------------------------------------------------
+        bp = sub.add_parser(
+            "backfill-profiles",
+            help="Re-fire user_post_signup for every User (useful after wiring a new profile receiver).",
+        )
+        bp.add_argument("--kind", default="", help="Pass as `kind` to the signal.")
+
     def handle(self, *args, **opts):
         cmd = opts.pop("cmd")
         method = getattr(self, f"_cmd_{cmd.replace('-', '_')}", None)
@@ -271,3 +278,16 @@ class Command(BaseCommand):
     def _cmd_version(self, opts):
         import madga
         self.stdout.write(f"MADGA {madga.__version__}")
+
+    def _cmd_backfill_profiles(self, opts):
+        from madga.signals import user_post_signup
+
+        User = get_user_model()
+        kind = opts.get("kind", "")
+        n = 0
+        for u in User.objects.all().iterator():
+            user_post_signup.send(sender=User, user=u, request=None, kind=kind)
+            n += 1
+        self.stdout.write(self.style.SUCCESS(
+            f"Fired user_post_signup for {n} user(s) (kind={kind!r})."
+        ))

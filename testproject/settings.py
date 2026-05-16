@@ -17,11 +17,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
 
+    # MADGA must come before allauth so its template overrides for
+    # account/signup.html and account/login.html win the resolve order.
+    'madga',
+
     'allauth',
     'allauth.account',
     'allauth.headless',
-
-    'madga',
 ]
 
 SITE_ID = 1

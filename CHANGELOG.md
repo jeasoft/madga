@@ -2,6 +2,57 @@
 
 All notable changes to MADGA. Format roughly follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.3.0] — 2026-05-16
+
+Focus: **foundation for non-blog projects.** MADGA stops being just a blog CMS and becomes a usable base layer for marketplaces, job boards, and other multi-role products.
+
+### Added
+- **`madga/site_base.html`** — thin template that host projects extend
+  for any non-blog page (signup, profile, marketplace listings…). Pulls
+  the public header/footer chrome, exposes the same `title`,
+  `meta_description`, `og`, `head_extra`, `content`, `footer`,
+  `body_extra` blocks as the blog templates.
+- **Per-user API keys.** `UserApiKey` model with `madga_`-prefixed keys,
+  masked display, rotation, last-used tracking. New `/studio/api-keys/`
+  page (create / rotate / revoke / delete). `APIKeyAuth` now tries the
+  user keys first, falls back to the Site key. `request.user` is set
+  when a user key matches.
+- **`user_post_signup` custom signal** + bridge from allauth's
+  `user_signed_up`. Host projects subscribe to create their profile rows
+  (e.g. `TalentProfile`, `CompanyProfile`). Multi-type onboarding
+  supported: write `request.session["madga_signup_kind"] = "talent"`
+  before signup and the signal receives `kind="talent"`.
+- **`madga backfill-profiles --kind=X`** subcommand: re-fires
+  `user_post_signup` for every existing User so new profile-extension
+  receivers can populate rows retroactively.
+- **Public allauth signup wired** with MADGA chrome. Templates
+  `account/signup.html` and `account/login.html` extend `site_base.html`
+  with i18n strings and styled form widgets.
+- **`madga_site` context variable** alongside `site` — survives
+  third-party views (allauth, custom views) that overwrite `site` in
+  their `get_context_data`. MADGA template tags resolve through this
+  to avoid mistaking `django.contrib.sites.Site` for MADGA's Site.
+- **Postgres 16 verified.** New `testproject/settings_pg.py` swap-in
+  settings; full test suite runs green on both sqlite and Postgres.
+  README documents the verify procedure.
+- **CI + Publish workflows.** `.github/workflows/ci.yml` runs the suite
+  against sqlite + Postgres on every push/PR.
+  `.github/workflows/publish.yml` publishes to PyPI on `v*` tags via
+  Trusted Publishing (OIDC, no stored secrets).
+- 4 new tests for the public signup signal flow.
+
+### Fixed
+- Public account templates no longer crash with `VariableDoesNotExist`
+  when allauth injects its own `django.contrib.sites.Site` into context
+  — `{% firstof %}` in the public base template and template tags fetch
+  from `madga_site`.
+
+### Migration notes
+- Move `'madga'` BEFORE `'allauth'` in `INSTALLED_APPS` so MADGA's
+  `account/signup.html` and `account/login.html` win template
+  resolution.
+- New migration `0006_userapikey`. Run `python manage.py migrate`.
+
 ## [0.2.0] — 2026-05-10
 
 Focus: usable as a library in OTHER projects (not just miscore).

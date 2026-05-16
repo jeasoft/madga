@@ -1,0 +1,64 @@
+{% extends "madga/site_base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Sign in" %} · {{ site.name|default:"MADGA" }}{% endblock %}
+
+{% block content %}
+<section class="max-w-md mx-auto px-4 sm:px-6 py-12 sm:py-16">
+  <header class="mb-8 text-center">
+    <h1 class="font-heading text-2xl sm:text-3xl font-semibold tracking-tight">
+      {% trans "Welcome back" %}
+    </h1>
+    <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
+      {% trans "No account yet?" %}
+      <a href="{% url 'account_signup' %}" class="text-accent hover:underline">{% trans "Sign up" %}</a>
+    </p>
+  </header>
+
+  <form method="post" action="{% url 'account_login' %}" class="space-y-4">
+    {% csrf_token %}
+    {% for field in form %}
+      <div>
+        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+          {{ field.label }}
+        </label>
+        {{ field }}
+        {% for error in field.errors %}
+          <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+        {% endfor %}
+      </div>
+    {% endfor %}
+
+    {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
+    {% endif %}
+
+    <button type="submit"
+            class="w-full px-5 py-3 rounded-lg bg-accent text-white font-medium hover:opacity-90 transition-opacity">
+      {% trans "Sign in" %}
+    </button>
+
+    <p class="text-center">
+      <a href="{% url 'account_reset_password' %}" class="text-xs text-slate-500 hover:text-accent">
+        {% trans "Forgot your password?" %}
+      </a>
+    </p>
+  </form>
+</section>
+
+<style>
+  form input[type="text"],
+  form input[type="email"],
+  form input[type="password"] {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: white;
+    font-size: 14px;
+    color: #1a1a1a;
+  }
+  form input:focus { outline: 2px solid var(--color-accent); outline-offset: -2px; border-color: var(--color-accent); }
+  [data-theme="dark"] form input { background: #15171F; border-color: #232631; color: #ECEDF0; }
+</style>
+{% endblock %}
