@@ -80,12 +80,18 @@ class ChannelConnectView(MadgaStudioMixin, View):
         if publisher is None or not publisher.credential_fields:
             return HttpResponseBadRequest(_("Unknown channel."))
 
-        handle = (request.POST.get("handle") or "").strip()
-        display_name = (request.POST.get("display_name") or handle).strip()
-
         creds = {}
         for f in publisher.credential_fields:
             creds[f.name] = (request.POST.get(f.name) or "").strip()
+
+        # The "handle" we display in the studio comes either from the
+        # publisher's credential schema (Bluesky) or from an explicit
+        # studio-level field (Twitter, LinkedIn, ...).
+        if publisher.has_handle_credential:
+            handle = creds.get("handle", "")
+        else:
+            handle = (request.POST.get("handle") or "").strip()
+        display_name = (request.POST.get("display_name") or handle).strip()
 
         account, created = PublisherAccount.objects.get_or_create(
             site=site, publisher_key=key, handle=handle,

@@ -2,6 +2,19 @@
 
 All notable changes to MADGA. Format roughly follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.3.4.2] — 2026-05-16
+
+### Fixed
+- **Duplicate "Handle" field in the channel Connect form.** Bluesky
+  declares ``handle`` as part of its credential schema (the bsky.social
+  handle is the auth identity), so the form rendered both that input
+  AND the generic studio-level Handle input — confusing and they
+  fought over the same POST key. The studio handle is now suppressed
+  when the publisher already has a ``handle`` credential field, and
+  the value gets reused as the display label.
+- Added ``Publisher.has_handle_credential`` property to drive the
+  conditional.
+
 ## [0.3.4.1] — 2026-05-16
 
 Hot-fix on top of 0.3.4.

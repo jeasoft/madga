@@ -23,10 +23,18 @@
     <form method="post" style="display:flex; flex-direction:column; gap:14px;">
       {% csrf_token %}
 
-      <div class="madga-field">
-        <label class="madga-field-label">{% trans "Handle (display name shown in the studio)" %}</label>
-        <input class="madga-input" type="text" name="handle" placeholder="@yourhandle" required>
-      </div>
+      {% comment %}
+      Some publishers (e.g. Bluesky) declare a credential field literally
+      called "handle" since it doubles as their auth identity. Skip the
+      generic studio handle in that case — we'll use the credential
+      value as the display label after save.
+      {% endcomment %}
+      {% if not publisher.has_handle_credential %}
+        <div class="madga-field">
+          <label class="madga-field-label">{% trans "Account handle (shown in the studio)" %}</label>
+          <input class="madga-input" type="text" name="handle" placeholder="@yourhandle" required>
+        </div>
+      {% endif %}
 
       {% for f in publisher.credential_fields %}
         <div class="madga-field">

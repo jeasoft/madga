@@ -76,6 +76,17 @@ class Publisher:
     # publishes globally. Account-driven publishers default to True.
     multi_account: bool = False
 
+    @property
+    def has_handle_credential(self) -> bool:
+        """True if 'handle' is part of ``credential_fields``.
+
+        Used by the studio Connect form to avoid rendering a duplicate
+        Handle input when the publisher's auth already includes one
+        (Bluesky's app-password flow needs the handle as part of the
+        credentials, not just as a display label).
+        """
+        return any(f.name == "handle" for f in self.credential_fields)
+
     def is_configured(self, site: "Site | None" = None) -> bool:
         """Return True if this publisher can actually run.
 
