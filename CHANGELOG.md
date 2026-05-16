@@ -2,6 +2,54 @@
 
 All notable changes to MADGA. Format roughly follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.3.3] — 2026-05-16
+
+Focus: **production hardening.** What you'd want in place before pointing
+a real domain at a MADGA-powered site.
+
+### Added
+- **Branded error pages.** Ships `templates/400.html`, `403.html`,
+  `404.html`, and `500.html` at the project root so Django picks them
+  up without any wiring. 404/403/400 extend `madga/site_base.html`
+  (so they inherit your theme); 500 is a self-contained dark page
+  (because in 500 land we can't assume any context processor or query
+  works).
+- **`SecurityHeadersMiddleware`** at `madga.security.SecurityHeadersMiddleware`.
+  Sets `X-Content-Type-Options: nosniff`, `Referrer-Policy`,
+  `Permissions-Policy`, `Strict-Transport-Security` (on HTTPS),
+  `Cross-Origin-Opener-Policy`. CSP is opt-in via `MADGA_CSP` setting
+  (CSP is too app-specific to guess). NO-OP in `DEBUG` unless
+  `MADGA_SECURITY_FORCE = True`.
+- **Cookie consent banner.** New `{% madga_cookie_banner %}`
+  template tag, auto-injected from `madga/blog/base.html`. Shows only
+  when (a) the Site has at least one tracker configured (GA4 or Meta
+  Pixel) AND (b) the visitor hasn't accepted or declined yet. Writes
+  `madga_consent` cookie (1y) on click, reloads on accept so the
+  trackers can fire.
+- **Trackers respect consent.** `madga_tracking` tag now checks the
+  `madga_consent` cookie; GA4 + Meta Pixel are gated behind explicit
+  opt-in. No tracking fires until the visitor accepts. GDPR-friendly
+  default for free.
+- **Image optimization on upload.** New `MediaFile.variants` JSONField
+  + `imageopt.py` Pillow-driven worker generates `sm/md/lg/xl` WebP
+  variants from every image upload. `MediaFile.srcset()` returns a
+  ready-to-use `srcset` value. Best-effort: silent fallback to the
+  original on failure.
+- **Standalone "New broadcast"** button on `/studio/broadcasts/` —
+  send an announcement not tied to any post (drawer with subject +
+  message body + publisher checkboxes + optional schedule).
+- 12 new tests for hardening (51 total).
+
+### Fixed
+- `MediaFile.TYPE_CHOICES` had Spanish display labels hardcoded.
+  Wrapped in `gettext_lazy`.
+
+### Migration notes
+- New migration `0009_mediafile_variants_alter_mediafile_file_type`.
+- To enable the security headers, add
+  `'madga.security.SecurityHeadersMiddleware'` to `MIDDLEWARE` after
+  `'django.middleware.security.SecurityMiddleware'`.
+
 ## [0.3.2] — 2026-05-16
 
 Focus: **publisher fan-out.** When you publish a post, MADGA can now

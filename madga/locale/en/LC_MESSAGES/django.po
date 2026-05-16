@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-16 17:14-0400\n"
+"POT-Creation-Date: 2026-05-16 17:27-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -159,6 +159,18 @@ msgstr ""
 #| msgid "Archivo eliminado."
 msgid "Archived"
 msgstr "File deleted."
+
+msgid "Image"
+msgstr ""
+
+msgid "Video"
+msgstr ""
+
+msgid "Document"
+msgstr ""
+
+msgid "Other"
+msgstr ""
 
 msgid "Owner"
 msgstr ""
@@ -419,6 +431,53 @@ msgstr "This invitation is no longer valid."
 msgid "Rol actualizado."
 msgstr "Role updated."
 
+msgid "Bad request"
+msgstr ""
+
+msgid "That request didn't look right."
+msgstr ""
+
+msgid "Try refreshing or starting over from the home page."
+msgstr ""
+
+msgid "Back home"
+msgstr ""
+
+msgid "Forbidden"
+msgstr ""
+
+msgid "You can't open that."
+msgstr ""
+
+msgid "This page requires permissions your account doesn't have."
+msgstr ""
+
+msgid "Page not found"
+msgstr ""
+
+msgid "We couldn't find that."
+msgstr ""
+
+msgid "The page you're looking for moved, was deleted, or never existed."
+msgstr ""
+
+msgid "Read the blog"
+msgstr ""
+
+msgid "Something went wrong"
+msgstr ""
+
+msgid "Server error"
+msgstr ""
+
+msgid "Something on our end gave out."
+msgstr ""
+
+msgid ""
+"Our team has been alerted. Please try again in a moment — if you keep seeing "
+"this, drop us a note."
+msgstr ""
+
 #, fuzzy
 #| msgid "Sign out"
 msgid "Sign in"
@@ -475,6 +534,23 @@ msgid "Did this by mistake? Contact us and we'll re-add you."
 msgstr ""
 
 msgid "Back to the site"
+msgstr ""
+
+msgid "Cookie consent"
+msgstr ""
+
+msgid "We use cookies"
+msgstr ""
+
+msgid ""
+"This site uses analytics cookies to understand how visitors use it. You can "
+"decline — nothing on the site breaks."
+msgstr ""
+
+msgid "Decline"
+msgstr ""
+
+msgid "Accept"
 msgstr ""
 
 #, fuzzy
@@ -609,6 +685,11 @@ msgid_plural "%(n)s publishers configured."
 msgstr[0] ""
 msgstr[1] ""
 
+#, fuzzy
+#| msgid "New post"
+msgid "New broadcast"
+msgstr "New post"
+
 msgid "No publishers configured."
 msgstr ""
 
@@ -658,13 +739,22 @@ msgstr "New post"
 msgid "When you publish a post and pick \"Broadcast\", it'll show up here."
 msgstr ""
 
-msgid "Broadcast this post"
-msgstr ""
-
-msgid "Fan out to the channels you've configured."
+msgid "Send a standalone announcement to your audience — not tied to a post."
 msgstr ""
 
 msgid "Close"
+msgstr ""
+
+msgid "e.g. New feature released"
+msgstr ""
+
+msgid "Message"
+msgstr ""
+
+msgid "You can use basic HTML here."
+msgstr ""
+
+msgid "Plain text fallback is generated automatically."
 msgstr ""
 
 #, fuzzy
@@ -679,6 +769,12 @@ msgid "Leave empty to send immediately."
 msgstr ""
 
 msgid "Send broadcast"
+msgstr ""
+
+msgid "Broadcast this post"
+msgstr ""
+
+msgid "Fan out to the channels you've configured."
 msgstr ""
 
 #, fuzzy
@@ -716,9 +812,6 @@ msgid "Divider"
 msgstr ""
 
 msgid "Media"
-msgstr ""
-
-msgid "Image"
 msgstr ""
 
 msgid "Embed (YouTube, Twitter, …)"

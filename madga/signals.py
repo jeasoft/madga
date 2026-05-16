@@ -26,11 +26,11 @@ Usage::
             CompanyProfile.objects.create(user=user)
 """
 
-from django.db.models.signals import pre_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import Signal, receiver
 from slugify import slugify
 
-from madga.models import Page, Post
+from madga.models import MediaFile, Page, Post
 from madga.renderer import render_blocks
 
 
@@ -59,6 +59,28 @@ def page_pre_save(sender, instance: Page, **kwargs):
     if not instance.slug:
         instance.slug = slugify(instance.title)[:480]
     instance.body_html = render_blocks(instance.body)
+
+
+@receiver(post_save, sender=MediaFile)
+def mediafile_optimize_image(sender, instance: MediaFile, created: bool, **kwargs):
+    """Generate responsive WebP variants when a new image is uploaded.
+
+    Only runs on creation (so updating alt_text doesn't re-encode) and
+    only for ``file_type == "image"`` rows that don't yet have variants.
+    The optimizer itself is best-effort: a failure leaves the row
+    untouched and ``MediaFile.srcset`` falls back to the original.
+    """
+    if not created:
+        return
+    if instance.file_type != "image":
+        return
+    if instance.variants:  # already optimized (e.g., test fixture)
+        return
+    try:
+        from madga.imageopt import optimize
+        optimize(instance)
+    except Exception:  # noqa: BLE001 — never block a successful upload
+        pass
 
 
 # Bridge from allauth's user_signed_up → our user_post_signup, copying the

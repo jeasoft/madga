@@ -2,6 +2,7 @@
 
 from django.conf import settings
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from .base import TimestampMixin, UUIDMixin
 
@@ -12,10 +13,10 @@ class MediaFile(UUIDMixin, TimestampMixin, models.Model):
     TYPE_DOCUMENT = "document"
     TYPE_OTHER = "other"
     TYPE_CHOICES = [
-        (TYPE_IMAGE, "Imagen"),
-        (TYPE_VIDEO, "Video"),
-        (TYPE_DOCUMENT, "Documento"),
-        (TYPE_OTHER, "Otro"),
+        (TYPE_IMAGE, _("Image")),
+        (TYPE_VIDEO, _("Video")),
+        (TYPE_DOCUMENT, _("Document")),
+        (TYPE_OTHER, _("Other")),
     ]
 
     site = models.ForeignKey(
@@ -32,6 +33,14 @@ class MediaFile(UUIDMixin, TimestampMixin, models.Model):
     height = models.PositiveIntegerField(null=True, blank=True)
     alt_text = models.CharField(max_length=500, blank=True)
     caption = models.TextField(blank=True)
+
+    # Variants — populated by the post-save image optimizer. Each entry is
+    # {"url": "...", "width": int, "height": int, "format": "webp|jpeg"}.
+    # The biggest is always under the "xl" key; smaller ones under
+    # "lg", "md", "sm". The optimizer is best-effort: a failure leaves
+    # this empty and falls back to the original file at runtime.
+    variants = models.JSONField(default=dict, blank=True)
+
     uploaded_by = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         null=True,
@@ -45,3 +54,21 @@ class MediaFile(UUIDMixin, TimestampMixin, models.Model):
 
     def __str__(self) -> str:
         return self.filename or str(self.id)
+
+    def srcset(self, fmt: str = "webp") -> str:
+        """Return an HTML ``srcset`` value for this MediaFile.
+
+        Skips variants whose format doesn't match. Falls back to the
+        original file URL when no variants exist.
+        """
+        items = []
+        for v in (self.variants or {}).values():
+            if v.get("format") != fmt:
+                continue
+            url = v.get("url")
+            w = v.get("width")
+            if url and w:
+                items.append(f"{url} {w}w")
+        if not items and self.file:
+            return self.file.url
+        return ", ".join(items)

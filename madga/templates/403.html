@@ -1,0 +1,21 @@
+{% extends "madga/site_base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Forbidden" %} · {{ site.name|default:"MADGA" }}{% endblock %}
+
+{% block content %}
+<section class="max-w-md mx-auto px-4 sm:px-6 py-20 text-center">
+  <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">403</p>
+  <h1 class="mt-2 font-heading text-3xl sm:text-4xl font-semibold tracking-tight">
+    {% trans "You can't open that." %}
+  </h1>
+  <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">
+    {% trans "This page requires permissions your account doesn't have." %}
+  </p>
+  <div class="mt-8">
+    <a href="/" class="px-5 py-2.5 rounded-lg bg-accent text-white font-medium text-sm hover:opacity-90">
+      {% trans "Back home" %}
+    </a>
+  </div>
+</section>
+{% endblock %}

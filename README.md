@@ -362,6 +362,7 @@ ORM primitives (`JSONField`, `TextField`, `__icontains`) and ships no raw SQL.
 
 ## Releases
 
+- **0.3.3** — Production hardening: branded 400/403/404/500 pages, `SecurityHeadersMiddleware`, GDPR cookie consent banner with consent-gated trackers, Pillow image optimization with WebP `srcset`, standalone "New broadcast" button.
 - **0.3.2** — Publisher fan-out: BroadcastJob + Subscriber models, `@register_publisher` registry, built-in email publisher with one-click unsubscribe, studio drawer, broadcast-worker management command. Fixes hardcoded status labels.
 - **0.3.1** — Dashboard i18n + ~200-string studio audit, README polish with hero screenshot, GitHub Releases automated from CI.
 - **0.3.0** — Foundation for non-blog projects: per-user API keys, profile-extension signal, public signup wired, `site_base.html` for host project extension, Postgres-verified, trusted publishing.

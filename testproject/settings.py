@@ -41,6 +41,7 @@ MIDDLEWARE = [
     # allauth requires AccountMiddleware, must come after AuthenticationMiddleware
     'allauth.account.middleware.AccountMiddleware',
     'madga.studio.middleware.MadgaStudioMiddleware',
+    'madga.security.SecurityHeadersMiddleware',
 ]
 
 AUTHENTICATION_BACKENDS = [

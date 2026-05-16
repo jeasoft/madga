@@ -90,10 +90,48 @@ def madga_tokens(site):
     return {"site": site}
 
 
-@register.inclusion_tag("madga/includes/tracking.html")
-def madga_tracking(site):
-    """Render GA4 + Meta Pixel snippets if configured on the Site."""
-    return {"site": site}
+@register.inclusion_tag("madga/includes/tracking.html", takes_context=True)
+def madga_tracking(context, site):
+    """Render GA4 + Meta Pixel snippets if configured on the Site.
+
+    Gated by the ``madga_consent`` cookie: trackers only fire if the
+    visitor has explicitly accepted via the cookie banner. If no
+    tracking is configured on the Site, this renders nothing.
+    """
+    request = context.get("request")
+    consent = (
+        request.COOKIES.get("madga_consent") if request is not None else None
+    )
+    return {"site": site, "consent": consent}
+
+
+@register.inclusion_tag("madga/includes/cookie_banner.html", takes_context=True)
+def madga_cookie_banner(context, site=None):
+    """Render the GDPR-style cookie consent banner.
+
+    Renders only when:
+      - the Site has at least one tracker configured (GA4 or Pixel), AND
+      - the visitor has neither accepted nor declined yet.
+
+    The banner is a single self-contained `<div>` + inline JS that
+    writes ``madga_consent=accepted|declined`` for 365 days and reloads
+    the page on accept so trackers can fire.
+    """
+    request = context.get("request")
+    site = site or context.get("site") or context.get("madga_site")
+    consent = (
+        request.COOKIES.get("madga_consent") if request is not None else None
+    )
+    has_tracker = bool(
+        site and (
+            getattr(site, "google_analytics_id", "")
+            or getattr(site, "facebook_pixel_id", "")
+        )
+    )
+    return {
+        "site": site,
+        "show": has_tracker and not consent,
+    }
 
 
 @register.simple_tag

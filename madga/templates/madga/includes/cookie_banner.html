@@ -1,0 +1,45 @@
+{% load i18n %}
+{% if show %}
+<div id="madga-cookie-banner" role="dialog" aria-live="polite" aria-label="{% trans 'Cookie consent' %}"
+     style="position:fixed; left:16px; right:16px; bottom:16px; z-index:9999; max-width:520px; margin-left:auto; margin-right:auto;
+            background:#0f172a; color:#e2e8f0; padding:16px 18px; border-radius:12px;
+            box-shadow:0 10px 40px -10px rgba(0,0,0,.35); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+            font-size:13.5px; line-height:1.5;">
+  <div style="display:flex; gap:14px; align-items:flex-start; flex-wrap:wrap;">
+    <div style="flex:1; min-width:220px;">
+      <strong style="display:block; color:#fff; margin-bottom:4px; font-size:14px;">{% trans "We use cookies" %}</strong>
+      <span>{% blocktrans %}This site uses analytics cookies to understand how visitors use it. You can decline — nothing on the site breaks.{% endblocktrans %}</span>
+    </div>
+    <div style="display:flex; gap:8px; flex-shrink:0;">
+      <button type="button" data-madga-cookie="declined"
+              style="padding:8px 14px; border-radius:8px; border:1px solid rgba(226,232,240,.2); background:transparent;
+                     color:#e2e8f0; font-size:13px; font-family:inherit; cursor:pointer;">
+        {% trans "Decline" %}
+      </button>
+      <button type="button" data-madga-cookie="accepted"
+              style="padding:8px 14px; border-radius:8px; border:0; background:{{ site.accent_color|default:'#6C63FF' }};
+                     color:#fff; font-weight:500; font-size:13px; font-family:inherit; cursor:pointer;">
+        {% trans "Accept" %}
+      </button>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  function set(value) {
+    var oneYear = 60 * 60 * 24 * 365;
+    document.cookie = 'madga_consent=' + value + '; max-age=' + oneYear + '; path=/; SameSite=Lax';
+    var banner = document.getElementById('madga-cookie-banner');
+    if (banner) banner.remove();
+    if (value === 'accepted') {
+      // Reload so the trackers can fire with cookies on.
+      window.location.reload();
+    }
+  }
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-madga-cookie]');
+    if (btn) set(btn.dataset.madgaCookie);
+  });
+})();
+</script>
+{% endif %}

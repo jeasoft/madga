@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-16 17:14-0400\n"
+"POT-Creation-Date: 2026-05-16 17:27-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -163,6 +163,22 @@ msgstr "%(n)s programado"
 
 msgid "Archived"
 msgstr "Archivado"
+
+msgid "Image"
+msgstr "Imagen"
+
+#, fuzzy
+#| msgid "Videos"
+msgid "Video"
+msgstr "Videos"
+
+#, fuzzy
+#| msgid "Documents"
+msgid "Document"
+msgstr "Documentos"
+
+msgid "Other"
+msgstr "Otro"
 
 msgid "Owner"
 msgstr "Propietario"
@@ -423,6 +439,59 @@ msgstr ""
 msgid "Rol actualizado."
 msgstr ""
 
+msgid "Bad request"
+msgstr "Solicitud inválida"
+
+msgid "That request didn't look right."
+msgstr "Esa solicitud no se vio bien."
+
+msgid "Try refreshing or starting over from the home page."
+msgstr "Intenta refrescar o empezar desde la página de inicio."
+
+#, fuzzy
+#| msgid "Back to editor"
+msgid "Back home"
+msgstr "Volver al editor"
+
+#, fuzzy
+#| msgid "Hidden"
+msgid "Forbidden"
+msgstr "Oculto"
+
+msgid "You can't open that."
+msgstr "No puedes abrir eso."
+
+msgid "This page requires permissions your account doesn't have."
+msgstr "Esta página requiere permisos que tu cuenta no tiene."
+
+#, fuzzy
+#| msgid "Invitation not found"
+msgid "Page not found"
+msgstr "Invitación no encontrada"
+
+msgid "We couldn't find that."
+msgstr "No encontramos eso."
+
+msgid "The page you're looking for moved, was deleted, or never existed."
+msgstr "La página que buscas se movió, fue eliminada, o nunca existió."
+
+msgid "Read the blog"
+msgstr "Leer el blog"
+
+msgid "Something went wrong"
+msgstr "Algo salió mal"
+
+msgid "Server error"
+msgstr "Error del servidor"
+
+msgid "Something on our end gave out."
+msgstr "Algo de nuestro lado se cayó."
+
+msgid ""
+"Our team has been alerted. Please try again in a moment — if you keep seeing "
+"this, drop us a note."
+msgstr ""
+
 #, fuzzy
 #| msgid "Sign out"
 msgid "Sign in"
@@ -482,6 +551,25 @@ msgstr "¿Lo hiciste por error? Contáctanos y te volvemos a agregar."
 #| msgid "Back to editor"
 msgid "Back to the site"
 msgstr "Volver al editor"
+
+msgid "Cookie consent"
+msgstr "Consentimiento de cookies"
+
+msgid "We use cookies"
+msgstr "Usamos cookies"
+
+msgid ""
+"This site uses analytics cookies to understand how visitors use it. You can "
+"decline — nothing on the site breaks."
+msgstr ""
+
+msgid "Decline"
+msgstr "Declinar"
+
+#, fuzzy
+#| msgid "Accent"
+msgid "Accept"
+msgstr "Accent"
 
 msgid "Accept invitation"
 msgstr "Aceptar invitación"
@@ -613,6 +701,11 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
+#, fuzzy
+#| msgid "Send broadcast"
+msgid "New broadcast"
+msgstr "Enviar difusión"
+
 msgid "No publishers configured."
 msgstr "Sin publishers configurados."
 
@@ -664,14 +757,23 @@ msgstr "Nuevo post"
 msgid "When you publish a post and pick \"Broadcast\", it'll show up here."
 msgstr "Cuando publiques o subas algo, aparecerá aquí."
 
-msgid "Broadcast this post"
-msgstr "Difundir este post"
-
-msgid "Fan out to the channels you've configured."
-msgstr "Difunde a los canales que tienes configurados."
+msgid "Send a standalone announcement to your audience — not tied to a post."
+msgstr "Envía un anuncio independiente a tu audiencia — sin estar atado a un post."
 
 msgid "Close"
 msgstr "Cerrar"
+
+msgid "e.g. New feature released"
+msgstr "ej: Lanzamos una feature nueva"
+
+msgid "Message"
+msgstr "Mensaje"
+
+msgid "You can use basic HTML here."
+msgstr "Puedes usar HTML básico aquí."
+
+msgid "Plain text fallback is generated automatically."
+msgstr "El fallback en texto plano se genera automáticamente."
 
 #, fuzzy
 #| msgid "Published"
@@ -688,6 +790,12 @@ msgstr "Vacío = enviar ahora."
 
 msgid "Send broadcast"
 msgstr "Enviar difusión"
+
+msgid "Broadcast this post"
+msgstr "Difundir este post"
+
+msgid "Fan out to the channels you've configured."
+msgstr "Difunde a los canales que tienes configurados."
 
 #, fuzzy
 #| msgid "Editorial"
@@ -725,9 +833,6 @@ msgstr "Separador"
 
 msgid "Media"
 msgstr "Media"
-
-msgid "Image"
-msgstr "Imagen"
 
 msgid "Embed (YouTube, Twitter, …)"
 msgstr "Embed (YouTube, Twitter, …)"
