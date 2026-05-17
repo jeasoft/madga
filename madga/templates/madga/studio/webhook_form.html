@@ -22,12 +22,12 @@
 
       <div class="madga-field">
         <label class="madga-field-label">{% trans "Label" %}</label>
-        <input class="madga-input" type="text" name="label" value="{{ endpoint.label|default:form_label|default:'' }}" placeholder="{% trans 'e.g. aplica.do sync' %}">
+        <input class="madga-input" type="text" name="label" value="{% firstof endpoint.label form_label '' %}" placeholder="{% trans 'e.g. aplica.do sync' %}">
       </div>
 
       <div class="madga-field">
         <label class="madga-field-label">{% trans "URL" %}</label>
-        <input class="madga-input" type="url" name="url" value="{{ endpoint.url|default:form_url|default:'' }}" placeholder="https://aplica.do/api/madga-webhook" required>
+        <input class="madga-input" type="url" name="url" value="{% firstof endpoint.url form_url '' %}" placeholder="https://aplica.do/api/madga-webhook" required>
         <span class="madga-field-help">{% trans "Receiver should respond with HTTP 200-299 to acknowledge. Anything else triggers a retry." %}</span>
       </div>
 
@@ -36,7 +36,7 @@
         <div style="display:flex; flex-direction:column; gap:6px; max-height:280px; overflow-y:auto; border:1px solid var(--border); border-radius:8px; padding:10px;">
           {% for evt, desc in events %}
             <label style="display:flex; gap:8px; align-items:flex-start; padding:6px 4px; font-size:13px;">
-              <input type="checkbox" name="events" value="{{ evt }}" {% if endpoint and evt in endpoint.events %}checked{% elif evt in form_events %}checked{% endif %} style="margin-top:3px;">
+              <input type="checkbox" name="events" value="{{ evt }}" {% if endpoint and evt in endpoint.events %}checked{% elif form_events and evt in form_events %}checked{% endif %} style="margin-top:3px;">
               <div style="flex:1; min-width:0;">
                 <code style="color:var(--fg-0); font-size:12px;">{{ evt }}</code>
                 <div style="color:var(--fg-2); font-size:11.5px; margin-top:2px;">{{ desc }}</div>
