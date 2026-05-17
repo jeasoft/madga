@@ -2,6 +2,38 @@
 
 All notable changes to MADGA. Format roughly follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.3.9] — 2026-05-17
+
+Focus: **BYOA (Bring Your Own App)** — per-Site OAuth app credential
+overrides. Most tenants will use the operator's shared app; enterprise
+tenants can register their own platform app per workspace so the
+OAuth consent screen shows their brand.
+
+### Added
+- **`SiteOAuthApp` model** (per-Site × publisher_key, unique). Stores
+  ``client_id`` + Fernet-encrypted ``client_secret`` + optional notes.
+- **`Publisher.oauth_client_credentials(site=...)`** resolves in this
+  order: per-Site override → ``MADGA_OAUTH`` settings → ``None``.
+  Every OAuth call site (start, callback, setup view, exchange,
+  authorize URL) now passes the active site, so each tenant gets
+  their override (or the shared default).
+- **`/studio/channels/<key>/byoa/`** — per-publisher form to paste
+  client_id + client_secret + notes. Empty client_id reverts to the
+  shared app. Empty client_secret on edit keeps the stored value
+  (so the user can tweak notes without re-pasting the secret).
+- **Channels page UX**:
+  - "Use my own" button on every "Needs setup" card → BYOA form
+  - "Use my own app instead →" hint under each Connect button
+  - "Using custom app · edit" link when an override is active
+- 10 new tests covering encryption round-trip, override precedence,
+  view CRUD, channels-page state. **121 total green.**
+
+### Migration notes
+- New migration ``0014_byoa``. Run ``python manage.py migrate``.
+- Existing connected accounts (PublisherAccount rows) are unaffected.
+  BYOA only changes the **app** credentials used during the OAuth
+  flow, not the **user tokens** that come out of it.
+
 ## [0.3.8] — 2026-05-17
 
 Focus: **Instagram via Facebook Graph.** Closes the loop on the

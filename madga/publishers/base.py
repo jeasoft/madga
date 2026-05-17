@@ -107,12 +107,28 @@ class Publisher:
 
     # ---- OAuth contract (subclasses implement) -------------------------
 
-    def oauth_client_credentials(self) -> tuple[str, str] | None:
-        """Read ``(client_id, client_secret)`` from project settings.
+    def oauth_client_credentials(self, site: "Site | None" = None) -> tuple[str, str] | None:
+        """Return ``(client_id, client_secret)`` for the OAuth flow.
 
-        Convention: settings.MADGA_OAUTH = {"twitter": {"client_id":..., "client_secret":...}, ...}
-        Returns None if not configured — caller renders a clear error.
+        Resolution order:
+
+        1. **Per-Site override** (``SiteOAuthApp`` row) — enterprise
+           tenants can register their own platform app and surface it
+           to their users on the consent screen ("Banco Popular wants
+           access" instead of "aplica.do wants access"). Encrypted
+           secret via the same Fernet helper as PublisherAccount.
+        2. **Project settings** ``MADGA_OAUTH[<key>]`` — the SaaS
+           operator's shared app. The default for every tenant.
+        3. ``None`` — caller renders a clear "Needs setup" message.
         """
+        if site is not None:
+            from madga.models import SiteOAuthApp
+            override = SiteOAuthApp.objects.filter(
+                site=site, publisher_key=self.key,
+            ).first()
+            if override and override.client_id:
+                return override.client_id, override.get_secret()
+
         from django.conf import settings
         conf = getattr(settings, "MADGA_OAUTH", {}) or {}
         creds = conf.get(self.key) or {}

@@ -108,16 +108,16 @@ class TwitterOAuthPublisher(_AccountPublisher):
         digest = hashlib.sha256(verifier.encode("ascii")).digest()
         return base64.urlsafe_b64encode(digest).rstrip(b"=").decode("ascii")
 
-    def _basic_auth_header(self) -> str:
-        creds = self.oauth_client_credentials() or ("", "")
+    def _basic_auth_header(self, site=None) -> str:
+        creds = self.oauth_client_credentials(site=site) or ("", "")
         cid, secret = creds
         token = base64.b64encode(f"{cid}:{secret}".encode("utf-8")).decode("ascii")
         return f"Basic {token}"
 
-    def oauth_authorize_url(self, redirect_uri: str, state: str, pkce_verifier: str) -> str:
-        creds = self.oauth_client_credentials()
+    def oauth_authorize_url(self, redirect_uri: str, state: str, pkce_verifier: str, site=None) -> str:
+        creds = self.oauth_client_credentials(site=site)
         if not creds:
-            raise RuntimeError("MADGA_OAUTH['twitter']['client_id'] is not configured")
+            raise RuntimeError("X OAuth app is not configured (settings or per-Site)")
         client_id, _ = creds
         params = {
             "response_type": "code",
@@ -130,10 +130,10 @@ class TwitterOAuthPublisher(_AccountPublisher):
         }
         return f"{self.AUTH_URL}?{urllib.parse.urlencode(params)}"
 
-    def oauth_exchange(self, code: str, redirect_uri: str, pkce_verifier: str) -> dict:
-        creds = self.oauth_client_credentials()
+    def oauth_exchange(self, code: str, redirect_uri: str, pkce_verifier: str, site=None) -> dict:
+        creds = self.oauth_client_credentials(site=site)
         if not creds:
-            raise RuntimeError("MADGA_OAUTH['twitter'] is not configured")
+            raise RuntimeError("X OAuth app is not configured (settings or per-Site)")
         client_id, _ = creds
 
         token_resp = _http_post_form(
@@ -145,7 +145,7 @@ class TwitterOAuthPublisher(_AccountPublisher):
                 "code_verifier": pkce_verifier,
                 "client_id": client_id,
             },
-            headers={"Authorization": self._basic_auth_header()},
+            headers={"Authorization": self._basic_auth_header(site=site)},
         )
         access_token = token_resp.get("access_token")
         if not access_token:

@@ -90,13 +90,25 @@
           {% if p.key in needs_oauth_config %}
             <div style="padding:10px 12px; background:var(--bg-2); border:1px dashed var(--border); border-radius:8px; font-size:12px; color:var(--fg-2); text-align:center; line-height:1.4;">
               <strong style="color:var(--fg-1); display:block; margin-bottom:6px;">{% trans "Needs setup" %}</strong>
-              <span style="display:block; margin-bottom:8px;">{% blocktrans with key=p.key %}Register a {{ key }} app and add it to <code>MADGA_OAUTH</code>.{% endblocktrans %}</span>
-              <a href="{% url 'madga_studio:channel_oauth_setup' key=p.key %}" class="madga-btn madga-btn--sm" style="width:100%; justify-content:center;">{% studio_icon "help" size=12 stroke=2 %} {% trans "Setup guide" %}</a>
+              <span style="display:block; margin-bottom:8px;">{% blocktrans with key=p.key %}Register a {{ key }} app and add it to <code>MADGA_OAUTH</code>, or use your own app for this workspace.{% endblocktrans %}</span>
+              <div style="display:flex; gap:6px;">
+                <a href="{% url 'madga_studio:channel_oauth_setup' key=p.key %}" class="madga-btn madga-btn--sm" style="flex:1; justify-content:center;">{% studio_icon "help" size=12 stroke=2 %} {% trans "Setup guide" %}</a>
+                <a href="{% url 'madga_studio:channel_byoa' key=p.key %}" class="madga-btn madga-btn--sm" style="flex:1; justify-content:center;">{% trans "Use my own" %}</a>
+              </div>
             </div>
           {% else %}
             <a href="{% url 'madga_studio:channel_connect' key=p.key %}" class="madga-btn madga-btn--sm madga-btn--primary" style="width:100%; justify-content:center;">
               {% studio_icon "plus" size=12 stroke=2.5 %} {% trans "Connect" %}
             </a>
+            {% if p.oauth_supported %}
+              <div style="margin-top:6px; text-align:center;">
+                {% if p.key in byoa_keys %}
+                  <a href="{% url 'madga_studio:channel_byoa' key=p.key %}" style="font-size:11px; color:var(--accent); text-decoration:none;">{% trans "Using custom app" %} · {% trans "edit" %}</a>
+                {% else %}
+                  <a href="{% url 'madga_studio:channel_byoa' key=p.key %}" style="font-size:11px; color:var(--fg-3); text-decoration:none;">{% trans "Use my own app instead" %} →</a>
+                {% endif %}
+              </div>
+            {% endif %}
           {% endif %}
           {% if p.char_limit %}
             <div style="font-size:11px; color:var(--fg-3); text-align:center; margin-top:6px;">{% blocktrans with n=p.char_limit %}{{ n }} char limit per post{% endblocktrans %}</div>

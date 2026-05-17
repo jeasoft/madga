@@ -37,6 +37,7 @@ from .views.taxonomy import (
 )
 from .views.api_keys import UserApiKeyListView
 from .views.channels import (
+    ChannelByoaView,
     ChannelConnectView,
     ChannelDisconnectView,
     ChannelListView,
@@ -152,6 +153,7 @@ urlpatterns = [
     path("channels/<str:key>/oauth/setup/", ChannelOAuthSetupView.as_view(), name="channel_oauth_setup"),
     path("channels/<str:key>/oauth/start/", ChannelOAuthStartView.as_view(), name="channel_oauth_start"),
     path("channels/<str:key>/oauth/callback/", ChannelOAuthCallbackView.as_view(), name="channel_oauth_callback"),
+    path("channels/<str:key>/byoa/", ChannelByoaView.as_view(), name="channel_byoa"),
     path("channels/<uuid:pk>/toggle/", ChannelToggleView.as_view(), name="channel_toggle"),
     path("channels/<uuid:pk>/test/", ChannelTestView.as_view(), name="channel_test"),
     path("channels/<uuid:pk>/disconnect/", ChannelDisconnectView.as_view(), name="channel_disconnect"),

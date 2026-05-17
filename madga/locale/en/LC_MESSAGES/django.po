@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-17 03:48-0400\n"
+"POT-Creation-Date: 2026-05-17 04:16-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -179,6 +179,21 @@ msgid "Broadcast"
 msgstr ""
 
 msgid "Broadcasts"
+msgstr ""
+
+msgid "Publisher this override applies to (e.g. 'twitter', 'instagram')."
+msgstr ""
+
+msgid "Fernet ciphertext of the secret."
+msgstr ""
+
+msgid "Internal note — shown on the Channels page (e.g. 'Acme corporate app')."
+msgstr ""
+
+msgid "Site OAuth app"
+msgstr ""
+
+msgid "Site OAuth apps"
 msgstr ""
 
 msgid "Key of a registered Publisher (e.g. 'twitter', 'linkedin')."
@@ -468,7 +483,9 @@ msgid "Unknown OAuth channel."
 msgstr ""
 
 #, python-format
-msgid "This channel needs MADGA_OAUTH['%(key)s']['client_id'] in settings."
+msgid ""
+"This channel needs an OAuth app — set MADGA_OAUTH['%(key)s'] in settings "
+"(operator) or use 'Use my own app' for this workspace."
 msgstr ""
 
 #, python-format
@@ -492,6 +509,13 @@ msgstr ""
 
 #, python-format
 msgid "Test failed for %(handle)s: %(msg)s"
+msgstr ""
+
+msgid "Custom app removed — this channel now uses the global app."
+msgstr ""
+
+#, python-format
+msgid "Custom %(label)s app saved."
 msgstr ""
 
 msgid "Good evening"
@@ -1092,6 +1116,58 @@ msgid "Send broadcast"
 msgstr ""
 
 #, python-format
+msgid "Custom %(label)s app"
+msgstr ""
+
+#, python-format
+msgid "Custom %(label)s app for this workspace"
+msgstr ""
+
+msgid ""
+"Use your own platform app instead of the operator's shared one — your OAuth "
+"consent screen will show your brand, and you'll have your own rate limits "
+"and audit log on the platform side. Leave this empty to keep using the "
+"shared app."
+msgstr ""
+
+msgid "Callback URL to register on the platform"
+msgstr ""
+
+msgid "Client ID"
+msgstr ""
+
+msgid "Empty = use the shared app"
+msgstr ""
+
+msgid "Client Secret"
+msgstr ""
+
+msgid "(unchanged — leave empty to keep the stored value)"
+msgstr ""
+
+msgid "paste the secret here"
+msgstr ""
+
+msgid ""
+"A secret is already stored encrypted. Leave this field empty to keep it."
+msgstr ""
+
+msgid "Notes (optional)"
+msgstr ""
+
+msgid "e.g. Acme corporate FB app — managed by ops@acme.com"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Currently using your custom app."
+msgstr ""
+
+msgid "Submit an empty Client ID to revert to the shared app."
+msgstr ""
+
+#, python-format
 msgid "Connect %(label)s"
 msgstr ""
 
@@ -1180,10 +1256,24 @@ msgid "Needs setup"
 msgstr ""
 
 #, python-format
-msgid "Register a %(key)s app and add it to <code>MADGA_OAUTH</code>."
+msgid ""
+"Register a %(key)s app and add it to <code>MADGA_OAUTH</code>, or use your "
+"own app for this workspace."
 msgstr ""
 
 msgid "Setup guide"
+msgstr ""
+
+msgid "Use my own"
+msgstr ""
+
+msgid "Using custom app"
+msgstr ""
+
+msgid "edit"
+msgstr ""
+
+msgid "Use my own app instead"
 msgstr ""
 
 #, python-format
@@ -1768,9 +1858,6 @@ msgstr ""
 msgid "Open in new tab"
 msgstr ""
 
-msgid "Save"
-msgstr ""
-
 msgid "Delete this item?"
 msgstr ""
 
@@ -1830,9 +1917,10 @@ msgid "Setup %(label)s"
 msgstr ""
 
 msgid ""
-"One-time setup. Register an app on the platform's developer console, paste "
-"the credentials, done. Every user on this MADGA site shares this app — "
-"that's how SaaS OAuth works."
+"One-time setup for the whole MADGA deployment. You (the operator) register a "
+"single app on the platform — every tenant uses it to connect THEIR OWN "
+"social account. Tokens are stored per-tenant; one tenant never sees "
+"another's. This is how Buffer / Hootsuite / Zapier do it."
 msgstr ""
 
 msgid "Open developer console"
@@ -1848,9 +1936,6 @@ msgid ""
 msgstr ""
 
 msgid "Back to Channels"
-msgstr ""
-
-msgid "Callback URL to register on the platform"
 msgstr ""
 
 msgid "Copy"

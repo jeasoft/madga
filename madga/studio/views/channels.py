@@ -36,11 +36,20 @@ class ChannelListView(MadgaStudioMixin, View):
         ]
         # Surface OAuth publishers that still need MADGA_OAUTH config so
         # the card can show a "Needs setup" badge instead of failing
-        # after the user clicks Connect.
+        # after the user clicks Connect. Check per-Site override first
+        # (BYOA), then fall back to the global config.
         needs_oauth_config: set[str] = set()
         for p in publishers:
-            if p.oauth_supported and p.oauth_client_credentials() is None:
+            if p.oauth_supported and p.oauth_client_credentials(site=site) is None:
                 needs_oauth_config.add(p.key)
+
+        # Which publishers have a per-Site BYOA app override active?
+        from madga.models import SiteOAuthApp
+        byoa_keys = set(
+            SiteOAuthApp.objects.filter(site=site).values_list("publisher_key", flat=True)
+            if site else []
+        )
+
         accounts = (
             list(PublisherAccount.objects.filter(site=site)) if site else []
         )
@@ -76,6 +85,7 @@ class ChannelListView(MadgaStudioMixin, View):
                 "in_queue": in_queue,
                 "total_reach": total_reach,
                 "needs_oauth_config": needs_oauth_config,
+                "byoa_keys": byoa_keys,
             },
         )
 
@@ -191,7 +201,8 @@ class ChannelOAuthSetupView(MadgaStudioMixin, View):
                 "url": step.get("url", ""),
             })
 
-        configured = publisher.oauth_client_credentials() is not None
+        site = self.get_site()
+        configured = publisher.oauth_client_credentials(site=site) is not None
         return render(request, self.template_name, {
             "publisher": publisher,
             "steps": steps,
@@ -212,10 +223,12 @@ class ChannelOAuthStartView(MadgaStudioMixin, View):
         publisher = get_publisher(key)
         if publisher is None or not publisher.oauth_supported:
             return HttpResponseBadRequest(_("Unknown OAuth channel."))
-        if publisher.oauth_client_credentials() is None:
+        site = self.get_site()
+        if publisher.oauth_client_credentials(site=site) is None:
             messages.error(
                 request,
-                _("This channel needs MADGA_OAUTH['%(key)s']['client_id'] in settings.")
+                _("This channel needs an OAuth app — set MADGA_OAUTH['%(key)s'] "
+                  "in settings (operator) or use 'Use my own app' for this workspace.")
                 % {"key": key},
             )
             return HttpResponseRedirect(reverse("madga_studio:channel_list"))
@@ -227,7 +240,9 @@ class ChannelOAuthStartView(MadgaStudioMixin, View):
 
         redirect_uri = _oauth_redirect_uri(request, key)
         try:
-            url = publisher.oauth_authorize_url(redirect_uri, state, pkce_verifier)
+            url = publisher.oauth_authorize_url(
+                redirect_uri, state, pkce_verifier, site=site,
+            )
         except RuntimeError as e:
             messages.error(request, str(e))
             return HttpResponseRedirect(reverse("madga_studio:channel_list"))
@@ -261,7 +276,9 @@ class ChannelOAuthCallbackView(MadgaStudioMixin, View):
 
         redirect_uri = _oauth_redirect_uri(request, key)
         try:
-            result = publisher.oauth_exchange(code, redirect_uri, pkce_verifier)
+            result = publisher.oauth_exchange(
+                code, redirect_uri, pkce_verifier, site=site,
+            )
         except Exception as e:  # noqa: BLE001
             messages.error(request, _("OAuth exchange failed: %(err)s") % {"err": str(e)[:200]})
             return HttpResponseRedirect(reverse("madga_studio:channel_list"))
@@ -320,4 +337,63 @@ class ChannelTestView(MadgaStudioMixin, View):
                 "handle": account.handle or account.display_name or account.publisher_key,
                 "msg": msg,
             })
+        return HttpResponseRedirect(reverse("madga_studio:channel_list"))
+
+
+class ChannelByoaView(MadgaStudioMixin, View):
+    """BYOA (Bring Your Own App): per-Site override of MADGA_OAUTH."""
+
+    template_name = "madga/studio/channel_byoa.html"
+
+    def get(self, request, key):
+        publisher = get_publisher(key)
+        if publisher is None or not publisher.oauth_supported:
+            return HttpResponseBadRequest(_("Unknown OAuth channel."))
+        site = self.get_site()
+        from madga.models import SiteOAuthApp
+        existing = (
+            SiteOAuthApp.objects.filter(site=site, publisher_key=key).first()
+            if site else None
+        )
+        callback = _oauth_redirect_uri(request, key)
+        return render(request, self.template_name, {
+            "publisher": publisher,
+            "existing": existing,
+            "callback_url": callback,
+        })
+
+    def post(self, request, key):
+        publisher = get_publisher(key)
+        if publisher is None or not publisher.oauth_supported:
+            return HttpResponseBadRequest(_("Unknown OAuth channel."))
+        site = self.get_site()
+        if site is None:
+            return HttpResponseBadRequest(_("No active site."))
+
+        from madga.models import SiteOAuthApp
+        client_id = (request.POST.get("client_id") or "").strip()
+        client_secret = (request.POST.get("client_secret") or "").strip()
+        notes = (request.POST.get("notes") or "").strip()
+
+        if not client_id:
+            SiteOAuthApp.objects.filter(site=site, publisher_key=key).delete()
+            messages.success(
+                request,
+                _("Custom app removed — this channel now uses the global app."),
+            )
+            return HttpResponseRedirect(reverse("madga_studio:channel_list"))
+
+        app, _created = SiteOAuthApp.objects.get_or_create(
+            site=site, publisher_key=key,
+            defaults={"client_id": client_id, "notes": notes},
+        )
+        app.client_id = client_id
+        app.notes = notes
+        if client_secret:
+            app.set_secret(client_secret)
+        app.save()
+        messages.success(
+            request,
+            _("Custom %(label)s app saved.") % {"label": publisher.label},
+        )
         return HttpResponseRedirect(reverse("madga_studio:channel_list"))

@@ -2,6 +2,7 @@
 
 from .api_keys import UserApiKey
 from .broadcast import BroadcastJob, Subscriber
+from .byoa import SiteOAuthApp
 from .channels import PublisherAccount
 from .content import Page, Post
 from .forms import FormSubmission
@@ -32,4 +33,5 @@ __all__ = [
     "WebhookDelivery",
     "REGISTERED_EVENTS",
     "FormSubmission",
+    "SiteOAuthApp",
 ]

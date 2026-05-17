@@ -99,10 +99,10 @@ class LinkedInOAuthPublisher(_AccountPublisher):
     USERINFO_URL = "https://api.linkedin.com/v2/userinfo"
     POST_URL = "https://api.linkedin.com/v2/ugcPosts"
 
-    def oauth_authorize_url(self, redirect_uri: str, state: str, pkce_verifier: str) -> str:
-        creds = self.oauth_client_credentials()
+    def oauth_authorize_url(self, redirect_uri: str, state: str, pkce_verifier: str, site=None) -> str:
+        creds = self.oauth_client_credentials(site=site)
         if not creds:
-            raise RuntimeError("MADGA_OAUTH['linkedin']['client_id'] is not configured")
+            raise RuntimeError("LinkedIn OAuth app is not configured (settings or per-Site)")
         client_id, _ = creds
         params = {
             "response_type": "code",
@@ -113,10 +113,10 @@ class LinkedInOAuthPublisher(_AccountPublisher):
         }
         return f"{self.AUTH_URL}?{urllib.parse.urlencode(params)}"
 
-    def oauth_exchange(self, code: str, redirect_uri: str, pkce_verifier: str) -> dict:
-        creds = self.oauth_client_credentials()
+    def oauth_exchange(self, code: str, redirect_uri: str, pkce_verifier: str, site=None) -> dict:
+        creds = self.oauth_client_credentials(site=site)
         if not creds:
-            raise RuntimeError("MADGA_OAUTH['linkedin'] is not configured")
+            raise RuntimeError("LinkedIn OAuth app is not configured (settings or per-Site)")
         client_id, client_secret = creds
 
         token_resp = _http_post_form(
