@@ -61,6 +61,13 @@ from .views.users import (
     UserListView,
     UserRoleUpdateView,
 )
+from .views.webhooks import (
+    WebhookCreateView,
+    WebhookDeleteView,
+    WebhookListView,
+    WebhookRotateSecretView,
+    WebhookTestView,
+)
 from .views.workspaces import WorkspaceCreateView, WorkspaceSwitchView
 
 app_name = "madga_studio"
@@ -121,6 +128,13 @@ urlpatterns = [
 
     path("workspaces/new/", WorkspaceCreateView.as_view(), name="workspace_create"),
     path("workspaces/switch/", WorkspaceSwitchView.as_view(), name="workspace_switch"),
+
+    path("webhooks/", WebhookListView.as_view(), name="webhook_list"),
+    path("webhooks/new/", WebhookCreateView.as_view(), name="webhook_create"),
+    path("webhooks/<uuid:pk>/edit/", WebhookCreateView.as_view(), name="webhook_edit"),
+    path("webhooks/<uuid:pk>/delete/", WebhookDeleteView.as_view(), name="webhook_delete"),
+    path("webhooks/<uuid:pk>/rotate/", WebhookRotateSecretView.as_view(), name="webhook_rotate"),
+    path("webhooks/<uuid:pk>/test/", WebhookTestView.as_view(), name="webhook_test"),
 
     path("channels/", ChannelListView.as_view(), name="channel_list"),
     path("channels/<str:key>/connect/", ChannelConnectView.as_view(), name="channel_connect"),

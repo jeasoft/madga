@@ -10,6 +10,7 @@ from .navigation import NavItem
 from .site import Site
 from .taxonomy import Category, Tag
 from .users import SiteUser, UserInvitation
+from .webhooks import REGISTERED_EVENTS, WebhookDelivery, WebhookEndpoint
 
 __all__ = [
     "Site",
@@ -26,4 +27,7 @@ __all__ = [
     "BroadcastJob",
     "Subscriber",
     "PublisherAccount",
+    "WebhookEndpoint",
+    "WebhookDelivery",
+    "REGISTERED_EVENTS",
 ]

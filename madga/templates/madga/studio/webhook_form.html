@@ -1,0 +1,72 @@
+{% extends "madga/studio/base.html" %}
+{% load i18n madga_studio_tags %}
+
+{% block breadcrumbs %}
+  <a href="{% url 'madga_studio:webhook_list' %}" class="crumb">{% trans "Webhooks" %}</a>
+  <span class="sep">/</span>
+  <span class="crumb is-current">{% if endpoint %}{% trans "Edit endpoint" %}{% else %}{% trans "New endpoint" %}{% endif %}</span>
+{% endblock %}
+
+{% block content %}
+<div class="madga-page" style="max-width:680px;">
+  <div class="madga-card" style="padding:24px;">
+    <h1 class="madga-page-title" style="margin:0 0 6px; font-size:20px;">
+      {% if endpoint %}{% trans "Edit webhook endpoint" %}{% else %}{% trans "New webhook endpoint" %}{% endif %}
+    </h1>
+    <p class="madga-page-subtitle" style="margin:0 0 18px;">
+      {% trans "MADGA POSTs every matching event as JSON with an HMAC-SHA256 signature in the X-Madga-Signature header. Compute the same HMAC of \"{timestamp}.{body}\" on your side with the secret to verify." %}
+    </p>
+
+    <form method="post" style="display:flex; flex-direction:column; gap:14px;">
+      {% csrf_token %}
+
+      <div class="madga-field">
+        <label class="madga-field-label">{% trans "Label" %}</label>
+        <input class="madga-input" type="text" name="label" value="{{ endpoint.label|default:form_label|default:'' }}" placeholder="{% trans 'e.g. aplica.do sync' %}">
+      </div>
+
+      <div class="madga-field">
+        <label class="madga-field-label">{% trans "URL" %}</label>
+        <input class="madga-input" type="url" name="url" value="{{ endpoint.url|default:form_url|default:'' }}" placeholder="https://aplica.do/api/madga-webhook" required>
+        <span class="madga-field-help">{% trans "Receiver should respond with HTTP 200-299 to acknowledge. Anything else triggers a retry." %}</span>
+      </div>
+
+      <div class="madga-field">
+        <label class="madga-field-label">{% trans "Events" %}</label>
+        <div style="display:flex; flex-direction:column; gap:6px; max-height:280px; overflow-y:auto; border:1px solid var(--border); border-radius:8px; padding:10px;">
+          {% for evt, desc in events %}
+            <label style="display:flex; gap:8px; align-items:flex-start; padding:6px 4px; font-size:13px;">
+              <input type="checkbox" name="events" value="{{ evt }}" {% if endpoint and evt in endpoint.events %}checked{% elif evt in form_events %}checked{% endif %} style="margin-top:3px;">
+              <div style="flex:1; min-width:0;">
+                <code style="color:var(--fg-0); font-size:12px;">{{ evt }}</code>
+                <div style="color:var(--fg-2); font-size:11.5px; margin-top:2px;">{{ desc }}</div>
+              </div>
+            </label>
+          {% endfor %}
+        </div>
+        <span class="madga-field-help">{% trans "Leave none selected = subscribe to every event." %}</span>
+      </div>
+
+      <div class="madga-field">
+        <label style="display:flex; gap:8px; align-items:center; cursor:pointer;">
+          <input type="checkbox" name="is_active" {% if endpoint is None or endpoint.is_active %}checked{% endif %}>
+          <span>{% trans "Active" %}</span>
+        </label>
+      </div>
+
+      {% if endpoint %}
+        <div class="madga-field">
+          <label class="madga-field-label">{% trans "Signing secret" %}</label>
+          <code style="display:block; padding:10px; background:var(--bg-input); border:1px solid var(--border-strong); border-radius:6px; font-size:11.5px; word-break:break-all;">{{ endpoint.secret }}</code>
+          <span class="madga-field-help">{% trans "Configure your receiver to compute HMAC-SHA256 with this value." %}</span>
+        </div>
+      {% endif %}
+
+      <div style="display:flex; gap:8px;">
+        <button type="submit" class="madga-btn madga-btn--primary">{% if endpoint %}{% trans "Save changes" %}{% else %}{% trans "Create endpoint" %}{% endif %}</button>
+        <a href="{% url 'madga_studio:webhook_list' %}" class="madga-btn">{% trans "Cancel" %}</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

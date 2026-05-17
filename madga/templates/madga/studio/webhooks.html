@@ -1,0 +1,102 @@
+{% extends "madga/studio/base.html" %}
+{% load i18n humanize madga_studio_tags %}
+
+{% block breadcrumbs %}<span class="crumb is-current">{% trans "Webhooks" %}</span>{% endblock %}
+
+{% block content %}
+<div class="madga-page">
+  <div class="madga-page-header">
+    <div class="madga-page-title-block">
+      <h1 class="madga-page-title">{% trans "Webhooks" %}</h1>
+      <p class="madga-page-subtitle">{% trans "Notify external systems when things happen in MADGA. Every payload is signed with the endpoint's secret (X-Madga-Signature header) so receivers can verify it came from you." %}</p>
+    </div>
+    <div class="madga-page-actions">
+      <a href="{% url 'madga_studio:webhook_create' %}" class="madga-btn madga-btn--sm madga-btn--primary">{% studio_icon "plus" size=12 stroke=2.5 %} {% trans "New endpoint" %}</a>
+    </div>
+  </div>
+
+  <div class="madga-card" style="padding:0; margin-bottom:18px;">
+    <table class="madga-table">
+      <thead>
+        <tr>
+          <th>{% trans "Label" %}</th>
+          <th>{% trans "URL" %}</th>
+          <th>{% trans "Events" %}</th>
+          <th>{% trans "Last delivery" %}</th>
+          <th>{% trans "Status" %}</th>
+          <th class="col-actions"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ep in endpoints %}
+        <tr>
+          <td><strong>{{ ep.label|default:"—" }}</strong></td>
+          <td><span class="madga-post-slug" style="word-break:break-all;">{{ ep.url|truncatechars:50 }}</span></td>
+          <td style="font-size:11.5px; color:var(--fg-2);">
+            {% if ep.events %}{{ ep.events|length }} {% trans "selected" %}{% else %}{% trans "all events" %}{% endif %}
+          </td>
+          <td style="font-size:11.5px; color:var(--fg-2);">
+            {% if ep.last_fired_at %}
+              {{ ep.last_fired_at|naturaltime }}
+              {% if ep.last_response_status %}<br><span style="color:var(--fg-3);">HTTP {{ ep.last_response_status }}</span>{% endif %}
+            {% else %}—{% endif %}
+          </td>
+          <td>
+            {% if ep.is_active %}
+              {% if ep.fail_count %}{% studio_badge "draft" _("Failing") %}{% else %}{% studio_badge "published" _("Active") %}{% endif %}
+            {% else %}{% studio_badge "archived" _("Paused") %}{% endif %}
+          </td>
+          <td class="col-actions">
+            <div style="display:flex; gap:4px; justify-content:flex-end;">
+              <form method="post" action="{% url 'madga_studio:webhook_test' pk=ep.pk %}" style="margin:0;">{% csrf_token %}
+                <button type="submit" class="madga-btn madga-btn--sm" title="{% trans 'Send a test ping' %}">{% trans "Test" %}</button>
+              </form>
+              <a href="{% url 'madga_studio:webhook_edit' pk=ep.pk %}" class="madga-btn madga-btn--ghost madga-btn--sm">{% trans "Edit" %}</a>
+              <form method="post" action="{% url 'madga_studio:webhook_rotate' pk=ep.pk %}" style="margin:0;">{% csrf_token %}
+                <button type="submit" class="madga-btn madga-btn--ghost madga-btn--sm" data-madga-confirm="{% trans 'Rotate the signing secret? Your receiver will need the new value to verify signatures.' %}">{% trans "Rotate secret" %}</button>
+              </form>
+              <form method="post" action="{% url 'madga_studio:webhook_delete' pk=ep.pk %}" style="margin:0;">{% csrf_token %}
+                <button type="submit" class="madga-btn madga-btn--ghost madga-btn--sm madga-btn--danger" data-madga-confirm="{% trans 'Delete this endpoint?' %}">{% studio_icon "trash" size=12 stroke=2 %}</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6">{% studio_empty title=_("No webhook endpoints") message=_("Add one to start receiving event POSTs in your external system.") action_label=_("New endpoint") action_href="/studio/webhooks/new/" %}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if recent_deliveries %}
+  <h2 class="madga-card-title" style="margin:24px 0 8px;">{% trans "Recent deliveries" %}</h2>
+  <div class="madga-card" style="padding:0;">
+    <table class="madga-table">
+      <thead>
+        <tr>
+          <th>{% trans "When" %}</th>
+          <th>{% trans "Event" %}</th>
+          <th>{% trans "Endpoint" %}</th>
+          <th>{% trans "Status" %}</th>
+          <th>{% trans "Response" %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for d in recent_deliveries %}
+        <tr>
+          <td style="font-size:12px; color:var(--fg-2);">{{ d.created_at|naturaltime }}</td>
+          <td><code style="font-size:11.5px;">{{ d.event }}</code></td>
+          <td style="font-size:12px;">{{ d.endpoint.url|truncatechars:40 }}</td>
+          <td>{% studio_badge d.status d.get_status_display %}</td>
+          <td style="font-size:11.5px; color:var(--fg-2);">
+            {% if d.response_status %}HTTP {{ d.response_status }}{% else %}—{% endif %}
+            {% if d.retry_count %} · retry {{ d.retry_count }}{% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

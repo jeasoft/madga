@@ -88,11 +88,37 @@ def post_save_fire_queued_broadcasts(sender, instance: Post, created: bool, **kw
     these rows flip to pending and run through the same _worker_run
     pipeline as immediate broadcasts.
     """
-    if instance.status != Post.STATUS_PUBLISHED:
-        return
+    from madga.webhooks import fire_event
+
     prev = getattr(instance, "_madga_prev_status", None)
-    if prev == Post.STATUS_PUBLISHED:
-        return  # already published, this is just an edit
+    became_published = (
+        instance.status == Post.STATUS_PUBLISHED and prev != Post.STATUS_PUBLISHED
+    )
+    became_unpublished = (
+        prev == Post.STATUS_PUBLISHED and instance.status != Post.STATUS_PUBLISHED
+    )
+
+    # Webhook events ------------------------------------------------------
+    payload = {
+        "id": str(instance.id),
+        "site_id": str(instance.site_id),
+        "title": instance.title,
+        "slug": instance.slug,
+        "status": instance.status,
+        "url": f"/blog/{instance.slug}/" if instance.slug else "",
+    }
+    if created:
+        fire_event(instance.site, "post.updated", payload)
+    if became_published:
+        fire_event(instance.site, "post.published", payload)
+    elif became_unpublished:
+        fire_event(instance.site, "post.unpublished", payload)
+    elif not created:
+        fire_event(instance.site, "post.updated", payload)
+
+    # Auto-broadcast on publish ------------------------------------------
+    if not became_published:
+        return
     from madga.models import BroadcastJob
     from madga.studio.views.broadcasts import _worker_run
 
@@ -107,6 +133,26 @@ def post_save_fire_queued_broadcasts(sender, instance: Post, created: bool, **kw
             _worker_run(job)
         except Exception:  # noqa: BLE001 — never block the publish itself
             pass
+
+
+@receiver(post_save, sender=Page)
+def page_save_webhook(sender, instance: Page, created: bool, **kwargs):
+    """Fire page.* webhook events on save."""
+    from madga.webhooks import fire_event
+
+    payload = {
+        "id": str(instance.id),
+        "site_id": str(instance.site_id),
+        "title": instance.title,
+        "slug": instance.slug,
+        "url": f"/p/{instance.slug}/" if instance.slug else "",
+    }
+    if created:
+        fire_event(instance.site, "page.updated", payload)
+    elif instance.status == "published":
+        fire_event(instance.site, "page.published", payload)
+    else:
+        fire_event(instance.site, "page.updated", payload)
 
 
 @receiver(post_save, sender=MediaFile)
@@ -150,6 +196,20 @@ def _on_allauth_user_signed_up(sender, request, user, **kwargs):
         request=request,
         kind=kind,
     )
+
+
+@receiver(post_save, sender=MediaFile)
+def mediafile_webhook(sender, instance: MediaFile, created: bool, **kwargs):
+    if not created:
+        return
+    from madga.webhooks import fire_event
+    fire_event(instance.site, "media.uploaded", {
+        "id": str(instance.id),
+        "site_id": str(instance.site_id),
+        "filename": instance.filename,
+        "file_type": instance.file_type,
+        "url": instance.file.url if instance.file else "",
+    })
 
 
 if user_signed_up is not None:

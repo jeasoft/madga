@@ -101,6 +101,20 @@ class Command(BaseCommand):
         # publishers --------------------------------------------------------
         sub.add_parser("publishers", help="List registered Publishers.")
 
+        # webhook-worker ----------------------------------------------------
+        ww = sub.add_parser(
+            "webhook-worker",
+            help="Drain pending WebhookDeliveries (one-shot by default; --loop to keep running).",
+        )
+        ww.add_argument("--loop", action="store_true",
+                        help="Keep running and poll every --interval seconds.")
+        ww.add_argument("--interval", type=int, default=30,
+                        help="Poll interval in seconds when --loop is set (default 30).")
+        ww.add_argument("--limit", type=int, default=100,
+                        help="Max deliveries to process per pass (default 100).")
+        ww.add_argument("--dry-run", action="store_true",
+                        help="Don't actually POST — just mark as delivered. Useful in CI.")
+
     def handle(self, *args, **opts):
         cmd = opts.pop("cmd")
         method = getattr(self, f"_cmd_{cmd.replace('-', '_')}", None)
@@ -322,6 +336,27 @@ class Command(BaseCommand):
             self.stdout.write(f"  {ok} {self.style.SUCCESS(p.key):28s}  {label}")
             if p.description:
                 self.stdout.write(f"      {p.description}")
+
+    def _cmd_webhook_worker(self, opts):
+        import time
+        from madga.webhooks import deliver_pending
+
+        def pass_once() -> int:
+            n = deliver_pending(limit=opts["limit"], dry_run=opts["dry_run"])
+            if n:
+                self.stdout.write(self.style.SUCCESS(f"  attempted {n} delivery(ies)."))
+            return n
+
+        if opts["loop"]:
+            self.stdout.write(self.style.NOTICE(
+                f"webhook-worker loop (interval={opts['interval']}s). Ctrl-C to stop."
+            ))
+            while True:
+                pass_once()
+                time.sleep(opts["interval"])
+        else:
+            n = pass_once()
+            self.stdout.write(self.style.SUCCESS(f"Processed {n} delivery(ies)."))
 
     def _cmd_broadcast_worker(self, opts):
         import time
