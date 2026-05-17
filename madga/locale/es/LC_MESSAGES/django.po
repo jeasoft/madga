@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-17 03:40-0400\n"
+"POT-Creation-Date: 2026-05-17 03:48-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -84,7 +84,9 @@ msgid "Contact form"
 msgstr "Colaborador"
 
 msgid "A form visitors fill out — submissions show up in the studio inbox."
-msgstr "Formulario que tus visitantes llenan — los envíos aparecen en la bandeja del studio."
+msgstr ""
+"Formulario que tus visitantes llenan — los envíos aparecen en la bandeja del "
+"studio."
 
 #, fuzzy
 #| msgid "Button label"
@@ -100,7 +102,8 @@ msgid "Notification email"
 msgstr "Notificaciones"
 
 msgid "Where to email each submission. Empty = no email, only inbox + webhook."
-msgstr "A qué email mandar cada envío. Vacío = sin email, solo bandeja + webhook."
+msgstr ""
+"A qué email mandar cada envío. Vacío = sin email, solo bandeja + webhook."
 
 #, fuzzy
 #| msgid "Form"
@@ -358,6 +361,14 @@ msgid ""
 "your project's configured EMAIL_BACKEND."
 msgstr ""
 
+msgid "Instagram"
+msgstr "Instagram"
+
+msgid ""
+"Post to an Instagram Business account via Facebook Graph. Posts must include "
+"an image — no text-only posts."
+msgstr ""
+
 msgid "LinkedIn"
 msgstr "LinkedIn"
 
@@ -400,28 +411,6 @@ msgstr "Contraseña"
 msgid ""
 "Generate an app-specific password under Bluesky → Settings → App Passwords."
 msgstr ""
-
-msgid "Instagram"
-msgstr "Instagram"
-
-msgid ""
-"Post to an Instagram Business or Creator account via Facebook's Graph API."
-msgstr ""
-
-#, fuzzy
-#| msgid "Access Token"
-msgid "Page Access Token"
-msgstr "Access Token"
-
-msgid ""
-"Long-lived Facebook Page access token with instagram_basic + pages_show_list."
-msgstr ""
-
-msgid "Instagram Business Account ID"
-msgstr "ID de la cuenta Instagram Business"
-
-msgid "Numeric IG Business Account ID linked to the Page."
-msgstr "ID numérico de la cuenta IG Business asociada al Page."
 
 msgid "X (Twitter)"
 msgstr "X (Twitter)"
@@ -2476,6 +2465,17 @@ msgid ""
 "Editorial home with hero post + 4-up grid. Pairs with home-editorial + list-"
 "grid."
 msgstr ""
+
+#, fuzzy
+#~| msgid "Access Token"
+#~ msgid "Page Access Token"
+#~ msgstr "Access Token"
+
+#~ msgid "Instagram Business Account ID"
+#~ msgstr "ID de la cuenta Instagram Business"
+
+#~ msgid "Numeric IG Business Account ID linked to the Page."
+#~ msgstr "ID numérico de la cuenta IG Business asociada al Page."
 
 #, fuzzy
 #~| msgid "API key"

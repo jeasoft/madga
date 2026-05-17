@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-17 03:40-0400\n"
+"POT-Creation-Date: 2026-05-17 03:48-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -329,6 +329,14 @@ msgid ""
 "your project's configured EMAIL_BACKEND."
 msgstr ""
 
+msgid "Instagram"
+msgstr ""
+
+msgid ""
+"Post to an Instagram Business account via Facebook Graph. Posts must include "
+"an image — no text-only posts."
+msgstr ""
+
 msgid "LinkedIn"
 msgstr ""
 
@@ -365,26 +373,6 @@ msgstr ""
 
 msgid ""
 "Generate an app-specific password under Bluesky → Settings → App Passwords."
-msgstr ""
-
-msgid "Instagram"
-msgstr ""
-
-msgid ""
-"Post to an Instagram Business or Creator account via Facebook's Graph API."
-msgstr ""
-
-msgid "Page Access Token"
-msgstr ""
-
-msgid ""
-"Long-lived Facebook Page access token with instagram_basic + pages_show_list."
-msgstr ""
-
-msgid "Instagram Business Account ID"
-msgstr ""
-
-msgid "Numeric IG Business Account ID linked to the Page."
 msgstr ""
 
 msgid "X (Twitter)"

@@ -2,6 +2,53 @@
 
 All notable changes to MADGA. Format roughly follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.3.8] — 2026-05-17
+
+Focus: **Instagram via Facebook Graph.** Closes the loop on the
+five major social channels — every publisher MADGA ships now has
+a real, working ``publish()``.
+
+### Added
+- **`InstagramOAuthPublisher`** with full OAuth + two-step Graph
+  API publishing. The OAuth dance: Facebook Login → user grants
+  scopes (instagram_basic, instagram_content_publish,
+  pages_show_list, pages_read_engagement, business_management)
+  → exchange short-lived for long-lived user token → list Pages
+  the user admins → pick the first Page with an Instagram
+  Business Account attached → store everything as the
+  PublisherAccount's credentials.
+- **Two-step publish**: POST ``/{ig_user_id}/media`` with
+  ``image_url`` + caption → returns ``creation_id`` (media
+  container). POST ``/{ig_user_id}/media_publish`` with
+  ``creation_id`` → publishes. The publisher derives the image
+  URL from the post's ``featured_image`` (or ``og_image``)
+  with the site's domain prepended.
+- **Hard fail with clear message** if (a) no featured image is
+  set or (b) the resolved URL is localhost (Meta fetches the URL
+  from its own servers, so dev needs ngrok). No more silent
+  failures buried in API responses.
+- **`test_connection()`** hits ``/{ig_user_id}?fields=username,
+  followers_count`` and surfaces both in the studio message.
+- **Setup guide** for Instagram covering the IG Business
+  Account → Facebook Page link (a prerequisite people miss),
+  required FB app products + scopes, Live mode for non-admin
+  users.
+
+### Tests
+- 7 new tests (HTTP mocked end-to-end) — full OAuth callback
+  walkthrough + two-step publish + failure paths for
+  missing-image and localhost-url. 111 total.
+
+### Five-publisher checkpoint
+- Mastodon ✅ (token, no OAuth needed)
+- Bluesky ✅ (app password, no OAuth)
+- X (Twitter) ✅ (OAuth 2.0 PKCE)
+- LinkedIn ✅ (OAuth 2.0)
+- Instagram ✅ (OAuth via Facebook Graph)
+- + Email subscribers ✅ (built-in)
+
+Next: 0.4.0 = MCP server (exposes all of this to Claude) + docs site.
+
 ## [0.3.7] — 2026-05-17
 
 Focus: **integration surface.** OAuth setup guides, outbound

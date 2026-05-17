@@ -252,31 +252,4 @@ class BlueskyPublisher(_AccountPublisher):
 
 
 # LinkedInPublisher moved to madga/publishers/linkedin.py with real OAuth.
-
-
-@register_publisher
-class InstagramPublisher(_AccountPublisher):
-    """Instagram Graph API publisher.
-
-    Important quirk: Instagram only accepts posts that include media —
-    image or video. The composer should require a Featured Image on
-    the Post (we'll surface that constraint in the studio drawer in a
-    later release). For now, the stub fails clearly when no media is
-    attached.
-    """
-    key = "instagram"
-    label = _("Instagram")
-    description = _("Post to an Instagram Business or Creator account via Facebook's Graph API.")
-    icon = "image"
-    char_limit = 2200
-    credential_fields = [
-        CredField(
-            "page_access_token", _("Page Access Token"), secret=True,
-            help_text=_("Long-lived Facebook Page access token with instagram_basic + pages_show_list."),
-        ),
-        CredField(
-            "ig_user_id", _("Instagram Business Account ID"),
-            placeholder="17841405822304534",
-            help_text=_("Numeric IG Business Account ID linked to the Page."),
-        ),
-    ]
+# InstagramPublisher moved to madga/publishers/instagram.py with real OAuth + Graph API.
