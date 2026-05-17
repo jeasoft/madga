@@ -132,12 +132,13 @@ def test_byoa_view_empty_client_id_deletes_override(auth_client, site):
 @override_settings(MADGA_OAUTH={})
 @pytest.mark.django_db
 def test_channels_page_shows_needs_setup_when_global_missing(auth_client, site):
-    """No global config, no override → Needs setup card."""
+    """No global config, no override → Needs setup card has setup/BYOA links."""
     r = auth_client.get("/studio/channels/")
     assert r.status_code == 200
     body = r.content.decode()
-    assert "Needs setup" in body or "Falta configurar" in body
-    assert "Use my own" in body or "Setup guide" in body
+    # Language-agnostic: assert the actual URLs are linked from the card
+    assert "/studio/channels/twitter/oauth/setup/" in body
+    assert "/studio/channels/twitter/byoa/" in body
 
 
 @override_settings(MADGA_OAUTH={})
