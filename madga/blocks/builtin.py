@@ -89,3 +89,35 @@ class CtaBlock(BlockType):
         TextField("cta_label", _("Button label"), default="Get started"),
         UrlField("cta_url", _("Button destination"), default="/blog/"),
     ]
+
+
+@register_block_type
+class ContactFormBlock(BlockType):
+    """Public form block. Submissions land in /studio/inbox/.
+
+    Each field rendered is a simple text input — for richer forms,
+    host projects can subclass and override the template. The form
+    POSTs to /madga/form/<block_id>/submit/ which validates the
+    block exists, stores a FormSubmission row, optionally emails
+    the configured recipient, and fires the form.submitted webhook.
+    """
+    key = "contact_form"
+    label = _("Contact form")
+    description = _("A form visitors fill out — submissions show up in the studio inbox.")
+    template = "madga/blog/blocks/contact_form.html"
+    icon = "mail"
+    fields = [
+        TextField("title", _("Title"), default="Get in touch"),
+        TextField("subtitle", _("Subtitle"), multiline=True, default="We'll reply within a day."),
+        TextField("button_label", _("Submit button label"), default="Send"),
+        TextField("success_message", _("Message shown after submit"), default="Thanks — we'll be in touch."),
+        TextField(
+            "recipient_email", _("Notification email"),
+            help_text=_("Where to email each submission. Empty = no email, only inbox + webhook."),
+        ),
+        TextField(
+            "form_key", _("Form key"),
+            default="contact",
+            help_text=_("Short identifier so you can tell submissions apart in the inbox."),
+        ),
+    ]

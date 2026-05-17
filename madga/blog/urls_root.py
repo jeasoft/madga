@@ -10,6 +10,7 @@ from .views import (
     SitemapView,
 )
 from .views_broadcast import UnsubscribeView
+from .views_forms import FormSubmitView
 
 urlpatterns = [
     path("", HomepageView.as_view(), name="madga_home"),
@@ -18,4 +19,5 @@ urlpatterns = [
     path("rss.xml", RssFeedView.as_view(), name="madga_rss"),
     path("p/<slug:slug>/", PageDetailView.as_view(), name="madga_page"),
     path("madga/unsubscribe/<str:token>/", UnsubscribeView.as_view(), name="madga_unsubscribe"),
+    path("madga/form/<int:block_id>/submit/", FormSubmitView.as_view(), name="madga_form_submit"),
 ]

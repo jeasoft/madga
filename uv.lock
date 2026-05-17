@@ -195,7 +195,7 @@ wheels = [
 
 [[package]]
 name = "madga"
-version = "0.3.6"
+version = "0.3.6.1"
 source = { editable = "." }
 dependencies = [
     { name = "cryptography" },

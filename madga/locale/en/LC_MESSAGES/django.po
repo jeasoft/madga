@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-16 18:31-0400\n"
+"POT-Creation-Date: 2026-05-17 03:40-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -75,6 +75,32 @@ msgid "Call to action"
 msgstr ""
 
 msgid "Simple call-to-action with a button."
+msgstr ""
+
+msgid "Contact form"
+msgstr ""
+
+msgid "A form visitors fill out — submissions show up in the studio inbox."
+msgstr ""
+
+msgid "Submit button label"
+msgstr ""
+
+msgid "Message shown after submit"
+msgstr ""
+
+#, fuzzy
+#| msgid "Notifications"
+msgid "Notification email"
+msgstr "Notifications"
+
+msgid "Where to email each submission. Empty = no email, only inbox + webhook."
+msgstr ""
+
+msgid "Form key"
+msgstr ""
+
+msgid "Short identifier so you can tell submissions apart in the inbox."
 msgstr ""
 
 msgid "Published"
@@ -178,6 +204,15 @@ msgstr ""
 msgid "Archived"
 msgstr "File deleted."
 
+msgid "Short identifier the host project picks ('contact', 'apply', …)"
+msgstr ""
+
+msgid "Form submission"
+msgstr ""
+
+msgid "Form submissions"
+msgstr ""
+
 msgid "Image"
 msgstr ""
 
@@ -214,6 +249,76 @@ msgid "Accepted"
 msgstr ""
 
 msgid "Expired"
+msgstr ""
+
+msgid "A post was published (status went draft→published)"
+msgstr ""
+
+msgid "A published post was reverted to draft or archived"
+msgstr ""
+
+msgid "A post was edited (any field)"
+msgstr ""
+
+msgid "A post was moved to trash"
+msgstr ""
+
+msgid "A page was published"
+msgstr ""
+
+#, fuzzy
+#| msgid "New post"
+msgid "A page was edited"
+msgstr "New post"
+
+#, fuzzy
+#| msgid "New post"
+msgid "A page was deleted"
+msgstr "New post"
+
+msgid "A new email subscriber was added"
+msgstr ""
+
+msgid "A subscriber opted out via the one-click link"
+msgstr ""
+
+msgid "A broadcast finished sending"
+msgstr ""
+
+msgid "A broadcast failed for every target"
+msgstr ""
+
+msgid "A media file was uploaded"
+msgstr ""
+
+msgid "A public ContactFormBlock submission was received"
+msgstr ""
+
+msgid "Human-readable label, shown in the studio (e.g. 'aplica.do jobs sync')."
+msgstr ""
+
+msgid "List of event keys this endpoint subscribes to. Empty = all events."
+msgstr ""
+
+msgid "Used to compute the X-Madga-Signature header on every delivery."
+msgstr ""
+
+msgid "Webhook endpoint"
+msgstr ""
+
+msgid "Webhook endpoints"
+msgstr ""
+
+msgid "Retry scheduled"
+msgstr ""
+
+msgid "Delivered"
+msgstr ""
+
+msgid "Webhook delivery"
+msgstr ""
+
+msgid "Webhook deliveries"
 msgstr ""
 
 msgid "Email subscribers"
@@ -432,6 +537,9 @@ msgstr "Block updated."
 msgid "Bloque eliminado."
 msgstr "Block deleted."
 
+msgid "Submission deleted."
+msgstr ""
+
 msgid "Archivo eliminado."
 msgstr "File deleted."
 
@@ -601,6 +709,31 @@ msgstr "This invitation is no longer valid."
 msgid "Rol actualizado."
 msgstr "Role updated."
 
+#, fuzzy
+#| msgid "Email requerido."
+msgid "URL is required."
+msgstr "Email required."
+
+msgid "Webhook endpoint created."
+msgstr ""
+
+msgid "Webhook endpoint updated."
+msgstr ""
+
+msgid "Webhook endpoint removed."
+msgstr ""
+
+msgid "New secret generated. Update your receiver to use it."
+msgstr ""
+
+#, python-format
+msgid "Test delivered (HTTP %(status)s)."
+msgstr ""
+
+#, python-format
+msgid "Test failed: %(err)s"
+msgstr ""
+
 msgid "You don't belong to that workspace."
 msgstr ""
 
@@ -708,6 +841,21 @@ msgstr ""
 msgid "privacy policy"
 msgstr ""
 
+msgid "Thanks — we'll be in touch."
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Message"
+msgstr ""
+
+msgid "Send"
+msgstr ""
+
 msgid "Unsubscribed"
 msgstr ""
 
@@ -776,9 +924,6 @@ msgstr ""
 
 #, python-format
 msgid "You've been invited to %(site_name)s"
-msgstr ""
-
-msgid "Email"
 msgstr ""
 
 msgid "Role"
@@ -938,9 +1083,6 @@ msgstr ""
 msgid "e.g. New feature released"
 msgstr ""
 
-msgid "Message"
-msgstr ""
-
 msgid "You can use basic HTML here."
 msgstr ""
 
@@ -1050,9 +1192,10 @@ msgid "Needs setup"
 msgstr ""
 
 #, python-format
-msgid ""
-"Add <code>MADGA_OAUTH['%(key)s']</code> client_id/client_secret to your "
-"project settings."
+msgid "Register a %(key)s app and add it to <code>MADGA_OAUTH</code>."
+msgstr ""
+
+msgid "Setup guide"
 msgstr ""
 
 #, python-format
@@ -1278,6 +1421,12 @@ msgstr "Navigation"
 msgid "Homepage"
 msgstr "Homepage"
 
+msgid "Webhooks"
+msgstr ""
+
+msgid "Inbox"
+msgstr ""
+
 msgid "Users"
 msgstr "Users"
 
@@ -1501,6 +1650,62 @@ msgstr "Homepage"
 msgid "Add your first block from the panel above."
 msgstr ""
 
+#, python-format
+msgid "%(n)s unread submission."
+msgid_plural "%(n)s unread submissions."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Export CSV"
+msgstr ""
+
+msgid "All"
+msgstr ""
+
+#, fuzzy
+#| msgid "Item creado."
+msgid "Unread"
+msgstr "Item created."
+
+#, fuzzy
+#| msgid "Search posts, pages…"
+msgid "Search submissions…"
+msgstr "Search posts, pages…"
+
+msgid "All forms"
+msgstr ""
+
+msgid "From"
+msgstr ""
+
+msgid "Subject / Excerpt"
+msgstr ""
+
+msgid "Mark unread"
+msgstr ""
+
+#, fuzzy
+#| msgid "Tag creado."
+msgid "Mark read"
+msgstr "Tag created."
+
+#, fuzzy
+#| msgid "Open menu"
+msgid "Open"
+msgstr "Open menu"
+
+msgid "Submission"
+msgstr ""
+
+msgid "Delete this submission?"
+msgstr ""
+
+msgid "Nothing in the inbox"
+msgstr ""
+
+msgid "Submissions to your ContactFormBlock land here."
+msgstr ""
+
 msgid ""
 "Choose how each page type renders on the public site. The selection is "
 "persisted in <code>Site.settings</code>; templates resolve the suffix "
@@ -1547,9 +1752,6 @@ msgid "Images, videos, and documents for this site."
 msgstr ""
 
 msgid "Upload"
-msgstr ""
-
-msgid "All"
 msgstr ""
 
 msgid "Copied"
@@ -1633,6 +1835,41 @@ msgid "New column title (e.g. Product)"
 msgstr ""
 
 msgid "Add column"
+msgstr ""
+
+#, python-format
+msgid "Setup %(label)s"
+msgstr ""
+
+msgid ""
+"One-time setup. Register an app on the platform's developer console, paste "
+"the credentials, done. Every user on this MADGA site shares this app — "
+"that's how SaaS OAuth works."
+msgstr ""
+
+msgid "Open developer console"
+msgstr ""
+
+msgid "Already configured"
+msgstr ""
+
+#, python-format
+msgid ""
+"MADGA_OAUTH['%(label|lower)s'] is set in your project settings. Users can "
+"now click Connect."
+msgstr ""
+
+msgid "Back to Channels"
+msgstr ""
+
+msgid "Callback URL to register on the platform"
+msgstr ""
+
+msgid "Copy"
+msgstr ""
+
+#, python-format
+msgid "Connect %(label)s now"
 msgstr ""
 
 msgid "New"
@@ -1864,9 +2101,6 @@ msgstr ""
 msgid "Categories"
 msgstr "Categories & tags"
 
-msgid "Name"
-msgstr ""
-
 msgid "Delete this category?"
 msgstr ""
 
@@ -1968,6 +2202,103 @@ msgstr ""
 #| msgid "New post"
 msgid "No users yet"
 msgstr "New post"
+
+msgid "Edit endpoint"
+msgstr ""
+
+#, fuzzy
+#| msgid "New post"
+msgid "New endpoint"
+msgstr "New post"
+
+msgid "Edit webhook endpoint"
+msgstr ""
+
+msgid "New webhook endpoint"
+msgstr ""
+
+msgid ""
+"MADGA POSTs every matching event as JSON with an HMAC-SHA256 signature in "
+"the X-Madga-Signature header. Compute the same HMAC of \\"
+msgstr ""
+
+msgid "e.g. aplica.do sync"
+msgstr ""
+
+msgid "URL"
+msgstr ""
+
+msgid ""
+"Receiver should respond with HTTP 200-299 to acknowledge. Anything else "
+"triggers a retry."
+msgstr ""
+
+msgid "Events"
+msgstr ""
+
+msgid "Leave none selected = subscribe to every event."
+msgstr ""
+
+msgid "Signing secret"
+msgstr ""
+
+msgid "Configure your receiver to compute HMAC-SHA256 with this value."
+msgstr ""
+
+msgid "Create endpoint"
+msgstr ""
+
+msgid ""
+"Notify external systems when things happen in MADGA. Every payload is signed "
+"with the endpoint's secret (X-Madga-Signature header) so receivers can "
+"verify it came from you."
+msgstr ""
+
+msgid "Last delivery"
+msgstr ""
+
+msgid "selected"
+msgstr ""
+
+msgid "all events"
+msgstr ""
+
+msgid "Failing"
+msgstr ""
+
+msgid "Send a test ping"
+msgstr ""
+
+msgid ""
+"Rotate the signing secret? Your receiver will need the new value to verify "
+"signatures."
+msgstr ""
+
+msgid "Rotate secret"
+msgstr ""
+
+msgid "Delete this endpoint?"
+msgstr ""
+
+msgid "No webhook endpoints"
+msgstr ""
+
+msgid "Add one to start receiving event POSTs in your external system."
+msgstr ""
+
+#, fuzzy
+#| msgid "Recent activity"
+msgid "Recent deliveries"
+msgstr "Recent activity"
+
+msgid "Event"
+msgstr ""
+
+msgid "Endpoint"
+msgstr ""
+
+msgid "Response"
+msgstr ""
 
 msgid ""
 "Spin up a new site you'll own. You become its owner; invite teammates from "

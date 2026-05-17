@@ -2,6 +2,69 @@
 
 All notable changes to MADGA. Format roughly follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.3.7] — 2026-05-17
+
+Focus: **integration surface.** OAuth setup guides, outbound
+webhooks, and public form blocks. With this release, aplica.do
+(or any host project) has every primitive it needs to integrate
+MADGA into a real product: connect channels with help, get
+notified when things happen, accept submissions from visitors.
+
+### Added — OAuth setup UX
+- **Per-platform setup guide.** Each OAuth Publisher declares
+  ``setup_instructions`` (a list of {title, body, url} steps with
+  ``<copy>...</copy>`` chunks promoted to copy-paste boxes) and
+  ``setup_console_url``. The new ``/studio/channels/<key>/oauth/setup/``
+  page renders these with the actual callback URL substituted, plus
+  the link to the platform's developer console.
+- **Setup guide button** on the "Needs setup" card on the Channels
+  page replaces the bare "Add MADGA_OAUTH..." hint — one click into
+  the step-by-step walk-through.
+
+### Added — Outbound webhooks
+- **`WebhookEndpoint` + `WebhookDelivery` models** per Site, with
+  HMAC-SHA256 signing using a per-endpoint random secret. Signature
+  format follows Stripe's: ``t=<unix>,v1=<hex>``.
+- **`madga.webhooks.fire_event(site, event, payload)`** — what
+  application code (or our signal handlers) calls. Looks up matching
+  endpoints, creates pending delivery rows. Never raises.
+- **`madga.webhooks.deliver_pending(limit, dry_run)`** — what the
+  worker drives. Exponential-backoff retry (60s / 5m / 30m / 2h /
+  12h), gives up after ``MADGA_WEBHOOK_MAX_RETRIES`` (default 5).
+- **Signal-fired events shipped:** ``post.published``,
+  ``post.unpublished``, ``post.updated``, ``page.updated``,
+  ``page.published``, ``media.uploaded``, ``broadcast.sent``,
+  ``broadcast.failed``, ``subscriber.created``,
+  ``subscriber.unsubscribed``, ``form.submitted``. Catalog in
+  ``REGISTERED_EVENTS`` — host projects can append their own.
+- **Studio UI** at ``/studio/webhooks/``: list endpoints, recent
+  deliveries log with retry counts, per-endpoint Test button (sync
+  POST so you see the response immediately), rotate-secret action,
+  pause/resume, delete.
+- **`madga webhook-worker`** management subcommand. ``--loop`` mode
+  for production deploys, ``--dry-run`` for CI.
+
+### Added — Form blocks
+- **New ``ContactFormBlock``** in the block registry — drop it on a
+  homepage or in a Post body. Settings: title, subtitle, button
+  label, success message, recipient email, form key. Public
+  template renders name + email + message inputs + a honeypot
+  (silently drops bots).
+- **`FormSubmission` model** + public POST endpoint
+  ``/madga/form/<block_id>/submit/`` that creates a row, optionally
+  emails the recipient, and fires a ``form.submitted`` webhook.
+  Accepts both regular form posts (redirects with
+  ``?submitted=<id>``) and JSON (returns ``{ok: true, id}``).
+- **Studio inbox** at ``/studio/inbox/``: search, filter by form
+  key, mark read/unread, CSV export.
+
+### Tests
+- 17 new tests for webhooks + forms. 104 total.
+
+### Pending for 0.3.8 / 0.4.0
+- Instagram via Facebook Graph (deferred).
+- 0.4.0: **MCP server** + docs site.
+
 ## [0.3.6.1] — 2026-05-16
 
 ### Added

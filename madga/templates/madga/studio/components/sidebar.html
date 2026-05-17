@@ -123,6 +123,9 @@
     <a href="{% url 'madga_studio:webhook_list' %}" class="madga-nav-item {% studio_active request 'webhook_list' 'webhook_create' 'webhook_edit' %}">
       {% studio_icon "external" %} {% trans "Webhooks" %}
     </a>
+    <a href="{% url 'madga_studio:inbox_list' %}" class="madga-nav-item {% studio_active request 'inbox_list' %}">
+      {% studio_icon "mail" %} {% trans "Inbox" %}
+    </a>
 
     <div class="madga-nav-section">{% trans "Workspace" %}</div>
     <a href="{% url 'madga_studio:user_list' %}" class="madga-nav-item {% studio_active request 'user_list' %}">

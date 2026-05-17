@@ -1,0 +1,35 @@
+{% load i18n %}
+<section class="madga-form-block" style="max-width:560px; margin: 36px auto; padding: 0 16px;">
+  {% if config.title %}<h2 style="font-size: 22px; font-weight: 600; margin: 0 0 6px;">{{ config.title }}</h2>{% endif %}
+  {% if config.subtitle %}<p style="color: var(--fg-2, #64748b); margin: 0 0 18px; font-size: 14.5px;">{{ config.subtitle }}</p>{% endif %}
+
+  {% if request.GET.submitted == block.id|stringformat:"s" %}
+    <div style="padding: 12px 14px; background: #ecfdf5; border: 1px solid #6ee7b7; color: #065f46; border-radius: 8px; font-size: 14px;">
+      {{ config.success_message|default:_("Thanks — we'll be in touch.") }}
+    </div>
+  {% else %}
+    <form method="post" action="/madga/form/{{ block.id }}/submit/" style="display:flex; flex-direction:column; gap:12px;">
+      {% csrf_token %}
+      <input type="hidden" name="source" value="{{ request.path }}">
+      <div>
+        <label style="display:block; font-size:13px; font-weight:500; margin-bottom:4px;">{% trans "Name" %}</label>
+        <input type="text" name="name" required style="width:100%; padding:10px 12px; border:1px solid #e2e8f0; border-radius:8px; font-size:14px;">
+      </div>
+      <div>
+        <label style="display:block; font-size:13px; font-weight:500; margin-bottom:4px;">{% trans "Email" %}</label>
+        <input type="email" name="email" required style="width:100%; padding:10px 12px; border:1px solid #e2e8f0; border-radius:8px; font-size:14px;">
+      </div>
+      <div>
+        <label style="display:block; font-size:13px; font-weight:500; margin-bottom:4px;">{% trans "Message" %}</label>
+        <textarea name="message" rows="4" required style="width:100%; padding:10px 12px; border:1px solid #e2e8f0; border-radius:8px; font-size:14px; resize:vertical;"></textarea>
+      </div>
+      {# Honeypot: real submissions leave this empty. Bots fill it = silently dropped. #}
+      <div style="position:absolute; left:-9999px;" aria-hidden="true">
+        <label>Leave this empty<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+      </div>
+      <button type="submit" style="padding:11px 22px; background:{{ site.accent_color|default:'#6C63FF' }}; color:#fff; border:0; border-radius:8px; font-weight:500; font-size:14px; cursor:pointer;">
+        {{ config.button_label|default:_("Send") }}
+      </button>
+    </form>
+  {% endif %}
+</section>

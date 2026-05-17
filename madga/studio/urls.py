@@ -61,6 +61,12 @@ from .views.users import (
     UserListView,
     UserRoleUpdateView,
 )
+from .views.inbox import (
+    InboxDeleteView,
+    InboxExportView,
+    InboxListView,
+    InboxMarkReadView,
+)
 from .views.webhooks import (
     WebhookCreateView,
     WebhookDeleteView,
@@ -135,6 +141,11 @@ urlpatterns = [
     path("webhooks/<uuid:pk>/delete/", WebhookDeleteView.as_view(), name="webhook_delete"),
     path("webhooks/<uuid:pk>/rotate/", WebhookRotateSecretView.as_view(), name="webhook_rotate"),
     path("webhooks/<uuid:pk>/test/", WebhookTestView.as_view(), name="webhook_test"),
+
+    path("inbox/", InboxListView.as_view(), name="inbox_list"),
+    path("inbox/export/", InboxExportView.as_view(), name="inbox_export"),
+    path("inbox/<uuid:pk>/read/", InboxMarkReadView.as_view(), name="inbox_mark_read"),
+    path("inbox/<uuid:pk>/delete/", InboxDeleteView.as_view(), name="inbox_delete"),
 
     path("channels/", ChannelListView.as_view(), name="channel_list"),
     path("channels/<str:key>/connect/", ChannelConnectView.as_view(), name="channel_connect"),

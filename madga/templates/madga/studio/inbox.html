@@ -1,0 +1,100 @@
+{% extends "madga/studio/base.html" %}
+{% load i18n humanize madga_studio_tags %}
+
+{% block breadcrumbs %}<span class="crumb is-current">{% trans "Inbox" %}</span>{% endblock %}
+
+{% block content %}
+<div class="madga-page">
+  <div class="madga-page-header">
+    <div class="madga-page-title-block">
+      <h1 class="madga-page-title">{% trans "Inbox" %}</h1>
+      <p class="madga-page-subtitle">{% blocktrans count n=unread_count %}{{ n }} unread submission.{% plural %}{{ n }} unread submissions.{% endblocktrans %}</p>
+    </div>
+    <div class="madga-page-actions">
+      <a href="{% url 'madga_studio:inbox_export' %}?{% if current_form_key %}form_key={{ current_form_key }}{% endif %}" class="madga-btn madga-btn--sm">{% studio_icon "download" size=12 stroke=2 %} {% trans "Export CSV" %}</a>
+    </div>
+  </div>
+
+  <div class="madga-tabs">
+    <a href="?{% if current_form_key %}form_key={{ current_form_key }}{% endif %}" class="madga-tab {% if not unread_only %}is-active{% endif %}">{% trans "All" %}</a>
+    <a href="?unread=1{% if current_form_key %}&form_key={{ current_form_key }}{% endif %}" class="madga-tab {% if unread_only %}is-active{% endif %}">{% trans "Unread" %}<span class="madga-tab-count">{{ unread_count }}</span></a>
+  </div>
+
+  <div class="madga-toolbar">
+    <form class="madga-search" method="get" style="min-width:280px;">
+      {% studio_icon "search" size=14 stroke=2 %}
+      <input type="text" name="q" value="{{ q }}" placeholder="{% trans 'Search submissions…' %}">
+      {% if current_form_key %}<input type="hidden" name="form_key" value="{{ current_form_key }}">{% endif %}
+    </form>
+    {% if form_keys %}
+      <form method="get" style="margin-left:auto;">
+        <select name="form_key" class="madga-select" onchange="this.form.submit()">
+          <option value="">{% trans "All forms" %}</option>
+          {% for fk in form_keys %}
+            <option value="{{ fk }}" {% if fk == current_form_key %}selected{% endif %}>{{ fk|default:"contact" }}</option>
+          {% endfor %}
+        </select>
+      </form>
+    {% endif %}
+  </div>
+
+  <div class="madga-card" style="padding:0;">
+    <table class="madga-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>{% trans "From" %}</th>
+          <th>{% trans "Subject / Excerpt" %}</th>
+          <th>{% trans "Form" %}</th>
+          <th>{% trans "When" %}</th>
+          <th class="col-actions"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in submissions %}
+        <tr style="{% if not s.is_read %}background: var(--accent-soft);{% endif %}">
+          <td style="width:18px;">{% if not s.is_read %}<span style="width:8px; height:8px; border-radius:50%; background:var(--accent); display:inline-block;"></span>{% endif %}</td>
+          <td><strong>{% firstof s.data.email s.data.name "(anonymous)" %}</strong></td>
+          <td><span style="color:var(--fg-2); font-size:13px;">{% firstof s.data.message s.data.subject "" as excerpt %}{{ excerpt|truncatechars:80 }}</span></td>
+          <td><code style="font-size:11.5px;">{{ s.form_key|default:"contact" }}</code></td>
+          <td style="color:var(--fg-2); font-size:12px;">{{ s.created_at|naturaltime }}</td>
+          <td class="col-actions">
+            <div style="display:flex; gap:4px; justify-content:flex-end;">
+              <form method="post" action="{% url 'madga_studio:inbox_mark_read' pk=s.pk %}" style="margin:0;">{% csrf_token %}
+                <button type="submit" class="madga-btn madga-btn--ghost madga-btn--sm">{% if s.is_read %}{% trans "Mark unread" %}{% else %}{% trans "Mark read" %}{% endif %}</button>
+              </form>
+              <details style="position:relative;">
+                <summary style="cursor:pointer; padding:4px 8px; font-size:12px; color:var(--fg-2); list-style:none;">{% trans "Open" %}</summary>
+                <div style="position:absolute; right:0; top:24px; z-index:10; background:var(--bg-1); border:1px solid var(--border); border-radius:8px; padding:14px; min-width:320px; box-shadow:var(--shadow-md);">
+                  <div style="font-size:11px; text-transform:uppercase; color:var(--fg-3); letter-spacing:.06em; margin-bottom:8px;">{% trans "Submission" %}</div>
+                  {% for k, v in s.data.items %}
+                    <div style="display:flex; gap:8px; padding:4px 0; border-bottom:1px solid var(--border); font-size:12.5px;">
+                      <strong style="min-width:80px; color:var(--fg-2);">{{ k }}</strong>
+                      <span style="flex:1;">{{ v }}</span>
+                    </div>
+                  {% endfor %}
+                  <div style="margin-top:10px; font-size:11px; color:var(--fg-3);">
+                    {% if s.source_url %}{{ s.source_url }}<br>{% endif %}
+                    {% if s.ip %}IP: {{ s.ip }}<br>{% endif %}
+                    {{ s.created_at }}
+                  </div>
+                </div>
+              </details>
+              <form method="post" action="{% url 'madga_studio:inbox_delete' pk=s.pk %}" style="margin:0;">{% csrf_token %}
+                <button type="submit" class="madga-btn madga-btn--ghost madga-btn--sm madga-btn--danger" data-madga-confirm="{% trans 'Delete this submission?' %}">{% studio_icon "trash" size=12 stroke=2 %}</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6">{% studio_empty title=_("Nothing in the inbox") message=_("Submissions to your ContactFormBlock land here.") %}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if page_obj.paginator.num_pages > 1 %}
+    {% include "madga/studio/components/pagination.html" with page_obj=page_obj %}
+  {% endif %}
+</div>
+{% endblock %}

@@ -45,6 +45,7 @@ REGISTERED_EVENTS: list[tuple[str, str]] = [
     ("broadcast.sent", _("A broadcast finished sending")),
     ("broadcast.failed", _("A broadcast failed for every target")),
     ("media.uploaded", _("A media file was uploaded")),
+    ("form.submitted", _("A public ContactFormBlock submission was received")),
 ]
 
 

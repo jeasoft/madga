@@ -4,6 +4,7 @@ from .api_keys import UserApiKey
 from .broadcast import BroadcastJob, Subscriber
 from .channels import PublisherAccount
 from .content import Page, Post
+from .forms import FormSubmission
 from .homepage import HomepageBlock
 from .media import MediaFile
 from .navigation import NavItem
@@ -30,4 +31,5 @@ __all__ = [
     "WebhookEndpoint",
     "WebhookDelivery",
     "REGISTERED_EVENTS",
+    "FormSubmission",
 ]
