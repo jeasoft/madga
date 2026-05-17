@@ -48,6 +48,57 @@ class TwitterOAuthPublisher(_AccountPublisher):
     oauth_scopes = ["tweet.read", "tweet.write", "users.read", "offline.access"]
     credential_fields: list[CredField] = []
 
+    setup_console_url = "https://developer.twitter.com/en/portal/dashboard"
+    setup_instructions = [
+        {
+            "title": "Create a Project + App",
+            "body": (
+                "Sign in at developer.twitter.com. Create a new Project (or use an existing one). "
+                "Inside the Project, create a new App. The free tier allows 100 posts per month, "
+                "enough for most personal blogs."
+            ),
+            "url": "https://developer.twitter.com/en/portal/dashboard",
+        },
+        {
+            "title": "Enable OAuth 2.0 with PKCE",
+            "body": (
+                "In your App settings → User authentication settings, click Set up. "
+                "Pick: Type of App = Web App, App permissions = Read and write."
+            ),
+            "url": "",
+        },
+        {
+            "title": "Add the callback URL",
+            "body": (
+                "Set Callback URI to:\n"
+                "<copy>{CALLBACK}</copy>\n"
+                "Website URL can be anything — your homepage works."
+            ),
+            "url": "",
+        },
+        {
+            "title": "Copy Client ID + Client Secret",
+            "body": (
+                "After saving, you'll see Client ID + Client Secret. Copy both. "
+                "The Secret is shown ONCE — keep it safe."
+            ),
+            "url": "",
+        },
+        {
+            "title": "Add to your project's settings.py",
+            "body": (
+                "<copy>MADGA_OAUTH = {\n"
+                "    'twitter': {\n"
+                "        'client_id': 'PASTE_HERE',\n"
+                "        'client_secret': 'PASTE_HERE',\n"
+                "    },\n"
+                "}</copy>\n"
+                "Restart the server. The 'Needs setup' card will turn into a Connect button."
+            ),
+            "url": "",
+        },
+    ]
+
     AUTH_URL = "https://twitter.com/i/oauth2/authorize"
     TOKEN_URL = "https://api.twitter.com/2/oauth2/token"
     ME_URL = "https://api.twitter.com/2/users/me"

@@ -44,6 +44,56 @@ class LinkedInOAuthPublisher(_AccountPublisher):
     oauth_scopes = ["openid", "profile", "email", "w_member_social"]
     credential_fields: list[CredField] = []
 
+    setup_console_url = "https://www.linkedin.com/developers/apps"
+    setup_instructions = [
+        {
+            "title": "Create an app",
+            "body": (
+                "Go to LinkedIn Developers and create a new app. You'll need to attach it "
+                "to a LinkedIn Page you control (Company Page, even an empty one works)."
+            ),
+            "url": "https://www.linkedin.com/developers/apps",
+        },
+        {
+            "title": "Add products",
+            "body": (
+                "In your app's Products tab, request access to:\n"
+                "• Sign In with LinkedIn using OpenID Connect\n"
+                "• Share on LinkedIn\n"
+                "Approval is usually instant for both."
+            ),
+            "url": "",
+        },
+        {
+            "title": "Add the redirect URL",
+            "body": (
+                "In Auth → OAuth 2.0 settings, add a Redirect URL:\n"
+                "<copy>{CALLBACK}</copy>"
+            ),
+            "url": "",
+        },
+        {
+            "title": "Copy Client ID + Client Secret",
+            "body": (
+                "Auth tab → Application credentials. Copy both values. "
+                "Tokens last about 60 days; users will need to reconnect after that."
+            ),
+            "url": "",
+        },
+        {
+            "title": "Add to your project's settings.py",
+            "body": (
+                "<copy>MADGA_OAUTH = {\n"
+                "    'linkedin': {\n"
+                "        'client_id': 'PASTE_HERE',\n"
+                "        'client_secret': 'PASTE_HERE',\n"
+                "    },\n"
+                "}</copy>"
+            ),
+            "url": "",
+        },
+    ]
+
     AUTH_URL = "https://www.linkedin.com/oauth/v2/authorization"
     TOKEN_URL = "https://www.linkedin.com/oauth/v2/accessToken"
     USERINFO_URL = "https://api.linkedin.com/v2/userinfo"

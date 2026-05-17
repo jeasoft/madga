@@ -163,6 +163,43 @@ class ChannelDisconnectView(MadgaStudioMixin, View):
         return HttpResponseRedirect(reverse("madga_studio:channel_list"))
 
 
+class ChannelOAuthSetupView(MadgaStudioMixin, View):
+    """Renders the platform-specific setup guide.
+
+    Each OAuth publisher declares ``setup_instructions`` and
+    ``setup_console_url``; this view picks the right one based on
+    ``?key=twitter`` and renders the drawer-style help page with
+    copy-paste-friendly chunks. The ``{CALLBACK}`` placeholder in the
+    instruction bodies is replaced with the actual absolute callback
+    URL for this deployment.
+    """
+
+    template_name = "madga/studio/oauth_setup.html"
+
+    def get(self, request, key):
+        publisher = get_publisher(key)
+        if publisher is None or not publisher.oauth_supported:
+            return HttpResponseBadRequest(_("Unknown OAuth channel."))
+
+        callback = _oauth_redirect_uri(request, key)
+
+        steps = []
+        for step in publisher.setup_instructions or []:
+            steps.append({
+                "title": step.get("title", ""),
+                "body": (step.get("body") or "").replace("{CALLBACK}", callback),
+                "url": step.get("url", ""),
+            })
+
+        configured = publisher.oauth_client_credentials() is not None
+        return render(request, self.template_name, {
+            "publisher": publisher,
+            "steps": steps,
+            "callback_url": callback,
+            "configured": configured,
+        })
+
+
 class ChannelOAuthStartView(MadgaStudioMixin, View):
     """Kick off an OAuth flow.
 

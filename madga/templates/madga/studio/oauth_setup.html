@@ -1,0 +1,86 @@
+{% extends "madga/studio/base.html" %}
+{% load i18n madga_studio_tags %}
+
+{% block breadcrumbs %}
+  <a href="{% url 'madga_studio:channel_list' %}" class="crumb">{% trans "Channels" %}</a>
+  <span class="sep">/</span>
+  <span class="crumb is-current">{% blocktrans with label=publisher.label %}Setup {{ label }}{% endblocktrans %}</span>
+{% endblock %}
+
+{% block content %}
+<div class="madga-page" style="max-width: 720px;">
+  <header class="madga-page-header">
+    <div class="madga-page-title-block">
+      <h1 class="madga-page-title">{% blocktrans with label=publisher.label %}Setup {{ label }}{% endblocktrans %}</h1>
+      <p class="madga-page-subtitle">{% trans "One-time setup. Register an app on the platform's developer console, paste the credentials, done. Every user on this MADGA site shares this app — that's how SaaS OAuth works." %}</p>
+    </div>
+    {% if publisher.setup_console_url %}
+      <div class="madga-page-actions">
+        <a href="{{ publisher.setup_console_url }}" target="_blank" rel="noopener" class="madga-btn madga-btn--sm madga-btn--ghost">
+          {% studio_icon "external" size=12 stroke=2 %} {% trans "Open developer console" %}
+        </a>
+      </div>
+    {% endif %}
+  </header>
+
+  {% if configured %}
+    <div class="madga-card" style="padding:16px; margin-bottom:18px; border-left:3px solid var(--accent);">
+      <strong style="color:var(--fg-0);">{% trans "Already configured" %} ✓</strong>
+      <p class="madga-field-help" style="margin-top:6px;">
+        {% blocktrans with label=publisher.label %}MADGA_OAUTH['{{ label|lower }}'] is set in your project settings. Users can now click Connect.{% endblocktrans %}
+      </p>
+      <a href="{% url 'madga_studio:channel_list' %}" class="madga-btn madga-btn--sm madga-btn--primary" style="margin-top:8px;">
+        {% trans "Back to Channels" %}
+      </a>
+    </div>
+  {% endif %}
+
+  <div class="madga-card" style="padding:18px; margin-bottom:18px;">
+    <div style="font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--fg-2); margin-bottom:8px;">{% trans "Callback URL to register on the platform" %}</div>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <code class="madga-copyable" style="flex:1; padding:8px 10px; background:var(--bg-input); border:1px solid var(--border-strong); border-radius:6px; font-size:12px; word-break:break-all;" id="callback-url">{{ callback_url }}</code>
+      <button type="button" class="madga-btn madga-btn--sm" onclick="navigator.clipboard.writeText(document.getElementById('callback-url').textContent); this.textContent='{% trans 'Copied' %}'">{% trans "Copy" %}</button>
+    </div>
+  </div>
+
+  <ol class="madga-setup-steps">
+    {% for step in steps %}
+      <li class="madga-setup-step">
+        <div class="madga-setup-step-num">{{ forloop.counter }}</div>
+        <div class="madga-setup-step-body">
+          <h3 class="madga-setup-step-title">{{ step.title }}</h3>
+          {% madga_setup_body step.body %}
+          {% if step.url %}
+            <p style="margin-top:6px;"><a href="{{ step.url }}" target="_blank" rel="noopener" class="madga-link">{{ step.url }} {% studio_icon "external" size=10 stroke=2 %}</a></p>
+          {% endif %}
+        </div>
+      </li>
+    {% endfor %}
+  </ol>
+
+  <div style="display:flex; gap:8px; margin-top:24px;">
+    <a href="{% url 'madga_studio:channel_list' %}" class="madga-btn">{% trans "Back to Channels" %}</a>
+    {% if configured %}
+      <a href="{% url 'madga_studio:channel_oauth_start' key=publisher.key %}" class="madga-btn madga-btn--primary">
+        {% studio_icon "send" size=12 stroke=2 %} {% blocktrans with label=publisher.label %}Connect {{ label }} now{% endblocktrans %}
+      </a>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+  .madga-setup-steps { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:12px; }
+  .madga-setup-step { display:flex; gap:14px; padding:16px 18px; background:var(--bg-1); border:1px solid var(--border); border-radius:10px; }
+  .madga-setup-step-num { width:28px; height:28px; border-radius:50%; background:var(--accent); color:var(--accent-fg); display:grid; place-items:center; font-weight:600; font-size:13px; flex-shrink:0; }
+  .madga-setup-step-body { flex:1; min-width:0; }
+  .madga-setup-step-title { margin:0 0 6px; font-size:14.5px; font-weight:600; color:var(--fg-0); }
+  .madga-setup-step-body p { margin:6px 0 0; color:var(--fg-1); font-size:13.5px; line-height:1.55; white-space:pre-wrap; }
+  .madga-setup-step-body code, .madga-setup-step-body pre {
+    display:block; padding:10px 12px; margin:8px 0;
+    background:var(--bg-2); border:1px solid var(--border); border-radius:6px;
+    font-size:12px; color:var(--fg-0); white-space:pre-wrap; word-break:break-all;
+    font-family: var(--font-mono);
+  }
+  .madga-link { color: var(--accent); }
+</style>
+{% endblock %}

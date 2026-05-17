@@ -84,6 +84,16 @@ class Publisher:
     oauth_supported: bool = False
     oauth_scopes: list[str] = []
 
+    # Step-by-step setup instructions surfaced in the studio's
+    # "Needs setup" help drawer. Each step is a dict with:
+    #   {"title": str, "body": str (markdown-light), "url": str | ""}
+    # The studio renders them in order with copy-paste-friendly chunks.
+    setup_instructions: list[dict] = []
+
+    # Where to send the operator after they create their app — usually
+    # the platform's developer console URL.
+    setup_console_url: str = ""
+
     @property
     def has_handle_credential(self) -> bool:
         """True if 'handle' is part of ``credential_fields``.

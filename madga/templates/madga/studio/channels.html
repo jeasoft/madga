@@ -89,8 +89,9 @@
         {% else %}
           {% if p.key in needs_oauth_config %}
             <div style="padding:10px 12px; background:var(--bg-2); border:1px dashed var(--border); border-radius:8px; font-size:12px; color:var(--fg-2); text-align:center; line-height:1.4;">
-              <strong style="color:var(--fg-1); display:block; margin-bottom:4px;">{% trans "Needs setup" %}</strong>
-              {% blocktrans with key=p.key %}Add <code>MADGA_OAUTH['{{ key }}']</code> client_id/client_secret to your project settings.{% endblocktrans %}
+              <strong style="color:var(--fg-1); display:block; margin-bottom:6px;">{% trans "Needs setup" %}</strong>
+              <span style="display:block; margin-bottom:8px;">{% blocktrans with key=p.key %}Register a {{ key }} app and add it to <code>MADGA_OAUTH</code>.{% endblocktrans %}</span>
+              <a href="{% url 'madga_studio:channel_oauth_setup' key=p.key %}" class="madga-btn madga-btn--sm" style="width:100%; justify-content:center;">{% studio_icon "help" size=12 stroke=2 %} {% trans "Setup guide" %}</a>
             </div>
           {% else %}
             <a href="{% url 'madga_studio:channel_connect' key=p.key %}" class="madga-btn madga-btn--sm madga-btn--primary" style="width:100%; justify-content:center;">

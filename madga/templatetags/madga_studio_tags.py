@@ -183,6 +183,41 @@ def thumb_gradient(seed) -> str:
 
 
 @register.simple_tag
+def madga_setup_body(body: str):
+    """Render an OAuth setup step body with ``<copy>...</copy>`` chunks
+    promoted to a copy-paste-friendly ``<pre>`` block. Plain text
+    outside the markers stays as a paragraph.
+
+    The body string can contain newlines and the marker can wrap
+    multi-line code (settings.py snippets, URLs, etc.). Output is
+    safe HTML (escaped before mark_safe).
+    """
+    from django.utils.html import escape
+    import re
+
+    pattern = re.compile(r"<copy>(.*?)</copy>", re.DOTALL)
+    out: list[str] = []
+    pos = 0
+    for m in pattern.finditer(body or ""):
+        before = (body or "")[pos:m.start()]
+        if before.strip():
+            out.append(f"<p>{escape(before).replace(chr(10), '<br>')}</p>")
+        code = escape(m.group(1).strip())
+        out.append(
+            f'<pre class="madga-setup-copy" data-copy>{code}'
+            f'<button type="button" class="madga-setup-copy-btn" '
+            f'onclick="navigator.clipboard.writeText(this.previousSibling.nodeValue || '
+            f"this.parentNode.firstChild.textContent); this.textContent='Copied'\">Copy</button>"
+            f"</pre>"
+        )
+        pos = m.end()
+    tail = (body or "")[pos:]
+    if tail.strip():
+        out.append(f"<p>{escape(tail).replace(chr(10), '<br>')}</p>")
+    return mark_safe("".join(out))
+
+
+@register.simple_tag
 def studio_active(request, *url_names) -> str:
     """Return ``is-active`` if the current resolved url_name matches any given."""
     if not request:

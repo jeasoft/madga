@@ -41,6 +41,7 @@ from .views.channels import (
     ChannelDisconnectView,
     ChannelListView,
     ChannelOAuthCallbackView,
+    ChannelOAuthSetupView,
     ChannelOAuthStartView,
     ChannelTestView,
     ChannelToggleView,
@@ -123,6 +124,7 @@ urlpatterns = [
 
     path("channels/", ChannelListView.as_view(), name="channel_list"),
     path("channels/<str:key>/connect/", ChannelConnectView.as_view(), name="channel_connect"),
+    path("channels/<str:key>/oauth/setup/", ChannelOAuthSetupView.as_view(), name="channel_oauth_setup"),
     path("channels/<str:key>/oauth/start/", ChannelOAuthStartView.as_view(), name="channel_oauth_start"),
     path("channels/<str:key>/oauth/callback/", ChannelOAuthCallbackView.as_view(), name="channel_oauth_callback"),
     path("channels/<uuid:pk>/toggle/", ChannelToggleView.as_view(), name="channel_toggle"),
