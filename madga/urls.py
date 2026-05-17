@@ -40,6 +40,7 @@ from madga.blog.views import (
 )
 from madga.blog.views_broadcast import UnsubscribeView
 from madga.blog.views_forms import FormSubmitView
+from madga.mcp.views import MCPView
 
 
 def madga_public_urls(*, include_homepage: bool = True) -> list:
@@ -56,5 +57,6 @@ def madga_public_urls(*, include_homepage: bool = True) -> list:
         path("rss.xml", RssFeedView.as_view(), name="madga_rss"),
         path("madga/unsubscribe/<str:token>/", UnsubscribeView.as_view(), name="madga_unsubscribe"),
         path("madga/form/<int:block_id>/submit/", FormSubmitView.as_view(), name="madga_form_submit"),
+        path("mcp/", MCPView.as_view(), name="madga_mcp"),
     ]
     return patterns

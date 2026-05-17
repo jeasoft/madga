@@ -2,6 +2,47 @@
 
 All notable changes to MADGA. Format roughly follows [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.4.0] — 2026-05-17
+
+Focus: **MCP server + docs/ skeleton.** MADGA is now AI-native — any
+Claude / agent that speaks MCP can drive the studio (read posts,
+create posts, publish, broadcast to channels, view subscribers and
+the form inbox) using a per-user API key.
+
+### Added — MCP server
+- **`madga.mcp` module** + HTTP transport at ``/mcp/``. Minimal
+  JSON-RPC 2.0 dispatcher (initialize / tools/list / tools/call /
+  ping / notifications) — sync Django views, no extra deps, no
+  ASGI required.
+- **Auth via existing UserApiKey** (``Bearer madga_<token>``). The
+  key's pinned ``site`` field doubles as the MCP active-workspace
+  state; the ``set_active_site`` tool updates it.
+- **Tools shipped (12 total)**:
+  - Sites: ``list_sites``, ``set_active_site``
+  - Content: ``list_posts``, ``get_post``, ``create_post``,
+    ``publish_post``, ``list_pages``
+  - Audience: ``list_subscribers``, ``list_form_submissions``
+  - Channels: ``list_channels``, ``list_broadcasts``, ``broadcast``
+- **Host-project extensibility**: ``@register_tool`` decorator with
+  the same pattern as ``@register_block_type`` / ``@register_publisher``.
+- **Site isolation**: every tool filters by ``ctx.site`` — cross-tenant
+  reads/writes are impossible by construction.
+- **GET /mcp/** returns a tiny capability summary so devs can verify
+  the endpoint is mounted without writing a JSON-RPC client.
+- 21 new tests covering protocol, auth, every built-in tool path
+  (happy + error paths). **142 total green on sqlite + Postgres.**
+
+### Added — docs skeleton
+- **`docs/`** folder with hand-written markdown:
+  - ``index.md`` — overview + section pointers
+  - ``mcp.md`` — full MCP guide with setup + tool reference
+  - ``publishers.md`` — built-in publishers + custom publisher recipe
+  - ``webhooks.md`` — events catalog + receiver contract + signature verification snippet
+  - ``saas.md`` — multi-tenant model + workspace switcher + BYOA
+  - ``blocks.md`` — custom block types
+- ``mkdocs-material`` site lands in 0.4.1 (markdown is enough for
+  now — GitHub renders it inline).
+
 ## [0.3.9] — 2026-05-17
 
 Focus: **BYOA (Bring Your Own App)** — per-Site OAuth app credential

@@ -11,6 +11,7 @@ from .views import (
 )
 from .views_broadcast import UnsubscribeView
 from .views_forms import FormSubmitView
+from madga.mcp.views import MCPView
 
 urlpatterns = [
     path("", HomepageView.as_view(), name="madga_home"),
@@ -20,4 +21,5 @@ urlpatterns = [
     path("p/<slug:slug>/", PageDetailView.as_view(), name="madga_page"),
     path("madga/unsubscribe/<str:token>/", UnsubscribeView.as_view(), name="madga_unsubscribe"),
     path("madga/form/<int:block_id>/submit/", FormSubmitView.as_view(), name="madga_form_submit"),
+    path("mcp/", MCPView.as_view(), name="madga_mcp"),
 ]
