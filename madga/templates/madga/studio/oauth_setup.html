@@ -12,7 +12,7 @@
   <header class="madga-page-header">
     <div class="madga-page-title-block">
       <h1 class="madga-page-title">{% blocktrans with label=publisher.label %}Setup {{ label }}{% endblocktrans %}</h1>
-      <p class="madga-page-subtitle">{% trans "One-time setup. Register an app on the platform's developer console, paste the credentials, done. Every user on this MADGA site shares this app — that's how SaaS OAuth works." %}</p>
+      <p class="madga-page-subtitle">{% trans "One-time setup for the whole MADGA deployment. You (the operator) register a single app on the platform — every tenant uses it to connect THEIR OWN social account. Tokens are stored per-tenant; one tenant never sees another's. This is how Buffer / Hootsuite / Zapier do it." %}</p>
     </div>
     {% if publisher.setup_console_url %}
       <div class="madga-page-actions">
